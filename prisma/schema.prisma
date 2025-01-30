@@ -12,3 +12,209 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String  @unique
+  password      String
+  image         String
+  status        Boolean
+  roleId        Int
+
+  likedPosts PostLike[]
+  
+  role          Role @relation(fields: [roleId], references: [id])
+  accounts Account[]
+  sessions Session[]
+  serviceOrders ServiceOrder[]
+}
+
+
+
+model Role {
+  id    Int @id @default(autoincrement())
+  name  String @unique
+  description String
+  permissions Permission[] @relation("RolePermissions") 
+  users   User[]
+}
+
+model Permission {
+  id    Int @id @default(autoincrement())
+  name  String @unique
+  description String
+  roles   Role[] @relation("RolePermissions")
+}
+
+model Account {
+  id                 String  @id @default(uuid()) @db.Uuid
+  userId             String  @db.Uuid
+  provider           String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  user               User    @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @unique
+  description String
+  features CategoryFeature[] @relation("CategoryFeatures")
+  posts Post[]
+}
+
+model CategoryFeature {
+  id Int @id @default(autoincrement())
+  name String
+  type String
+  required Boolean
+  icon String
+  values String
+  categories Category[] @relation("CategoryFeatures")
+  postFeatures PostFeature[]
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  createdAt DateTime
+  status String
+
+
+  price PostPrice?
+  images PostImage[]
+  features PostFeature[]
+  packages PostPackage[]
+  reviews PostReview[]
+  likes PostLike[]
+
+  vendorId Int
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id])
+}
+
+model PostFeature {
+  id Int @id @default(autoincrement())
+  value String
+  categoryFeatureId Int
+  categoryFeature CategoryFeature @relation(fields: [categoryFeatureId], references: [id])
+
+  postId Int
+  post Post @relation(fields: [postId], references: [id])
+}
+
+model PostImage {
+  id Int @id @default(autoincrement())
+  url String
+  name String
+  
+  postId Int
+  post Post @relation(fields: [postId], references: [id])
+
+}
+
+model PostPrice {
+  id Int @id @default(autoincrement())
+  min Float
+  max Float
+  currency String
+  postId Int @unique
+  post Post @relation(fields: [postId], references: [id])
+}
+
+model PostPackage {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  price Float
+  postId Int 
+  post Post @relation(fields: [postId], references: [id])
+}
+
+model PostReview {
+  id Int @id @default(autoincrement())
+  content String
+  type String
+  createdAt DateTime
+
+  postId Int
+  post Post @relation(fields: [postId], references: [id])
+
+}
+
+model PostLike {
+  id Int @id @default(autoincrement())
+  createdAt DateTime
+  postId Int
+  userId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Service {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+
+  orders ServiceOrder[]
+}
+
+model ServiceOrder {
+  id Int @id @default(autoincrement())
+  status String
+  createdAt DateTime
+  updatedAt DateTime
+  serviceId Int
+  userId String @db.Uuid
+  service Service @relation(fields: [serviceId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Vendor {
+  id Int @id @default(autoincrement())
+  name String
+  status Boolean
+  userId Int
+  contacts VendorContact[]
+  posts Post[]
+}
+
+model ContactType {
+  id Int @id @default(autoincrement())
+  name String
+  type String
+  description String
+  contacts VendorContact[]
+}
+
+model VendorContact {
+  id Int @id @default(autoincrement())
+  value String
+  vendorId Int
+  contactTypeId Int
+  contactType ContactType @relation(fields: [contactTypeId], references: [id])
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+}
