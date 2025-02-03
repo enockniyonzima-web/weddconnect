@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { fetchWrapper } from "./fetchWrapper";
+import { revalidatePath } from "next/cache";
 const publicApi = process.env.NEXT_PUBLIC_SERVER_API_URL;
 const privateApi  = process.env.SERVER_API_URL
 // const publicApi = '/api';
@@ -120,5 +121,37 @@ export const MainServer = {
 }
 
 export const RevalidatePages = {
-     
+     categoryFeature: () => {
+          revalidatePath('/');
+     },
+     category: () => {
+          revalidatePath('/');
+     },
+     contactType: () => {
+          revalidatePath('/');
+     },
+     permission: () => {
+          revalidatePath('/');
+     },
+     postLike: () => {
+          revalidatePath('/');
+     },
+     postReview: () => {
+          revalidatePath('/');
+     },
+     post: () => {
+          revalidatePath('/');
+     },
+     role: async () => {
+          revalidatePath('/');
+     },
+     service: () => {
+          revalidatePath('/');
+     },
+     user: () => {
+          revalidatePath('/');
+     },
+     vendor: () => {
+          revalidatePath('/');
+     }
 }

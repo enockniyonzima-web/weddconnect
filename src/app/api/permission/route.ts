@@ -13,24 +13,17 @@ export async function GET(req: Request) {
 
           if(status) filters.status = stringToBoolean(status);
           
-          const data = await prisma.categoryFeature.findMany(
+          const data = await prisma.permission.findMany(
                {
-                    where: {...filters}, 
-                    include: {
-                         _count: {
-                              select:{
-                                   postFeatures:true
-                              }
-                         }
-                    }
+                    where: {...filters}
                }
           );
-          const count  = await prisma.categoryFeature.count({where: {...filters}});
+          const count  = await prisma.permission.count({where: {...filters}});
 
           return res.json({data, pagination: {total: count}});
      }catch(error){
-          console.log("error fetching categoryFeature info", error);
-          return res.json({Error: "Error fetching categoryFeature info"});
+          console.log("error fetching permission info", error);
+          return res.json({Error: "Error fetching permission info"});
      }finally{
           prisma.$disconnect();
      }
