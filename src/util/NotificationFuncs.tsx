@@ -1,5 +1,5 @@
+import { ENotificationType } from '@/common/CommonTypes';
 import { NotificationCard } from '../components/Notifications/ManNotificationCard';
-import { ENotificationType } from "@/common/CommonTypes";
 import { createRoot } from "react-dom/client";
 
 export const showMainNotification = (message: string, type: ENotificationType) => {

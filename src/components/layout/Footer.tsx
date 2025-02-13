@@ -48,8 +48,8 @@ const Footer = () => {
                     <p className='w-full text-gray-400 text-[0.85rem] font-medium'>Powered by Desc Softlab Ltd</p>
                     <p className='w-full text-gray-400 text-[0.85rem] font-medium'>&copy; 2025 WeddConnect. All rights reserved.</p>
                     <div className='w-full flex gap-[10px] items-center justify-start lg:justify-end'>
-                         <FooterLink link={{name:"Terms", dest:"/"}} />
-                         <FooterLink link={{name:"Privacy Policy", dest:"/"}} />
+                         <FooterLink link={{name:"Terms", dest:"/terms"}} />
+                         <FooterLink link={{name:"Privacy Policy", dest:"/privacy-policy"}} />
                     </div>
                </div>
           </footer>

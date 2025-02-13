@@ -13,30 +13,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// auth models
+
 model User {
   id            String   @id @default(uuid()) @db.Uuid
   email         String  @unique
   password      String
   image         String
   status        Boolean
-  roleId        Int
 
-  likedPosts PostLike[]
+  client Client?
+  vendor Vendor?
+  admin Admin?
   
-  role          Role @relation(fields: [roleId], references: [id])
   accounts Account[]
   sessions Session[]
-  serviceOrders ServiceOrder[]
 }
-
-
 
 model Role {
   id    Int @id @default(autoincrement())
   name  String @unique
   description String
   permissions Permission[] @relation("RolePermissions") 
-  users   User[]
+  admins   Admin[]
 }
 
 model Permission {
@@ -74,6 +73,8 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// post management service modals
 
 model Category {
   id Int @id @default(autoincrement())
@@ -163,43 +164,38 @@ model PostReview {
   postId Int
   post Post @relation(fields: [postId], references: [id])
 
+  clientId Int
+  client Client @relation(fields: [clientId], references: [id])
 }
 
 model PostLike {
   id Int @id @default(autoincrement())
   createdAt DateTime
   postId Int
-  userId String @db.Uuid
+  clientId Int
   post Post @relation(fields: [postId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
 }
+
+// services management service modals
 
 model Service {
   id Int @id @default(autoincrement())
   name String
   description String
-
-  orders ServiceOrder[]
 }
 
-model ServiceOrder {
-  id Int @id @default(autoincrement())
-  status String
-  createdAt DateTime
-  updatedAt DateTime
-  serviceId Int
-  userId String @db.Uuid
-  service Service @relation(fields: [serviceId], references: [id])
-  user User @relation(fields: [userId], references: [id])
-}
 
+// vendor management service modals
 model Vendor {
   id Int @id @default(autoincrement())
   name String
   status Boolean
-  userId Int
   contacts VendorContact[]
   posts Post[]
+
+  userId String  @unique @db.Uuid()
+  user User @relation(fields: [userId], references: [id])
 }
 
 model ContactType {
@@ -217,4 +213,31 @@ model VendorContact {
   contactTypeId Int
   contactType ContactType @relation(fields: [contactTypeId], references: [id])
   vendor Vendor @relation(fields: [vendorId], references: [id])
+}
+
+// client management service models 
+
+model Client {
+  id Int @id @default(autoincrement())
+  email String @unique
+  phone String @unique
+
+  userId String @unique @db.Uuid()
+  user User @relation(fields: [userId], references: [id])
+
+  likedPosts PostLike[]
+  reviews PostReview[]
+}
+
+// staff management service
+model Admin {
+  id Int @id @default(autoincrement())
+  name String
+  createdAt DateTime
+
+  roleId Int
+  role          Role @relation(fields: [roleId], references: [id])
+
+  userId String @unique  @db.Uuid() 
+  user User @relation(fields: [userId], references: [id])
 }

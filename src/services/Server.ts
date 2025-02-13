@@ -153,5 +153,11 @@ export const RevalidatePages = {
      },
      vendor: () => {
           revalidatePath('/');
+     },
+     admin: () => {
+          revalidatePath('/');
+     },
+     client: () => {
+          revalidatePath('/');
      }
 }

@@ -5,8 +5,10 @@ import Footer from "./Footer"
 const ClientPage = ({children}:{children: ReactNode}) => {
      return (
           <>
-               <Header/> 
-               {children}
+               <Header/>
+               <main className="w-full flex flex-col items-center justify-start">
+                    {children}
+               </main> 
                <Footer />
           </>
      )

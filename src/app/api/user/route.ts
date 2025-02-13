@@ -17,11 +17,9 @@ export async function GET(req: Request) {
                {
                     where: {...filters}, 
                     include: {
-                         _count: {
-                              select:{
-                                   likedPosts:true
-                              }
-                         }
+                         client: true,
+                         vendor:true,
+                         admin:true,
                     }
                }
           );

@@ -1,16 +1,14 @@
 import Endpoints from "@/services/Endpoints";
-import { ClientServer, MainServer } from "@/services/Server";
-import { signIn } from "next-auth/react";
+import { ClientServer, } from "@/services/Server";
 import Cookies from 'js-cookie';
-import { CUser } from "@/common/Entities";
 
 export async function customLogin(userEmail:string, password:string) {
      try {
           const res = await ClientServer.post({ userEmail, password }, Endpoints.auth.login);
           if (res) {
-               const {token, permissions, role, user}:{token:string, permissions: Array<string>, role:string, user: CUser} = res; 
+               const {token, permissions, role}:{token:string, permissions: Array<string>, role:string} = res; 
                Cookies.set("authToken", token, {expires: 1});
-               return {role,user, permissions};
+               return {role, permissions};
                // const result = await signIn("credentials", {
                //      redirect: false, 
                //      token: token,  
@@ -46,16 +44,4 @@ export async function customLogout () {
      }
 }
 
-
-async function fetchUserData(token:string) {
-     try {
-          const res = await MainServer.get(`${Endpoints.auth.getUser}?token=${token}`)
-          return res;
-     } catch (error) {
-          console.error("Error fetching user data:", error);
-          return null;
-     }
-}
-
-export default fetchUserData;
 

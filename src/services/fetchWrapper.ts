@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export async function fetchWrapper(url: string, options: RequestInit) {
      try {
           const response = await fetch(url, options);
