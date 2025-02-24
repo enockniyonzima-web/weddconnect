@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -20,14 +16,15 @@ model User {
   email         String  @unique
   password      String
   image         String
-  status        Boolean
+  status        Boolean @default(true)
+  createdAt     DateTime
+  type          String
 
   client Client?
   vendor Vendor?
   admin Admin?
   
   accounts Account[]
-  sessions Session[]
 }
 
 model Role {
@@ -56,14 +53,6 @@ model Account {
   user               User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(uuid()) @db.Uuid
-  sessionToken String   @unique
-  userId       String   @db.Uuid
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
 }
 
 model VerificationToken {
@@ -219,14 +208,53 @@ model VendorContact {
 
 model Client {
   id Int @id @default(autoincrement())
-  email String @unique
   phone String @unique
+  name String
 
   userId String @unique @db.Uuid()
   user User @relation(fields: [userId], references: [id])
 
   likedPosts PostLike[]
   reviews PostReview[]
+
+  subscription ClientSubscription?
+}
+
+model Subscription {
+  id Int @id @default(autoincrement())
+  name String @unique
+  price Int
+  description String
+  clientSubscriptions ClientSubscription[]
+}
+model ClientSubscription {
+  id Int @id @default(autoincrement())
+  createdAt DateTime
+  updatedAt DateTime
+  expiryAt DateTime
+
+  transactions Transaction[]
+
+  clientId Int @unique
+  client Client @relation(fields: [clientId], references: [id])
+
+  subscriptionId Int 
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+}
+
+model Transaction {
+  id Int @id @default(autoincrement())
+  price   Int
+  quantity Int
+  amount Int
+  createdAt DateTime
+  updatedAt DateTime
+  status String
+  payNumber String
+  transactionMethod String
+
+  clientSubscriptionId Int
+  clientSubscription ClientSubscription @relation(fields: [clientSubscriptionId],references: [id])
 }
 
 // staff management service

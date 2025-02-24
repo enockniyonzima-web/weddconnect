@@ -4,6 +4,7 @@ const Endpoints = {
      auth: {
           login:'auth/login',
           logout:'auth/logout'
-     }
+     },
+     subscription: "subscription",
 }
 export default Endpoints;

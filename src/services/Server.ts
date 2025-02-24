@@ -159,5 +159,14 @@ export const RevalidatePages = {
      },
      client: () => {
           revalidatePath('/');
+     },
+     transaction: () => {
+          revalidatePath('/');
+     },
+     subscription: () => {
+          revalidatePath('/');
+     },
+     clientSubscription: () => {
+          revalidatePath('/');
      }
 }

@@ -19,15 +19,15 @@ export const NotificationCard:React.FC<INotification> = ({message, type}) => {
      }, []);
      if(type === ENotificationType.PASS){
           return (
-               <div className={`w-full text-white bg-green-600 text-center rounded-[10px] py-[10px] px-[20px] text-[0.9rem] animate-fadeIn ${fadeOut ? "animate-fadeOut" : ''}`}>{message}</div>
+               <div className={`w-full text-white bg-green-600 text-center rounded-[5px] py-[10px] px-[20px] text-[0.85rem] animate-fadeIn ${fadeOut ? "animate-fadeOut" : ''}`}>{message}</div>
           )
      }else if(type === ENotificationType.FAIL){
           return (
-               <div className={`w-full text-white bg-red-600 text-center rounded-[10px] py-[10px] px-[20px] text-[0.9rem] animate-fadeIn ${fadeOut ? "animate-fadeOut" : ''}`}>{message}</div>
+               <div className={`w-full text-white bg-red-600 text-center rounded-[5px] py-[10px] px-[20px] text-[0.85rem] animate-fadeIn ${fadeOut ? "animate-fadeOut" : ''}`}>{message}</div>
           )
      }else {
           return (
-               <div className={`w-full text-white bg-orange-600 text-center rounded-[10px] py-[10px] px-[20px] text-[0.9rem] animate-fadeIn ${fadeOut ? "animate-fadeOut" : ''}`}>{message}</div>
+               <div className={`w-full text-white bg-orange-600 text-center rounded-[5px] py-[10px] px-[20px] text-[0.85rem] animate-fadeIn ${fadeOut ? "animate-fadeOut" : ''}`}>{message}</div>
           )
      }
      
@@ -36,7 +36,7 @@ export const NotificationCard:React.FC<INotification> = ({message, type}) => {
 const MainNotificationContainer = () => {
 
      return (
-          <div className="fixed top-2 right-2 flex flex-col gap-[5px] items-end justify-start z-40" id="main-notification-container">
+          <div className="fixed top-2 right-2 flex flex-col gap-[5px] items-end justify-start z-40 " id="main-notification-container">
           </div>
      )
 }

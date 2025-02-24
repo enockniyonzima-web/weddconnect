@@ -31,7 +31,7 @@ export async function GET(req: Request) {
           return res.json({data, pagination: {total: count}});
      }catch(error){
           console.log("error fetching role info", error);
-          return res.json({Error: "Error fetching role info"});
+          return res.json({Error: "Error fetching role info"}, {status:500});
      }finally{
           prisma.$disconnect();
      }
