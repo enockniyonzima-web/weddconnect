@@ -1,6 +1,6 @@
 "use client";
 
-import { useAdminContext } from "@/components/context/AdminContext";
+import { useAuthContext } from "@/components/context/AuthContext";
 import Link from "next/link";
 import { IconType } from "react-icons";
 import { FaArrowRight, FaDollarSign, } from "react-icons/fa6";
@@ -9,7 +9,7 @@ import { IoCalendarClear } from "react-icons/io5";
 import { MdStarRate } from "react-icons/md";
 
 export const HeroSection = () => {
-     const {user} = useAdminContext();
+     const {user} = useAuthContext();
 
      return (
           <div className="w-full flex flex-col items-center justify-start gap-[10px]">
@@ -49,7 +49,7 @@ const StatisticsCard  = ({icon, name, change, total}:{icon:{icon:IconType, iconC
                <p className="text-gray-600 text-sm">{name}</p>
 
                {/* Stats */}
-               <h2 className="text-xl md:text-3xl font-bold">{total}</h2>
+               <h2 className="text-xl md:text-2xl font-bold">{total}</h2>
 
                {/* Growth Indicator */}
                <p className="text-sm text-green-500 font-medium">

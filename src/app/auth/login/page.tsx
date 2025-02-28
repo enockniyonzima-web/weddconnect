@@ -20,14 +20,12 @@ export default function LoginPage() {
      const  redirectUserByType = (type:string) =>{
           switch(type){
                case "admin":
-               case "dispatcher":
                     return router.push('/dashboard/admin');
                case "vendor":
                     return router.push('/dashboard/seller');
                case "client":
-                    return router.push('/posts');
                default:
-                    return router.push('/auth/choose-account');
+                    return router.push('/posts');
           
           }
      }
@@ -35,6 +33,7 @@ export default function LoginPage() {
      const submitForm = async (e: React.FormEvent) => {
           e.preventDefault();
           try {
+               showMainNotification("Authenticating...", ENotificationType.WARNING);
                setLoading(true);
                const data = new FormData();
                data.append("email", credentials.email);

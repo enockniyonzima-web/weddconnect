@@ -15,7 +15,7 @@ import { FaGear, FaRegCreditCard } from 'react-icons/fa6';
 import { FaUsersCog } from 'react-icons/fa';
 import  UserImage from '../../../../public/images/user-icon.png';
 import { usePathname } from 'next/navigation';
-import { useAdminContext } from '@/components/context/AdminContext';
+import { useAuthContext } from '@/components/context/AuthContext';
 
 const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
      {name: "Overview", dest: '', icon: LuLayoutDashboard},
@@ -28,7 +28,7 @@ const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
 ]
 
 const AdminHeader = () => {
-     const {user} = useAdminContext();
+     const {user} = useAuthContext();
      return (
           <>
                <DesktopView user={user} />

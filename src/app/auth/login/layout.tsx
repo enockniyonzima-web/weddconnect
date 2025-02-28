@@ -2,7 +2,6 @@
 import { createClient } from '@/server-actions/client.actions';
 
 import { getSessionUser, updateUser } from '@/server-actions/user.actions';
-import { RevalidatePages } from '@/services/Server';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
      description: "Login to your Tiracar account to enjoy the best of it that Tiracar provides.",
 };
 
-export default  async function DashboardLayout({
+export default  async function LoginLayout({
      children
      }: Readonly<{
      children: React.ReactNode;
@@ -23,37 +22,32 @@ export default  async function DashboardLayout({
                     case "admin":
                          return redirect('/dashboard/admin');
                     case "vendor":
-                         return redirect('/dashboard/seller');
-                    case "client":
-                         return redirect('/posts');
+                         return redirect('/dashboard/vendor');
                     default:
-                         return redirect('/auth/choose-account');
+                         return redirect('/posts');
                
                }
           }
 
           if(user){
-               const userType = user.vendor ? "vendor": user.client ? "client" : user.admin ? "admin" : "unkown"; 
+               const userType = user.vendor ? "vendor": user.client ? "client" : user.admin ? "admin" : "unknown"; 
 
-               if(userType === "unkown") {
+               if(userType === "unknown") {
                     const userId  = user.id;
                     const newClient = await createClient({name: user.email, phone: "", user:{connect:{id:userId}}});
                     if(newClient) {
                          await updateUser(userId,{type:"client"});
-                         RevalidatePages.user();
-                         RevalidatePages.client();
                     }
                }
+               
                if(user) {
                     return redirectUserByType(userType);
-               }else {
-                    return redirect('/auth/choose-account');
                }
           }
           
      return (
           <>
-          {children}
+               {children}
           </>
      )
 }

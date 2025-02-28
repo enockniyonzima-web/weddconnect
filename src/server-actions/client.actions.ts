@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
 import prisma from "@/lib/prisma";
@@ -10,7 +11,6 @@ export async function createClient (data: Prisma.ClientCreateInput) {
           if(res) RevalidatePages.client();
           return res;
      } catch (error) {
-          console.log("Error creating Client: ", error);
           return null
      }
 
@@ -22,7 +22,6 @@ export async function updateClient (id:number,data: Prisma.ClientUpdateInput) {
           if(res) RevalidatePages.client();
           return res;
      } catch (error) {
-          console.log("Error creating Client : ", error);
           return null
      }
 
@@ -34,7 +33,6 @@ export async function deleteClient (id:number) {
           if(res) RevalidatePages.client();
           return res;
      } catch (error) {
-          console.log("Error creating Client: ", error);
           return null
      }
 

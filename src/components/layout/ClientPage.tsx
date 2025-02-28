@@ -3,6 +3,7 @@ import Header from "./Header"
 import Footer from "./Footer"
 
 const ClientPage = ({children}:{children: ReactNode}) => {
+
      return (
           <>
                <Header/>

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Metadata } from "next";
 import MainNotificationContainer from "@/components/Notifications/ManNotificationCard";
+import { AuthProvider } from "@/components/context/AuthContext";
+import { getSessionUser } from "@/server-actions/user.actions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,18 +65,22 @@ export const metadata: Metadata = {
 
 
 
-export default function RootLayout({
+export default async function RootLayout({ 
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const {user} = await getSessionUser();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[1512px]`}
       >
-        {children}
-        <MainNotificationContainer />
+        <AuthProvider authUser={user}>
+          {children}
+          <MainNotificationContainer />
+        </AuthProvider>
+        
       </body>
     </html>
   );

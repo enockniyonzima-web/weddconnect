@@ -208,7 +208,7 @@ model VendorContact {
 
 model Client {
   id Int @id @default(autoincrement())
-  phone String @unique
+  phone String 
   name String
 
   userId String @unique @db.Uuid()
