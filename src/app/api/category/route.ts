@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import prisma from "@/lib/prisma";
 import { stringToBoolean } from "@/util/stringFuncs";
 
@@ -30,8 +31,7 @@ export async function GET(req: Request) {
 
           return res.json({data, pagination: {total: count}});
      }catch(error){
-          console.log("error fetching category info", error);
-          return res.json({Error: "Error fetching category info"});
+          return res.json({Error: "Error fetching category info"}, {status: 500});
      }finally{
           prisma.$disconnect();
      }

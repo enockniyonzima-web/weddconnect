@@ -69,6 +69,7 @@ model Category {
   id Int @id @default(autoincrement())
   name String @unique
   description String
+  status Boolean
   features CategoryFeature[] @relation("CategoryFeatures")
   posts Post[]
 }
@@ -78,6 +79,9 @@ model CategoryFeature {
   name String
   type String
   required Boolean
+  inFilter Boolean
+  onCard Boolean
+  rank Int
   icon String
   values String
   categories Category[] @relation("CategoryFeatures")

@@ -67,7 +67,7 @@ const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubsc
 
 const DurationCard = ({price, months, label,action}:{price:number,label:string, months:number, action:(res:number) => unknown}) => {
      return (
-          <div className="w-full bg-white flex flex-col items-center justify-start gap-[5px] rounded-[5px]  p-[5px]">
+          <div className="w-full bg-white flex flex-col items-center justify-start gap-[10px] rounded-[5px]  p-[20px]">
                <h4 className="text-gray-600 text-[1rem] font-bold text-center">{label}</h4>
                <span className="text-blue-800 text-[1.4rem] font-semibold">{formatPrice(months * price)}</span>
                <button className="w-full p-[5px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[5px]" onClick={() => action(months * price)}>Choose Package</button>

@@ -4,6 +4,7 @@ import { getSessionUser } from "@/server-actions/user.actions";
 import { redirect } from "next/navigation";
 import Filter from "./Filter";
 import PostsContainer from "./PostsContainer";
+import { isDateLaterThanToday } from "@/util/DateFunctions";
 
 export default async function PostsPage ({searchParams}:{searchParams: Promise<Record<string, string | undefined>>}) {
      const {user} = await getSessionUser();
@@ -13,9 +14,9 @@ export default async function PostsPage ({searchParams}:{searchParams: Promise<R
      if(user.admin) return redirect('/dashboard/admin');
      if(user.vendor) return redirect('/dashboard/vendor');
 
-     // if(user && (!user.client?.subscription || !isDateLaterThanToday(user.client.subscription.expiryAt))) {
-     //      return redirect('/subscribe');
-     // }
+     if(user && (!user.client?.subscription || !isDateLaterThanToday(user.client.subscription.expiryAt))) {
+          return redirect('/subscribe');
+     }
 
      const search = await searchParams;
 

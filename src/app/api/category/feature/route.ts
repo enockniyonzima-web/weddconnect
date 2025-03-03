@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import prisma from "@/lib/prisma";
 import { stringToBoolean } from "@/util/stringFuncs";
 
@@ -8,10 +9,6 @@ export async function GET(req: Request) {
           const {searchParams:params} = new URL(req.url);
 
           const filters: Record<string, string | number | boolean> = {};
-
-          const status = params.get("status");
-
-          if(status) filters.status = stringToBoolean(status);
           
           const data = await prisma.categoryFeature.findMany(
                {
@@ -29,8 +26,7 @@ export async function GET(req: Request) {
 
           return res.json({data, pagination: {total: count}});
      }catch(error){
-          console.log("error fetching categoryFeature info", error);
-          return res.json({Error: "Error fetching categoryFeature info"});
+          return res.json({Error: "Error fetching categoryFeature info"}, {status: 500});
      }finally{
           prisma.$disconnect();
      }

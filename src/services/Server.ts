@@ -74,8 +74,15 @@ export const MainServer = {
           }
      },
      fetch: async (endpoint: string) => {
-          const url = `${privateApi}/${endpoint}`;
-          return await fetchWrapper(url, { method: 'GET' });
+          try{
+               const url = `${privateApi}/${endpoint}`;
+               const res = await fetchWrapper(url, { method: 'GET' });
+               if(res.error || res.Error) return null;
+               return res;
+          }catch(error){
+               return null
+          }
+          
      },
      get:async (endpoint:string, ) => {
           try{
@@ -126,6 +133,9 @@ export const RevalidatePages = {
      },
      category: () => {
           revalidatePath('/');
+          revalidatePath('/dashboard/admin/categories');
+          revalidatePath('/dashboard/admin/categories/category-features')
+          revalidatePath('/dashboard/admin/')
      },
      contactType: () => {
           revalidatePath('/');
