@@ -9,9 +9,14 @@ export type TUser = Prisma.UserGetPayload<{select: TUserSelectFields,include: {c
 export type TCategory = Prisma.CategoryGetPayload<{include: {features:true}}>;
 export type TPost  = Prisma.PostGetPayload<{include:
      {
-          price:true, images:true, 
+          price:true, images:true, packages:true,
           features:{include: {categoryFeature:true}}, 
-          likes:true, packages:true, reviews:true,
+          _count: {
+               select:{
+                    likes:true,
+                    reviews:true
+               }
+          },
           vendor: {include:{user:{select: TUserSelectFields}, contacts:{include: {contactType:true}}}}, category: true
      }}>
 

@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com",
         port: "",
         pathname: "/**"
+      },
+      {
+        protocol: "https",
+        hostname: "weddconnect-s3.s3.eu-north-1.amazonaws.com",
+        port: "",
+        pathname: "/**"
       }
     ],
   },

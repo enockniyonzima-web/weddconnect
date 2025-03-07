@@ -22,7 +22,7 @@ export async function updatePost (id:number,data: Prisma.PostUpdateInput) {
           if(res) RevalidatePages.post();
           return res;
      } catch (error) {
-          console.log("Error creating Post : ", error);
+          console.log("Error updating Post : ", error);
           return null
      }
 

@@ -5,9 +5,10 @@ import {
      DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
 
-export const uploadSingleImage = async (file: File, folder:string = "development"): Promise<string> => {
+export const uploadSingleImage = async (file: File, folder:string = "testing"): Promise<string> => {
      const arrayBuffer = await file.arrayBuffer();
      const buffer = Buffer.from(arrayBuffer);
+     console.log(AWS_REGION, BUCKET_NAME)
      try {
           const params = {
                Bucket: BUCKET_NAME,

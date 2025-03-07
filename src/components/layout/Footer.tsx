@@ -45,8 +45,8 @@ const Footer = () => {
                </div>
                <div className='w-full border-t-[1.5px] border-gray-900'></div>
                <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]'>
-                    <p className='w-full text-gray-400 text-[0.85rem] font-medium'>Powered by Desc Softlab Ltd</p>
-                    <p className='w-full text-gray-400 text-[0.85rem] font-medium'>&copy; 2025 WeddConnect. All rights reserved.</p>
+                    <p className='w-full text-gray-400 text-[0.95rem] font-medium'>Powered by Desc Softlab Ltd</p>
+                    <p className='w-full text-gray-400 text-[0.95rem] font-medium'>&copy; 2025 WeddConnect. All rights reserved.</p>
                     <div className='w-full flex gap-[10px] items-center justify-start lg:justify-end'>
                          <FooterLink link={{name:"Terms", dest:"/terms"}} />
                          <FooterLink link={{name:"Privacy Policy", dest:"/privacy-policy"}} />
@@ -61,7 +61,7 @@ const FooterLink = ({link}:{link:{name:string, dest:string, icon?: IconType}})=>
      return (
      <Link 
           href={link.dest}
-          className='text-gray-400 text-[0.85rem] font-medium hover:text-gray-200 transition-all duration-200 flex items-center justify-start gap-[5px] group '
+          className='text-gray-400 text-[0.95rem] font-medium hover:text-gray-200 transition-all duration-200 flex items-center justify-start gap-[5px] group '
      >{Icon && <i className='text-[18px] text-gray-500 group-hover:text-blue-600 duration-200 transition-all'><Icon /></i>} {link.name}</Link>
      );
 }

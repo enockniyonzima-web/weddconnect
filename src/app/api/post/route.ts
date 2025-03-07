@@ -3,6 +3,9 @@ import { stringToBoolean } from "@/util/stringFuncs";
 
 import { NextResponse as res } from "next/server";
 
+const TUserSelectFields = {
+     id:true,email: true, image: true, status:true, type: true, createdAt:true
+}
 export async function GET(req: Request) {
      try{
           const {searchParams:params} = new URL(req.url);
@@ -16,15 +19,18 @@ export async function GET(req: Request) {
           const data = await prisma.post.findMany(
                {
                     where: {...filters}, 
-                    include: {
-                         features:true,
-                         _count: {
-                              select:{
-                                   likes:true,
-                                   reviews:true
-                              }
+                    include:
+                         {
+                              price:true, images:true, packages:true,
+                              features:{include: {categoryFeature:true}}, 
+                              _count: {
+                                   select:{
+                                        likes:true,
+                                        reviews:true
+                                   }
+                              },
+                              vendor: {include:{user:{select: TUserSelectFields}, contacts:{include: {contactType:true}}}}, category: true
                          }
-                    }
                }
           );
           const count  = await prisma.post.count({where: {...filters}});

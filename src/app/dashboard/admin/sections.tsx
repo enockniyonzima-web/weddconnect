@@ -16,7 +16,7 @@ export const HeroSection = () => {
                <h1 className="text-[1.6rem] text-black font-bold w-full text-start leading-3">Welcome back, {user?.admin?.name || "Admin"}</h1>
                <div className="w-full flex items-end justify-between">
                     <p className="text-[0.9rem] text-gray-600">Here is what is happening with our platform today</p>
-                    <Link className="bg-blue-600 text-[0.9rem] rounded-[5px] whitespace-nowrap hover:bg-blue-800 py-[5px] px-[20px] text-white" prefetch={true} href={'/dashboard/admin/posts?search=add'} >New Post</Link>
+                    <Link className="bg-blue-600 text-[0.9rem] rounded-[5px] whitespace-nowrap hover:bg-blue-800 py-[5px] px-[20px] text-white" prefetch={true} href={'/dashboard/admin/posts?form=add'} >New Post</Link>
                </div>
           </div>
      )

@@ -10,5 +10,6 @@ const Endpoints = {
      },
      clients: 'client',
      subscription: "subscription",
+     vendors: 'vendor'
 }
 export default Endpoints;
