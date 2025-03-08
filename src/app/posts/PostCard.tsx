@@ -1,6 +1,7 @@
 "use client";
 
 import { TPost } from '@/common/Entities';
+import { PostFeatureCard } from '@/components/cards/PostFeatureCard';
 import ImageSlider from '@/components/images/ImageSlider';
 import { formatPrice } from '@/util/stringFuncs';
 import React from 'react'
@@ -14,6 +15,11 @@ const PostCard = ({post}:{post: TPost}) => {
         </div>
         <div className='w-[98%] mx-auto overflow-hidden rounded-[5px]'>
           <ImageSlider images={post.images} />
+        </div>
+        <div className='w-full grid grid-cols-3 gap-[10px] p-[5px]'>
+            {
+                  post.features.map(f => f.categoryFeature.onCard ? <PostFeatureCard key={`post-${post.id}-fcard-${f.id}`} feature={f} /> : null)
+            }
         </div>
       </div>
   )

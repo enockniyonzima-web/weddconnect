@@ -151,6 +151,8 @@ export const RevalidatePages = {
      },
      post: () => {
           revalidatePath('/');
+          revalidatePath('/posts');
+          revalidatePath('/dashboard/admin/posts');
      },
      role: async () => {
           revalidatePath('/');

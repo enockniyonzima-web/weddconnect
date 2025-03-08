@@ -39,3 +39,7 @@ export async function deletePost (id:number) {
      }
 
 }
+
+export async function deletePostFeatures (postId: number) {
+     return await prisma.postFeature.deleteMany({where: {postId}});
+}

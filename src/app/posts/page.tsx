@@ -31,7 +31,7 @@ export default async function PostsPage ({searchParams}:{searchParams: Promise<R
      const searchArr = Object.entries(search).map(([key, value]) => (`${key}=${value}`) ).filter(Boolean);
      const searchStr = `?${searchArr.length > 0  ? `${searchArr.join('&')}&` : ''}`;
      const searchQuery = new URLSearchParams(searchStr);
-     searchQuery.set('status', 'pending');
+     searchQuery.set('status', 'published');
      let posts:TPost[] = [];
      let postsTotal = 0;
      const postsRes  = await MainServer.fetch(`${Endpoints.posts}?${searchQuery.toString()}`);
