@@ -12,7 +12,7 @@ const TermsSections = [
 export default function TermsPage () {
      return (
           <ClientPage>
-               <div className="w-full flex flex-col gap-[30px] items-center justify-start mx-[2%] md:mx-[5%] lg:mx-[10%] my-[20px] p-[20px] shadow-sm rounded-[10px]">
+               <div className="w-full flex flex-col gap-[30px] items-center justify-start px-[2%] md:px-[5%] lg:px-[10%] py-[40px] shadow-sm rounded-[10px]">
                     <h1 className="text-center w-full text-black text-[1.6rem] font-extrabold">Terms and Conditions</h1>
                     {
                          TermsSections.map((section, index) => section.type === "text" ? 

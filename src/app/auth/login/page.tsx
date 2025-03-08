@@ -1,10 +1,13 @@
 "use client";
 
 import { ENotificationType } from "@/common/CommonTypes";
+import { TUser } from "@/common/Entities";
+import { useAuthContext } from "@/components/context/AuthContext";
 import { AuthPasswordInput, AuthSubmitBtn, AuthTextInput, GoogleSignBtn } from "@/components/forms/AuthForms";
 import ClientPage from "@/components/layout/ClientPage";
 import { CredentialsSignin } from "@/server-actions/auth";
 import { getSessionUser } from "@/server-actions/user.actions";
+import { isDateLaterThanToday } from "@/util/DateFunctions";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,12 +15,13 @@ import { useState } from "react";
 
 export default function LoginPage() {
      const [credentials, setCredentials] = useState<{email:string, password: string}>({email:"", password: ""});
-     
+     const {setUser} = useAuthContext();
      const [loading,setLoading] = useState(false);
 
      const router = useRouter()
 
-     const  redirectUserByType = (type:string) =>{
+     const  redirectUserByType = (type:string, user: TUser | undefined | null) =>{
+          if(user && user.client && (!user.client.subscription || !isDateLaterThanToday(user.client.subscription.expiryAt))) return router.push('/subscribe')
           switch(type){
                case "admin":
                     return router.push('/dashboard/admin');
@@ -47,7 +51,8 @@ export default function LoginPage() {
 
                     const {user} = await getSessionUser();
                     showMainNotification("Login successfull", ENotificationType.PASS);
-                    return redirectUserByType(user?.type || "");
+                    setUser(user);
+                    return redirectUserByType(user?.type || "",  user);
                } else {
                     return showMainNotification("Error logging in", ENotificationType.FAIL)
                }

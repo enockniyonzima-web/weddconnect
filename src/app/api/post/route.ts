@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { stringToBoolean } from "@/util/stringFuncs";
 
 import { NextResponse as res } from "next/server";
 
@@ -9,12 +8,20 @@ const TUserSelectFields = {
 export async function GET(req: Request) {
      try{
           const {searchParams:params} = new URL(req.url);
+          const page:{skip:number, take:number} = {skip:0, take: 20};
 
           const filters: Record<string, string | number | boolean> = {};
 
           const status = params.get("status");
+          const category= params.get('category');
+          const nextPage = params.get("page");
+          const take = params.get("take");
 
-          if(status) filters.status = stringToBoolean(status);
+          if(take) page.take = +take;
+          if(nextPage) page.skip = ((+nextPage - 1) * page.take);
+
+          if(status) filters.status = status;
+          if(category) filters.categoryId = Number(category);
           
           const data = await prisma.post.findMany(
                {

@@ -7,7 +7,7 @@ import { createUser } from "@/server-actions/user.actions";
 import { RevalidatePages } from "@/services/Server";
 import { encryptPassword } from "@/util/bcryptFuncs";
 import { Prisma } from "@prisma/client";
-const defaultIcon = "https://tiracar-bucket.s3.eu-north-1.amazonaws.com/users/account.png";
+const defaultIcon = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/account.png";
 
 
 export async function registerUser(formState:FormState ,userFormData: FormData):Promise<FormState>{

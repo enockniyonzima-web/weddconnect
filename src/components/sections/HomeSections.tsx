@@ -45,7 +45,7 @@ export function ProfessionalsSection () {
                     }
                </div>
                <div className="w-full flex items-center justify-center">
-                    <Link href={'/'} className="w-auto py-[10px] px-[20px] rounded-[20px] bg-blue-600 text-white text-[0.9rem] font-medium flex items-center justify-center gap-[10px]">View More Services <i className="text-[22px]"><FaArrowRight /></i></Link>
+                    <Link href={'/services'} className="w-auto py-[10px] px-[20px] rounded-[20px] bg-blue-600 text-white text-[0.9rem] font-medium flex items-center justify-center gap-[10px]">View More Services <i className="text-[22px]"><FaArrowRight /></i></Link>
                </div>
           </section>
      )

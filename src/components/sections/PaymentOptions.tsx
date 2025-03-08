@@ -15,12 +15,12 @@ import Link from "next/link";
 import { TSubscription, TUser } from "@/common/Entities";
 import { createClientSubscription, updateClientSubscription } from "@/server-actions/client-subscription.actions";
 import { getFutureDate } from "@/util/DateFunctions";
-import { Transaction } from "@prisma/client";
 import { createTransaction } from "@/server-actions/transaction.action";
 
 
 const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubscription[]}) => {
-     const price = 5000;
+     const activeSubscription = subscriptions[0];
+     const price = activeSubscription ? activeSubscription.price : 5000;
      const [amount, setAmount] = useState(0);
      const [method, setMethod] = useState("");
      const subscription = subscriptions[0] ||null;

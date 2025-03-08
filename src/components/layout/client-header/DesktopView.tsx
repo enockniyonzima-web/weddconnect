@@ -8,7 +8,7 @@ import { useAuthContext } from "@/components/context/AuthContext";
 export default function DesktopView (){
      const {user} = useAuthContext();
      return (
-          <header className="w-full sticky top-0 z-30 bg-white hidden md:flex items-center justify-between px-[2%] py-[5px] ">
+          <header className="w-full sticky shadow-sm shadow-gray-100 top-0 z-30 bg-white hidden md:flex items-center justify-between px-[2%] py-[5px] ">
                <HeaderLogo />
                <div className='w-auto flex items-center justify-between gap-[40px]'>
                     <HeaderLink link={{name: "Home", dest: '/'}} />

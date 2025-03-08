@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
 import { authOptions } from "@/common/authOptions";
@@ -44,12 +45,18 @@ export async function deleteUser (id:string) {
 }
 
 export async function getSessionUser ():Promise<{user:TUser | null | undefined, session: Session | null}>{
-     const session = await getServerSession(authOptions);
-     if(!session) return {user:null, session: null};
-     const sessionUser = session.user;
-     if(!sessionUser) return {user:null, session};
-     if (!sessionUser.email) return {user:null, session: session};
-     const user = await prisma.user.findUnique({where: {email: sessionUser.email}, include: {client: {include:{subscription:true}}, vendor: true, admin:true}}) as unknown as TUser;
+     try{
+          const session = await getServerSession(authOptions);
+          if(!session) return {user:null, session: null};
+          const sessionUser = session.user;
+          if(!sessionUser) return {user:null, session};
+          if (!sessionUser.email) return {user:null, session: session};
+          const user = await prisma.user.findUnique({where: {email: sessionUser.email}, include: {client: {include:{subscription:true}}, vendor: true, admin:true}}) as unknown as TUser;
 
-     return {user, session};
+          return {user, session};
+     }catch(error){
+          return {user:null, session: null};
+     }finally{
+          prisma.$disconnect();
+     }
 }

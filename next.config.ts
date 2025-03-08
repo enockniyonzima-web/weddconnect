@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         hostname: "weddconnect-s3.s3.eu-north-1.amazonaws.com",
         port: "",
         pathname: "/**"
+      },
+      {
+        protocol: "https",
+        hostname: "weddconnect-s3.s3.eu-north-1.amazonaws.com",
+        port: "",
+        pathname: "/**"
       }
     ],
   },

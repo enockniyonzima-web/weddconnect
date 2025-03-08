@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { IconType } from 'react-icons'
 import { BsPeopleFill } from 'react-icons/bs'
 import { FaCalendarCheck, FaFacebook, FaInstagram, FaSquareXTwitter } from 'react-icons/fa6'
-import { MdEmail, MdMonochromePhotos } from 'react-icons/md'
+import { MdCall, MdEmail, MdMonochromePhotos } from 'react-icons/md'
 import Logo from "../../../public/logo/white-logo.png";
 import Image from 'next/image'
 import { FaQuestionCircle, FaWhatsappSquare } from 'react-icons/fa'
@@ -11,28 +11,29 @@ import { BiSupport } from 'react-icons/bi'
 const Footer = () => {
      const quickLinks = [
           {name: 'Home', dest: '/'},
-          {name: 'About Us',dest: '/'},
-          {name: 'Services', dest: '/'},
-          {name: 'Get Started', dest: '/'}
+          {name: 'About Us',dest: '/about'},
+          {name: 'Services', dest: '/services'},
+          {name: 'Get Started', dest: '/auth/sign-up'}
      ]
      const supportLinks = [
-          {name: "Help Center", dest:'/', icon: BiSupport},
-          {name: "FAQS", dest: '/', icon: FaQuestionCircle},
-          {name: 'Message Us', dest: '/', icon: FaWhatsappSquare},
-          {name: 'Email Us', dest: '/', icon: MdEmail}
+          {name: "Help Center", dest:'/help-center', icon: BiSupport},
+          {name: "FAQS", dest: '/faqs', icon: FaQuestionCircle},
+          {name: 'Message Us', dest: 'https://wa.me/+250784786392', icon: FaWhatsappSquare},
+          {name: 'Call Us', dest: 'tel:+250788399021', icon: MdCall},
+          {name: 'Email Us', dest: 'mailto:enockniyonzima0@gmail.com', icon: MdEmail},
 
      ]
      const servicesLinks = [
-          {name: "Wedding Planning", dest:'/', icon: FaCalendarCheck},
-          {name: "Photography", dest:'/', icon: MdMonochromePhotos},
-          {name: "Vendor Connection", dest:'/', icon: BsPeopleFill}
+          {name: "Wedding Planning", dest:'/services', icon: FaCalendarCheck},
+          {name: "Photography", dest:'/services', icon: MdMonochromePhotos},
+          {name: "Vendor Connection", dest:'/services', icon: BsPeopleFill}
      ]
      return (
           <footer className='w-full px-[2%] py-[20px] flex flex-col gap-[20px] bg-black'>
                <div className='w-full flex items-center justify-between'>
                     <FooterLogo />
                     <div className='flex items-center justify-end gap-[20px]'>
-                         <Link className='text-[22px] text-gray-400 hover:text-blue-600 cursor-pointer' target='_blank' href={'/'}><FaInstagram /></Link>
+                         <Link className='text-[22px] text-gray-400 hover:text-blue-600 cursor-pointer' target='_blank' href={'https://www.instagram.com/weddconnect_rw?igsh=d3ZncHo2MTB0aG41'}><FaInstagram /></Link>
                          <Link className='text-[22px] text-gray-400 hover:text-blue-600 cursor-pointer' target='_blank' href={'/'}><FaFacebook /></Link>
                          <Link className='text-[22px] text-gray-400 hover:text-blue-600 cursor-pointer' target='_blank' href={'/'}><FaSquareXTwitter /></Link>
                     </div>
