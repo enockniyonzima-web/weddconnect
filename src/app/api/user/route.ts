@@ -1,3 +1,4 @@
+
 import prisma from "@/lib/prisma";
 import { stringToBoolean } from "@/util/stringFuncs";
 
@@ -18,7 +19,7 @@ export async function GET(req: Request) {
                     where: {...filters}, 
                     include: {
                          client: true,
-                         vendor:true,
+                         vendor:{include: {contacts: {include: {contactType:true}}}},
                          admin:true,
                     }
                }

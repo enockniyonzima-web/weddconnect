@@ -4,12 +4,14 @@ import { MainServer } from "@/services/Server";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
 import AddPostForm from "./AddPostForm";
+import { ContactType } from "@prisma/client";
 
 export default async function PostFormsWrapper ({search}:{search: Record<string, string | undefined>}) {
      const formType = search.form;
      let searchPost:TPost | null = null;
      let vendors: TVendor[] = [];
      let categories: TCategory[] = [];
+     let contactTypes: ContactType[] = [];
 
      const vendorRes = await MainServer.fetch(`${Endpoints.vendors}`);
      const categoryRes = await MainServer.fetch(`${Endpoints.category.default}`);
@@ -23,6 +25,10 @@ export default async function PostFormsWrapper ({search}:{search: Record<string,
           if (id !== 0) {
                const postRes = await MainServer.fetch(`${Endpoints.posts}/${id}`);
                if(postRes) searchPost = postRes.data;
+          }
+          const contactTypesRes  = await MainServer.fetch(`${Endpoints.contactType}`);
+          if(contactTypesRes) {
+               contactTypes = contactTypesRes.data
           }
      }
 
@@ -39,7 +45,7 @@ export default async function PostFormsWrapper ({search}:{search: Record<string,
                               <i className="text-[24px] text-red-600 "><IoClose /></i>
                          </Link>
                     </div>
-                    <AddPostForm post={searchPost} categories={categories} vendors={vendors} /> 
+                    <AddPostForm contactTypes={contactTypes} post={searchPost} categories={categories} vendors={vendors} /> 
                </div>
                
           </div>

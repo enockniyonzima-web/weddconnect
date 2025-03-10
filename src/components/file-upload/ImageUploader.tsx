@@ -77,7 +77,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploadComplete }) => {
         <div className="flex flex-col items-center gap-4">
             <button
                 onClick={() => setIsOpen(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                className="px-4 py-[5px] text-[0.9rem] bg-blue-600 text-white rounded-md"
             >
                 Upload Image
             </button>

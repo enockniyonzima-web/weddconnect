@@ -28,7 +28,7 @@ export default async function ClientsContainer ({search}:{search: Record<string,
           )
      } 
      return (
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
                {
                     clients.map((client) => <ClientCard key={`admin-client-info-${client.id}`} client={client} />)
                }

@@ -21,7 +21,8 @@ export async function GET(req: Request) {
                               select:{
                                    posts:true
                               }
-                         }
+                         },
+                         contacts: {include: {contactType:true}}
                     }
                }
           );

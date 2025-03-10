@@ -21,7 +21,7 @@ export type TPost  = Prisma.PostGetPayload<{include:
           vendor: {include:{user:{select: TUserSelectFields}, contacts:{include: {contactType:true}}}}, category: true
      }}>
 
-export type TVendor = Prisma.VendorGetPayload<{include:{user:{select: TUserSelectFields}}, contacts:true}>
+export type TVendor = Prisma.VendorGetPayload<{include:{user:{select: TUserSelectFields},contacts:{include: {contactType:true}}} }>
 
 export type TClient = Prisma.ClientGetPayload<{include: {user: {select:TUserSelectFields}, subscription:{include:{subscription:true}}}}>
 export type TSubscription = Prisma.SubscriptionGetPayload<{include: {_count:{select: {clientSubscriptions:true}}}}>

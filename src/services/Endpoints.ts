@@ -10,6 +10,7 @@ const Endpoints = {
      },
      clients: 'client',
      subscription: "subscription",
-     vendors: 'vendor'
+     vendors: 'vendor',
+     contactType: 'contact-type'
 }
 export default Endpoints;
