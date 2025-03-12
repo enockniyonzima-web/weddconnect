@@ -22,7 +22,7 @@ const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
      {name: "Categories", dest:'categories', icon: TbCategoryPlus},
      {name: "Posts", dest: "posts", icon: MdOutlineLibraryBooks},
      {name: "Clients", dest:"clients", icon: BsPeople},
-     {name: "Services", dest: "services", icon: FaGear},
+     // {name: "Services", dest: "services", icon: FaGear},
      {name: "User Management", dest: "users", icon: FaUsersCog},
      {name: "Transactions", dest: 'transactions', icon: FaRegCreditCard}
 ]
