@@ -50,7 +50,7 @@ const ImageSlider:React.FC<IImageSlider> = ({images, onClick,link ,label}) => {
                          <div className='relative w-full aspect-video object-cover cursor-pointer  grid grid-flow-col auto-cols-[100%] gap-[4px] ' onClick={onClick}>
                               {
                                    images.map((image, index) => 
-                                        <Link className='w-full aspect-[4/3] relative bg-gray-200' key={`listing-image-${index}`} href={link || ''} aria-label={label}>
+                                        <Link className='w-full aspect-[4/3] relative bg-gray-200' key={`listing-image-${index}`} href={link || ''} prefetch={true} aria-label={label}>
                                              <Image src={image.url} placeholder='empty'  fill alt="listing image" className=' object-cover cursor-pointer' />
                                         </Link>
                                         // <OptimizedImage url={image.url} key={`listing-image-${index}`}  alt="listing image" />

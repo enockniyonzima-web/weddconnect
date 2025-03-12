@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa6";
 import Link from "next/link";
 import { ContactType } from "@prisma/client";
 import { Column, GenTable } from "@/components/layout/Table";
-import Pagination from "@/app/posts/Pagination";
+import Pagination from "@/app/posts/[components]/Pagination";
 import { AddContactTypeForm } from "./ContactTypeForm";
 
 export async function VendorsContainer ({search}:{search: Record<string, string | undefined>}) {

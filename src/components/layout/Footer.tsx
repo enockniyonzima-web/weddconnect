@@ -46,9 +46,9 @@ const Footer = () => {
                </div>
                <div className='w-full border-t-[1.5px] border-gray-900'></div>
                <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]'>
-                    <p className='w-full text-gray-400 text-[0.95rem] font-medium'>Powered by Desc Softlab Ltd</p>
-                    <p className='w-full text-gray-400 text-[0.95rem] font-medium'>&copy; 2025 WeddConnect. All rights reserved.</p>
-                    <div className='w-full flex gap-[10px] items-center justify-start lg:justify-end'>
+                    <p className='w-full text-gray-400 text-[0.95rem] font-medium text-center md:text-start'>Powered by Desc Softlab Ltd</p>
+                    <p className='w-full text-gray-400 text-[0.95rem] font-medium text-center md:text-start lg:text-center'>&copy; 2025 WeddConnect. All rights reserved.</p>
+                    <div className='w-full flex gap-[10px] items-center justify-center lg:justify-end'>
                          <FooterLink link={{name:"Terms", dest:"/terms"}} />
                          <FooterLink link={{name:"Privacy Policy", dest:"/privacy-policy"}} />
                     </div>
@@ -79,7 +79,7 @@ const FooterLinks = ({title,links}:{title:string, links: {name:string, dest:stri
 const FooterLogo = () => (
      <div className='w-auto flex  items-end justify-start gap-[10px]'>
           <Image src={Logo} placeholder='blur' width={100} height={100} alt='wedd connect' className='w-[50px] aspect-auto ' />
-          <h2 className='text-[1.6rem] font-bold text-gray-100 leading-5' >WeddConnect</h2>
+          <h2 className='hidden md:inline-block text-[1.6rem] font-bold text-gray-100 leading-5' >WeddConnect</h2>
      </div>
 )
 
