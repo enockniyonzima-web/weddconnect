@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "weddconnect-s3.s3.eu-north-1.amazonaws.com",
+        hostname: "tiracar-bucket.s3.eu-north-1.amazonaws.com",
         port: "",
         pathname: "/**"
       },

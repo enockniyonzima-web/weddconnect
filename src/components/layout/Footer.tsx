@@ -29,7 +29,7 @@ const Footer = () => {
           {name: "Vendor Connection", dest:'/services', icon: BsPeopleFill}
      ]
      return (
-          <footer className='w-full px-[2%] py-[20px] flex flex-col gap-[20px] bg-black'>
+          <footer className='w-full px-[2%] py-[20px] flex flex-col gap-[20px] bg-black max-w-[1512px] mx-auto'>
                <div className='w-full flex items-center justify-between'>
                     <FooterLogo />
                     <div className='flex items-center justify-end gap-[20px]'>

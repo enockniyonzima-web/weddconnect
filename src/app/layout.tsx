@@ -74,7 +74,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[1512px]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen overflow-x-hidden relative bg-gray-600`}
       >
         <AuthProvider authUser={user}>
           {children}
