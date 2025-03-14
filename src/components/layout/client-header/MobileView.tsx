@@ -7,7 +7,7 @@ import ClientProfileLinks from "./ClientProfileLinks";
 import Link from "next/link";
 
 export default function MobileView () {
-     const {user} = useAuthContext();
+     const {user, setAuthOn} = useAuthContext();
 
      return (
           <header className="w-full md:hidden flex items-center justify-between px-[2%] py-[5px] sticky top-0 bg-white z-30 shadow-sm shadow-gray-200 ">
@@ -17,7 +17,7 @@ export default function MobileView () {
                     {
                          user ?
                          <ClientProfileLinks user={user} />:
-                         <Link className='text-[0.8rem] px-[15px] rounded-[5px] py-[7.5px] border-[1.3px] bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300' href={'/auth/login'} prefetch={true}>Login</Link> 
+                         <button type="button" className='text-[0.8rem] px-[15px] rounded-[5px] py-[7.5px] border-[1.3px] bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300' onClick={() => setAuthOn(true)}>Login</button> 
                     }
                          <div className='w-auto relative items-center justify-end group'>
                               <i className='text-[32px] text-black cursor-pointer'><LuAlignRight /></i>

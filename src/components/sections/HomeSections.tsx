@@ -11,6 +11,7 @@ import { IconType } from "react-icons";
 import { MdOutlineDateRange } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import { GrFavorite } from "react-icons/gr";
+import { GetStartedBtn } from "../buttons/common";
 
 const Professionals: {image:StaticImport, title:string, description:string, dest: string}[] = [
      {title: "Venues", description: "Welcome to our curated selection of wedding venues, where we connect couples with beautiful spaces to celebrate their special day.", image:VenuesImage, dest:'/' },
@@ -25,7 +26,7 @@ export function HeroSection () {
                <div className="w-full h-full bg-black/50 flex flex-col items-center justify-center gap-[20px] px-[2%] relative z-10">
                     <h1 className="text-[1.6rem] md:text-[2rem] lgtext-[2.4rem] font-bold md:font-extrabold text-white text-center ">Plan Your Dream Wedding, <br /> Stress Free</h1>
                     <p className="text-center text-[0.9rem] text-gray-300 font-medium">Find then perfect Vendors and create unforgettable special day!</p>
-                    <Link className=" flex items-center gap-[5px] text-[0.9rem] px-[20px] rounded-[5px] py-[10px] bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300" href="?q=auth" prefetch={true}>Get Started <i className="text-[18px]"><FaArrowRight /></i> </Link>
+                    <GetStartedBtn />
                </div>
           </section>
      );

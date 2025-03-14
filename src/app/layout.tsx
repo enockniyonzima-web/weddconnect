@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import MainNotificationContainer from "@/components/Notifications/ManNotificationCard";
 import { AuthProvider } from "@/components/context/AuthContext";
 import { getSessionUser } from "@/server-actions/user.actions";
-import QuickAuthContainer from "@/components/auth/QuickAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "WeddConnect - Find Top Wedding Vendors in Rwanda",
+  metadataBase: new URL("https://weddconnect.com"),
   description:
     "WeddConnect helps couples connect with the best wedding vendors in Rwanda, from venues to photographers, catering, and more. Plan your perfect wedding with ease.",
   keywords: [
@@ -80,7 +80,6 @@ export default async function RootLayout({
       >
         <AuthProvider authUser={user}>
           {children}
-          <QuickAuthContainer />
           <MainNotificationContainer />
         </AuthProvider>
       </body>

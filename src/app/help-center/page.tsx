@@ -5,6 +5,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Help Center | WeddConnect Rwanda",
+  metadataBase: new URL("https://weddconnect.com"),
   description:
     "WeddConnect helps couples connect with the best wedding vendors in Rwanda, from venues to photographers, catering, and more. Plan your perfect wedding with ease.",
   keywords: [

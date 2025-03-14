@@ -1,6 +1,7 @@
 import { ReactNode } from "react"
 import Header from "./Header"
 import Footer from "./Footer"
+import QuickAuth from "../auth/QuickAuth"
 
 const ClientPage = ({children}:{children: ReactNode}) => {
 
@@ -11,6 +12,7 @@ const ClientPage = ({children}:{children: ReactNode}) => {
                     {children}
                </main> 
                <Footer />
+               <QuickAuth />
           </>
      )
 }

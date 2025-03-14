@@ -6,15 +6,18 @@ import { createContext, ReactNode, useContext, useState } from "react";
 interface AuthContextType {
      user: TUser | null | undefined;
      setUser: (user: TUser | null | undefined) => void;
+     authOn: boolean;
+     setAuthOn: (state:boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({authUser, children}:{children: ReactNode, authUser: TUser | null | undefined}) {
      const [user, setUser] = useState<TUser | null | undefined>(authUser);
+     const [authOn, setAuthOn] = useState(false);
      
      return (
-          <AuthContext.Provider value={{user, setUser}}>
+          <AuthContext.Provider value={{user, setUser, authOn, setAuthOn}}>
                {children}
           </AuthContext.Provider>
      )
