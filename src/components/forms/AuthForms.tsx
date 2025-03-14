@@ -40,9 +40,9 @@ export const AuthSubmitBtn = ({name, loading}:{name:string, loading: boolean}) =
 
 export const GoogleSignBtn = () => {
      return (
-          <button type="button" onClick={GoogleSignIn} className="w-full flex items-center justify-center gap-[10px] rounded-[20px] p-[10px] bg-gray-200 hover:bg-gray-300 transition-all duration-200">
+          <button type="button" onClick={GoogleSignIn} className="w-full flex items-center justify-center gap-[10px] rounded-[20px] p-[10px] bg-blue-600 hover:bg-blue-800 transition-all duration-200">
                <i className="text-[22px]"><FcGoogle /></i>
-               <span className="text-[0.9rem] text-gray-600">Continue with Google</span>
+               <span className="text-[0.9rem] text-white">Continue with Google</span>
           </button>
      )
 }

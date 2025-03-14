@@ -10,8 +10,8 @@ export const HeaderLink = ({link}:{link:{name:string, dest: string}}) => (
 )
 
 export const HeaderLogo = () => (
-     <div className='w-auto gap-[10px] flex items-center justify-start py-[5px] h-full'>
+     <Link href={'/'} prefetch={true} className='w-auto gap-[10px] flex items-center justify-start py-[5px] h-full'>
           <Image src={Logo} alt='wedd connect' width={150} height={150} className='w-[70px] aspect-auto' />
           <h1 className='hidden lg:inline-block text-[1.4rem] font-bold text-black leading-5'>WeddConnect</h1>
-     </div>
+     </Link>
 )

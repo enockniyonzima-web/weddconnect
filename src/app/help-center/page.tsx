@@ -1,6 +1,45 @@
 import HelpTopic from "@/components/cards/HelpTopic";
 import ClientPage from "@/components/layout/ClientPage";
+import { Metadata } from "next";
 
+
+export const metadata: Metadata = {
+  title: "Help Center | WeddConnect Rwanda",
+  description:
+    "WeddConnect helps couples connect with the best wedding vendors in Rwanda, from venues to photographers, catering, and more. Plan your perfect wedding with ease.",
+  keywords: [
+    "How can I find the best wedding vendors",
+    "Best wedding vendors in Rwanda", 
+    "Wedding vendors in Rwanda",
+  ],
+  openGraph: {
+    title: "WeddConnect - Your Ultimate Wedding Vendor Marketplace",
+    description:
+      "Find and connect with top wedding vendors for your special day. WeddConnect makes wedding planning stress-free and seamless.",
+    url: "https://weddconnect.com/help-center",
+    type: "website",
+    images: [
+      {
+        url: "https://weddconnect.com/og-image.png", // Replace with an actual image URL
+        width: 1200,
+        height: 675,
+        alt: "WeddConnect - Wedding Vendor Marketplace in Rwanda",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@weddconnect", // Replace with your Twitter handle
+    title: "WeddConnect - Connect with Top Wedding Vendors",
+    description:
+      "Plan your dream wedding by connecting with the best wedding vendors in Rwanda.",
+    images: ["https://weddconnect.com/og-image.png"], // Replace with an actual image URL
+  },
+  robots: "index, follow",
+  alternates: {
+    canonical: "https://weddconnect.com/help-center",
+  },
+};
 
 export default function HelpCenterPage() {
      const helpTopics = [

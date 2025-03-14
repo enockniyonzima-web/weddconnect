@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import MainNotificationContainer from "@/components/Notifications/ManNotificationCard";
 import { AuthProvider } from "@/components/context/AuthContext";
 import { getSessionUser } from "@/server-actions/user.actions";
+import QuickAuthContainer from "@/components/auth/QuickAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,22 +18,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WeddConnect - Find Top Wedding Vendors & Plan Your Dream Wedding",
+  title: "WeddConnect - Find Top Wedding Vendors in Rwanda",
   description:
-    "WeddConnect helps couples connect with the best wedding vendors, from venues to photographers, catering, and more. Plan your perfect wedding with ease.",
+    "WeddConnect helps couples connect with the best wedding vendors in Rwanda, from venues to photographers, catering, and more. Plan your perfect wedding with ease.",
   keywords: [
-    "wedding vendors",
-    "wedding planning",
-    "wedding services",
-    "best wedding venues",
-    "wedding photographers",
-    "wedding decorators",
-    "wedding caterers",
-    "bridal makeup",
-    "wedding dresses",
-    "wedding florists",
-    "wedding entertainment",
-    "wedding event planning",
+    "wedding vendors in Rwanda",
+    "wedding planning in Rwanda",
+    "wedding services in Rwanda",
+    "best wedding venues in Rwanda",
+    "wedding photographers in Rwanda",
+    "wedding decorators in Rwanda",
+    "wedding caterers in Rwanda",
+    "bridal makeup in Rwanda",
+    "wedding dresses in Rwanda",
+    "wedding florists in Rwanda",
+    "wedding entertainment in Rwanda",
+    "wedding event planning in Rwanda",
+    "Weddconnect Rwanda"
   ],
   openGraph: {
     title: "WeddConnect - Your Ultimate Wedding Vendor Marketplace",
@@ -45,16 +47,16 @@ export const metadata: Metadata = {
         url: "https://weddconnect.com/og-image.png", // Replace with an actual image URL
         width: 1200,
         height: 675,
-        alt: "WeddConnect - Wedding Vendor Marketplace",
+        alt: "WeddConnect - Wedding Vendor Marketplace in Rwanda",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@weddconnect", // Replace with your Twitter handle
-    title: "WeddConnect - Connect with Top Wedding Vendors",
+    title: "WeddConnect - Connect with Top Wedding Vendors in Rwanda",
     description:
-      "Plan your dream wedding by connecting with the best wedding vendors on WeddConnect.",
+      "Plan your dream wedding by connecting with the best wedding vendors in Rwanda.",
     images: ["https://weddconnect.com/og-image.png"], // Replace with an actual image URL
   },
   robots: "index, follow",
@@ -78,6 +80,7 @@ export default async function RootLayout({
       >
         <AuthProvider authUser={user}>
           {children}
+          <QuickAuthContainer />
           <MainNotificationContainer />
         </AuthProvider>
       </body>
