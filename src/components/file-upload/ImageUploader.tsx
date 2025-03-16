@@ -10,12 +10,14 @@ import { getCroppedImg } from "@/util/images";
 import { uploadSingleImage } from "@/util/s3Helpers";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import { ENotificationType } from "@/common/CommonTypes";
+import { EAspectRatio } from "@/common/enums";
 
 interface ImageUploaderProps {
     onUploadComplete: (url: string) => void;
+    aspect?: EAspectRatio
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploadComplete }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploadComplete, aspect=EAspectRatio.STANDARD }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -84,8 +86,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploadComplete }) => {
 
             {/* Popup Modal */}
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-                    <DialogPanel className="bg-white p-6 rounded-lg shadow-lg lg:w-[80%] max-w-[90%]">
+                <div className="w-full fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
+                    <DialogPanel className="bg-white p-6 w-full rounded-lg shadow-lg lg:w-[80%] max-w-[90%]">
                         <h2 className="text-lg font-semibold mb-4">Select Image</h2>
 
                         {/* File Drop Zone */}
@@ -105,7 +107,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploadComplete }) => {
                                         image={imageSrc}
                                         crop={crop}
                                         zoom={zoom}
-                                        aspect={4/3}
+                                        aspect={aspect}
                                         onCropChange={setCrop}
                                         onZoomChange={setZoom}
                                         onCropComplete={onCropComplete}

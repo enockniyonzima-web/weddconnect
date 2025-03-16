@@ -12,6 +12,10 @@ import { MdOutlineDateRange } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import { GrFavorite } from "react-icons/gr";
 import { GetStartedBtn } from "../buttons/common";
+import { TCategory } from "@/common/Entities";
+import { MainServer } from "@/services/Server";
+import Endpoints from "@/services/Endpoints";
+import { CategoryCard } from "../cards/Category";
 
 const Professionals: {image:StaticImport, title:string, description:string, dest: string}[] = [
      {title: "Venues", description: "Welcome to our curated selection of wedding venues, where we connect couples with beautiful spaces to celebrate their special day.", image:VenuesImage, dest:'/' },
@@ -96,5 +100,19 @@ const HowItWorksCard = ({content}: {content: {Icon: IconType, title:string, desc
                <p className="w-[90%] text-center text-[0.9rem] text-gray-600">{description}</p>
           </div>
 
+     )
+}
+
+export async function HotCategoriesSection () {
+     let categories:TCategory[] = [];
+     const categoriesRes = await MainServer.fetch(`${Endpoints.category.default}?status=true`);
+     if(categoriesRes) categories = categoriesRes.data;
+
+     return (
+          <section className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[10px] py-[40px] px-[2%]">
+               {
+                    categories.map((c, index) => index < 4 ? <CategoryCard key={`home-category-${c.id}`} category={c} /> : null)
+               }
+          </section>
      )
 }

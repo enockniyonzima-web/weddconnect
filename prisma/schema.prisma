@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,48 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// auth models
-
 model User {
-  id            String   @id @default(uuid()) @db.Uuid
-  email         String  @unique
-  password      String
-  image         String
-  status        Boolean @default(true)
-  createdAt     DateTime
-  type          String
-
-  client Client?
-  vendor Vendor?
-  admin Admin?
-  
-  accounts Account[]
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @unique
+  password  String
+  image     String
+  status    Boolean   @default(true)
+  createdAt DateTime
+  type      String
+  accounts  Account[]
+  admin     Admin?
+  client    Client?
+  vendor    Vendor?
 }
 
 model Role {
-  id    Int @id @default(autoincrement())
-  name  String @unique
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
   description String
-  permissions Permission[] @relation("RolePermissions") 
-  admins   Admin[]
+  admins      Admin[]
+  permissions Permission[] @relation("RolePermissions")
 }
 
 model Permission {
-  id    Int @id @default(autoincrement())
-  name  String @unique
+  id          Int    @id @default(autoincrement())
+  name        String @unique
   description String
-  roles   Role[] @relation("RolePermissions")
+  roles       Role[] @relation("RolePermissions")
 }
 
 model Account {
-  id                 String  @id @default(uuid()) @db.Uuid
-  userId             String  @db.Uuid
+  id                 String    @id @default(uuid()) @db.Uuid
+  userId             String    @db.Uuid
   provider           String
   providerAccountId  String
   refreshToken       String?
   accessToken        String?
   accessTokenExpires DateTime?
-  user               User    @relation(fields: [userId], references: [id])
+  user               User      @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
@@ -63,213 +57,188 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// post management service modals
-
 model Category {
-  id Int @id @default(autoincrement())
-  name String @unique
+  id          Int               @id @default(autoincrement())
+  name        String            @unique
   description String
-  status Boolean
-  features CategoryFeature[] @relation("CategoryFeatures")
-  posts Post[]
+  status      Boolean
+  icon        String            @default("")
+  posts       Post[]
+  features    CategoryFeature[] @relation("CategoryFeatures")
 }
 
 model CategoryFeature {
-  id Int @id @default(autoincrement())
-  name String
-  type String
-  required Boolean
-  inFilter Boolean
-  onCard Boolean
-  rank Int
-  icon String
-  values String
-  categories Category[] @relation("CategoryFeatures")
+  id           Int           @id @default(autoincrement())
+  name         String
+  type         String
+  required     Boolean
+  icon         String
+  values       String
+  onCard       Boolean
+  rank         Int
+  inFilter     Boolean
   postFeatures PostFeature[]
+  categories   Category[]    @relation("CategoryFeatures")
 }
 
 model Post {
-  id Int @id @default(autoincrement())
-  title String
+  id          Int           @id @default(autoincrement())
+  title       String
   description String
-  location String @default("Kigali")
-  createdAt DateTime
-  status String
-
-  price PostPrice?
-  images PostImage[]
-  features PostFeature[]
-  packages PostPackage[]
-  reviews PostReview[]
-  likes PostLike[]
-
-  vendorId Int
-  vendor Vendor @relation(fields: [vendorId], references: [id])
-
-  categoryId Int
-  category Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime
+  status      String
+  categoryId  Int
+  vendorId    Int
+  location    String        @default("Kigali")
+  category    Category      @relation(fields: [categoryId], references: [id])
+  vendor      Vendor        @relation(fields: [vendorId], references: [id])
+  features    PostFeature[]
+  images      PostImage[]
+  likes       PostLike[]
+  packages    PostPackage[]
+  price       PostPrice?
+  reviews     PostReview[]
 }
 
 model PostFeature {
-  id Int @id @default(autoincrement())
-  value String
+  id                Int             @id @default(autoincrement())
+  value             String
   categoryFeatureId Int
-  categoryFeature CategoryFeature @relation(fields: [categoryFeatureId], references: [id])
-
-  postId Int
-  post Post @relation(fields: [postId], references: [id])
+  postId            Int
+  categoryFeature   CategoryFeature @relation(fields: [categoryFeatureId], references: [id])
+  post              Post            @relation(fields: [postId], references: [id])
 }
 
 model PostImage {
-  id Int @id @default(autoincrement())
-  url String
-  name String
-  
+  id     Int    @id @default(autoincrement())
+  url    String
+  name   String
   postId Int
-  post Post @relation(fields: [postId], references: [id])
-
+  post   Post   @relation(fields: [postId], references: [id])
 }
 
 model PostPrice {
-  id Int @id @default(autoincrement())
-  min Float
-  max Float
+  id       Int    @id @default(autoincrement())
+  min      Float
+  max      Float
   currency String
-  postId Int @unique
-  post Post @relation(fields: [postId], references: [id])
+  postId   Int    @unique
+  post     Post   @relation(fields: [postId], references: [id])
 }
 
 model PostPackage {
-  id Int @id @default(autoincrement())
-  name String
+  id          Int    @id @default(autoincrement())
+  name        String
   description String
-  price Float
-  postId Int 
-  post Post @relation(fields: [postId], references: [id])
+  price       Float
+  postId      Int
+  post        Post   @relation(fields: [postId], references: [id])
 }
 
 model PostReview {
-  id Int @id @default(autoincrement())
-  content String
-  type String
+  id        Int      @id @default(autoincrement())
+  content   String
+  type      String
   createdAt DateTime
-
-  postId Int
-  post Post @relation(fields: [postId], references: [id])
-
-  clientId Int
-  client Client @relation(fields: [clientId], references: [id])
+  postId    Int
+  clientId  Int
+  client    Client   @relation(fields: [clientId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
 }
 
 model PostLike {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime
-  postId Int
-  clientId Int
-  post Post @relation(fields: [postId], references: [id])
-  client Client @relation(fields: [clientId], references: [id])
+  postId    Int
+  clientId  Int
+  client    Client   @relation(fields: [clientId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
 }
 
-// services management service modals
-
 model Service {
-  id Int @id @default(autoincrement())
-  name String
+  id          Int    @id @default(autoincrement())
+  name        String
   description String
 }
 
-
-// vendor management service modals
 model Vendor {
-  id Int @id @default(autoincrement())
-  name String
-  status Boolean
+  id       Int             @id @default(autoincrement())
+  name     String
+  status   Boolean
+  userId   String          @unique @db.Uuid
+  posts    Post[]
+  user     User            @relation(fields: [userId], references: [id])
   contacts VendorContact[]
-  posts Post[]
-
-  userId String  @unique @db.Uuid()
-  user User @relation(fields: [userId], references: [id])
 }
 
 model ContactType {
-  id Int @id @default(autoincrement())
-  name String
-  type String
+  id          Int             @id @default(autoincrement())
+  name        String
+  type        String
   description String
-  contacts VendorContact[]
+  contacts    VendorContact[]
 }
 
 model VendorContact {
-  id Int @id @default(autoincrement())
-  value String
-  vendorId Int
+  id            Int         @id @default(autoincrement())
+  value         String
+  vendorId      Int
   contactTypeId Int
-  contactType ContactType @relation(fields: [contactTypeId], references: [id])
-  vendor Vendor @relation(fields: [vendorId], references: [id])
+  contactType   ContactType @relation(fields: [contactTypeId], references: [id])
+  vendor        Vendor      @relation(fields: [vendorId], references: [id])
 }
 
-// client management service models 
-
 model Client {
-  id Int @id @default(autoincrement())
-  phone String 
-  name String
-
-  userId String @unique @db.Uuid()
-  user User @relation(fields: [userId], references: [id])
-
-  likedPosts PostLike[]
-  reviews PostReview[]
-
+  id           Int                 @id @default(autoincrement())
+  phone        String
+  userId       String              @unique @db.Uuid
+  name         String
+  user         User                @relation(fields: [userId], references: [id])
   subscription ClientSubscription?
+  likedPosts   PostLike[]
+  reviews      PostReview[]
 }
 
 model Subscription {
-  id Int @id @default(autoincrement())
-  name String @unique
-  price Int
-  description String
+  id                  Int                  @id @default(autoincrement())
+  name                String               @unique
+  price               Int
+  description         String
   clientSubscriptions ClientSubscription[]
 }
+
 model ClientSubscription {
-  id Int @id @default(autoincrement())
-  createdAt DateTime
-  updatedAt DateTime
-  expiryAt DateTime
-
-  transactions Transaction[]
-
-  clientId Int @unique
-  client Client @relation(fields: [clientId], references: [id])
-
-  subscriptionId Int 
-  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime
+  updatedAt      DateTime
+  expiryAt       DateTime
+  clientId       Int           @unique
+  subscriptionId Int
+  client         Client        @relation(fields: [clientId], references: [id])
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+  transactions   Transaction[]
 }
 
 model Transaction {
-  id Int @id @default(autoincrement())
-  price   Int
-  quantity Int
-  amount Int
-  createdAt DateTime
-  updatedAt DateTime
-  status String
-  payNumber String
-  transactionMethod String
-
+  id                   Int                @id @default(autoincrement())
+  price                Int
+  quantity             Int
+  amount               Int
+  createdAt            DateTime
+  updatedAt            DateTime
+  status               String
   clientSubscriptionId Int
-  clientSubscription ClientSubscription @relation(fields: [clientSubscriptionId],references: [id])
+  payNumber            String
+  transactionMethod    String
+  clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id])
 }
 
-// staff management service
 model Admin {
-  id Int @id @default(autoincrement())
-  name String
+  id        Int      @id @default(autoincrement())
+  name      String
   createdAt DateTime
-
-  roleId Int
-  role          Role @relation(fields: [roleId], references: [id])
-
-  userId String @unique  @db.Uuid() 
-  user User @relation(fields: [userId], references: [id])
+  roleId    Int
+  userId    String   @unique @db.Uuid
+  role      Role     @relation(fields: [roleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }

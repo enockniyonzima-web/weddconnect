@@ -11,8 +11,7 @@ export default async function CategoriesContainer ({search}:{search: Record<stri
      const currentPage = search.page ? parseInt(search.page) : 1;
      const searchStr = Object.entries(search).map(([key, value]) => `${key}=${value}`).join('&');
      const searchQuery = new URLSearchParams(searchStr).toString();
-     const categoriesRes = await MainServer.fetch(`${Endpoints.category.default}?${searchQuery}`);
-
+     const categoriesRes:{data: TCategory[], pagination:{total:number}} = await MainServer.fetch(`${Endpoints.category.main}?${searchQuery}`);
      if(categoriesRes) {
           const {data, pagination} = categoriesRes;
           total = pagination.total;

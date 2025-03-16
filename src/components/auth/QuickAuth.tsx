@@ -5,9 +5,9 @@ import { useAuthContext } from "../context/AuthContext";
 import { GoogleSignBtn } from "../forms/AuthForms";
 
 const QuickAuth  = () => {
-     const {authOn, setAuthOn}  = useAuthContext();
+     const {authOn, setAuth}  = useAuthContext();
      return(
-          <Dialog open={authOn} onClose={() => setAuthOn(false)} className="relative z-50">
+          <Dialog open={authOn} onClose={setAuth} className="relative z-50">
                <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
                     <DialogPanel className="bg-white p-6 rounded-lg shadow-lg lg:w-[40%] max-w-[80%] flex flex-col items-center justify-start gap-[10px]">
                          <div className="w-full flex flex-col items-center justify-start gap-[5px]">

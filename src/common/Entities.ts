@@ -1,4 +1,5 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
+
 
 // select fields
 export type TUserSelectFields = {
@@ -6,7 +7,7 @@ export type TUserSelectFields = {
 }
 
 export type TUser = Prisma.UserGetPayload<{select: TUserSelectFields,include: {client: {include:{subscription:true}}, vendor: true, admin:true}}>;
-export type TCategory = Prisma.CategoryGetPayload<{include: {features:true, _count:{select:{posts:true}}}}>;
+export type TCategory = Prisma.CategoryGetPayload<{select:{id:true, name:true, status:true, icon:true, description:true},include: {features:true, _count:{select:{posts:true}}}}>;
 export type TPostFeature = Prisma.PostFeatureGetPayload<{include: {categoryFeature: true}}>
 export type TPost  = Prisma.PostGetPayload<{include:
      {

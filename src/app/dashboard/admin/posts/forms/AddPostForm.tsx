@@ -209,10 +209,6 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
           </div>
      )
 
-     
-
-    
-
      return (
           <div className='w-full flex flex-col items-center justify-start gap-[20px]'>
                <div className='w-full flex flex-col items-start justify-start gap-[10px] border rounded-[10px] p-[10px]'>

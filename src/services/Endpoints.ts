@@ -2,6 +2,7 @@ const Endpoints = {
      posts: "post",
      category:{
           default: "category",
+          main: "category",
           categoryFeature: "category/feature"
      },
      auth: {

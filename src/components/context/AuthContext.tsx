@@ -7,7 +7,7 @@ interface AuthContextType {
      user: TUser | null | undefined;
      setUser: (user: TUser | null | undefined) => void;
      authOn: boolean;
-     setAuthOn: (state:boolean) => void;
+     setAuth: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,9 +15,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({authUser, children}:{children: ReactNode, authUser: TUser | null | undefined}) {
      const [user, setUser] = useState<TUser | null | undefined>(authUser);
      const [authOn, setAuthOn] = useState(false);
+
+     const setAuth  = () => setAuthOn(prev => !prev)
      
      return (
-          <AuthContext.Provider value={{user, setUser, authOn, setAuthOn}}>
+          <AuthContext.Provider value={{user, setUser, authOn, setAuth}}>
                {children}
           </AuthContext.Provider>
      )

@@ -3,10 +3,15 @@
 
 import { ENotificationType } from '@/common/CommonTypes'
 import { TCategory } from '@/common/Entities'
+import { EAspectRatio } from '@/common/enums'
+import ImageUploader from '@/components/file-upload/ImageUploader'
 import { SubmitButton, TextAreaInputGroup, TextInputGroup } from '@/components/forms/DataFormsInputs'
+import { MaterialIcons } from '@/components/icons/material-ui-icons'
 import { updateCategory } from '@/server-actions/category.actions'
+import { deleteSingleImageAction } from '@/server-actions/fileUploader'
 import { showMainNotification } from '@/util/NotificationFuncs'
 import { CategoryFeature } from '@prisma/client'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
@@ -55,6 +60,31 @@ const UpdateCategoryForm = ({category, features}:{category:TCategory, features: 
           }
 
      }
+     const updateImage =async (image:string) => {
+          try {
+               showMainNotification("Adding Image...", ENotificationType.WARNING);
+               const categoryUpdate = await updateCategory(category.id, {icon:image});
+               if(categoryUpdate) return showMainNotification('Image added successfully',ENotificationType.PASS);
+               else return showMainNotification('Failed to add category image', ENotificationType.FAIL)
+          } catch (error) {
+               showMainNotification('Error updating category image', ENotificationType.FAIL)
+          }
+     }
+     const deleteImage = async (imageDeleted:string) => {
+               showMainNotification("Deleting the image...", ENotificationType.WARNING);
+               try {
+                    const categoryUpdate =  await updateCategory(category.id, {icon: ""})
+                    
+                    if(categoryUpdate) {
+                         await deleteSingleImageAction(imageDeleted);
+                         return showMainNotification("Image deleted successfully", ENotificationType.PASS);
+                    }else {
+                         return showMainNotification("Error deleting category Image", ENotificationType.FAIL)
+                    }
+               } catch (error) {
+                    showMainNotification("Error deleting the image!!", ENotificationType.FAIL)
+               }
+          }
      return (
           <div className='w-full flex flex-col items-center justify-start gap-[10px]'>
                <form onSubmit={saveCategory} className="w-full flex items-center border rounded-[10px] p-[10px] flex-col gap-[10px]">
@@ -69,6 +99,21 @@ const UpdateCategoryForm = ({category, features}:{category:TCategory, features: 
                               features.map((feature, index)=> <FeatureCard feature={feature} key={`category-feature-${index}`} active={category.features.find(f => f.id === feature.id) ? true : false} action={toggleCategoryFeature} /> )
                          }
                     </div>
+               </div>
+               <div className='w-full flex flex-col items-center justify-start gap-[5px]'>
+                    <h1 className='w-full text-[1.2rem] font-bold text-gray-800'>Category Image:</h1>
+                    {
+                         category.icon ?
+                         <div className="w-full lg:w-[500px] flex flex-col items-center justify-start gap-[5px] relative">
+                              <Image  width={400} height={300} src={category.icon} alt="Listing-update image" layout="responsive" className="w-full rounded-[5px] aspect-auto" />
+                              <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-100 rounded-[2.5px] p-[2px] cursor-pointer" onClick={async() => await deleteImage(category.icon)}>
+                                   <MaterialIcons.delete className="text-red-700 hover:text-red-600 text-[20px] " titleAccess="delete image" />
+                              </button>
+                         </div>:
+                         <div className='w-full flex items-center justify-start'>
+                         <ImageUploader onUploadComplete={updateImage} aspect={EAspectRatio.WIDESCREEN} />
+                    </div>
+                    }
                </div>
           </div>
           

@@ -17,22 +17,25 @@ export async function GET(req: Request) {
           const data = await prisma.category.findMany(
                {
                     where: {...filters}, 
-                    include: {
+                    select:{
+                         id:true, name:true, status:true, icon:true, description:true,
                          features:true,
                          _count: {
                               select:{
                                    posts:true
                               }
                          }
-                    }
+                    },
+                    orderBy: [{id: 'asc'}]
                }
           );
           const count  = await prisma.category.count({where: {...filters}});
-
-          return res.json({data, pagination: {total: count}});
+          return res.json({data, pagination: {total: count}}, {
+               headers: {
+                    'Cache-Control': 'no-store, max-age=0',
+               },
+          });
      }catch(error){
           return res.json({Error: "Error fetching category info"}, {status: 500});
-     }finally{
-          prisma.$disconnect();
      }
 }
