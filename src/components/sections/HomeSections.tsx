@@ -50,7 +50,7 @@ export function ProfessionalsSection () {
                     }
                </div>
                <div className="w-full flex items-center justify-center">
-                    <Link href={'/services'} className="w-auto py-[10px] px-[20px] rounded-[20px] bg-blue-600 text-white text-[0.9rem] font-medium flex items-center justify-center gap-[10px]">View More Services <i className="text-[22px]"><FaArrowRight /></i></Link>
+                    <Link href={'/services'} className="w-auto py-[10px] px-[20px] rounded-[30px] text-blue-600 bg-white border-[1.5px] border-blue-400 text-[0.9rem] font-medium hover:bg-gray-100 flex items-center justify-center gap-[10px]">View More Services <i className="text-[22px]"><FaArrowRight /></i></Link>
                </div>
           </section>
      )
@@ -66,8 +66,8 @@ const ProfessionalCard = ({profession}:{profession:{image: StaticImport, title:s
                <div className="w-full flex flex-col items-start justify-between gap-[10px] p-[10px]">
                     <h3 className="text-[1.1rem] font-bold text-black " >{title}</h3>
                     <p className="text-[0.9rem] text-gray-600">{description}</p>
-                    <Link className="text-[0.9rem] fonts-semibold text-blue-600 flex items-center justify-start gap-[10px] hover:text-blue-700" href={dest}>View details <i className="text-[22px]"><FaArrowRight /></i></Link>
-               </div>
+                    <Link className="text-[0.9rem] fonts-semibold text-white flex items-center bg-blue-600 px-[20px] py-[7.5px] rounded-[30px] justify-start gap-[10px] hover:bg-blue-700" href={dest}>View details <i className="text-[22px]"><FaArrowRight /></i></Link>
+               </div> 
                
           </div>
      )
@@ -109,10 +109,17 @@ export async function HotCategoriesSection () {
      if(categoriesRes) categories = categoriesRes.data;
 
      return (
-          <section className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[10px] py-[40px] px-[2%]">
-               {
-                    categories.map((c, index) => index < 4 ? <CategoryCard key={`home-category-${c.id}`} category={c} /> : null)
-               }
+          <section className="w-full flex flex-col bg-gray-100 items-center justify-start gap-[30px] py-[20px] px-[2%]">
+               {/* <div className="w-full flex flex-col items-center justify-start gap-[10px]">
+                    <h1 className="text-[1.6rem] lg:text-[1.8rem] font-extrabold leading-4 text-black text-start">Top Categories</h1>
+                    <p className="text-[0.8rem] md:text-[0.9rem] w-full md:w-[80%] lg:w-[60%] text-gray-700 text-center">View vendors in top categories. </p>
+               </div> */}
+               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[10px] ">
+                    {
+                         categories.map((c, index) => index < 4 ? <CategoryCard key={`home-category-${c.id}`} category={c} /> : null)
+                    }
+               </div>
+               
           </section>
      )
 }
