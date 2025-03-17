@@ -11,6 +11,8 @@ export default function DesktopView (){
                <HeaderLogo />
                <div className='w-auto flex items-center justify-between gap-[40px]'>
                     <HeaderLink link={{name: "Home", dest: '/'}} />
+                    <HeaderLink link={{name: "Wedding Venues", dest: '/posts?category=1'}} />
+                    <HeaderLink link={{name: "Wedding Vendors", dest: '/posts'}} />
                     <HeaderLink link={{name: "Services", dest: '/services'}} />
                     <HeaderLink link={{name: "About Us", dest: '/about'}} />
                </div>
@@ -19,7 +21,7 @@ export default function DesktopView (){
                          user ?
                          <ClientProfileLinks user={user} /> :
                          <>
-                              <button type="button" className='text-[0.8rem] px-[15px] rounded-[5px] py-[7.5px] border-[1.3px] bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300'  onClick={setAuth}>Login</button>
+                              <button type="button" className='text-[1rem] px-[15px] rounded-[5px] py-[7.5px] border-[1.3px] bg-blue-800 text-white hover:bg-blue-900 transition-all duration-300'  onClick={setAuth}>Login</button>
                          </>
                     }
                     

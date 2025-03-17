@@ -28,8 +28,8 @@ export function HeroSection () {
           <section className="w-full aspect-[100/140] relative md:aspect-[100/50] lg:aspect-[100/40] bg-black">
                <Image src={HeroImage} alt="Wedding image" fill  placeholder="blur" className="absolute top-0 object-cover z-0 left-0"/>
                <div className="w-full h-full bg-black/50 flex flex-col items-center justify-center gap-[20px] px-[2%] relative z-10">
-                    <h1 className="text-[1.6rem] md:text-[2rem] lgtext-[2.4rem] font-bold md:font-extrabold text-white text-center ">Plan Your Dream Wedding, <br /> Stress Free</h1>
-                    <p className="text-center text-[0.9rem] text-gray-300 font-medium">Find then perfect Vendors and create unforgettable special day!</p>
+                    <h1 className="text-[1.6rem] md:text-[2rem] lgtext-[2.4rem] font-bold md:font-extrabold text-white text-center ">Rwanda&apos;s Largest Collection of <br className="hidden lg:flex" /> Wedding Venues & Verified Vendors.</h1>
+                    <p className="text-center text-[1rem] text-gray-300 font-normal whitespace-pre-line max-w-[80%]">From Only $7, Access All Wedding Venues & Top Wedding Vendor Options!</p>
                     <GetStartedBtn />
                </div>
           </section>
