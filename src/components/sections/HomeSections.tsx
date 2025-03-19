@@ -16,6 +16,8 @@ import { TCategory } from "@/common/Entities";
 import { MainServer } from "@/services/Server";
 import Endpoints from "@/services/Endpoints";
 import { CategoryCard } from "../cards/Category";
+import { TrendingImages } from "../images/StaticImages";
+import { TrendingCardsSection } from "../cards/TrendingCardsSection";
 
 const Professionals: {image:StaticImport, title:string, description:string, dest: string}[] = [
      {title: "Venues", description: "Welcome to our curated selection of wedding venues, where we connect couples with beautiful spaces to celebrate their special day.", image:VenuesImage, dest:'/' },
@@ -120,6 +122,15 @@ export async function HotCategoriesSection () {
                     }
                </div>
                
+          </section>
+     )
+}
+
+export const TrendingSection = () => {
+     return (
+          <section className="w-full py-[40px] px-[2%] bg-gradient-to-b from-black via-gray-800 to-black flex flex-col gap-[20px] ">
+               <h1 className="text-[1.6rem] w-full text-start font-bold text-white">Trending Wedding Venues</h1>
+               <TrendingCardsSection images={TrendingImages} />
           </section>
      )
 }
