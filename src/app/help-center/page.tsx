@@ -100,7 +100,7 @@ export default function HelpCenterPage() {
   return (
      <ClientPage>
           <div className="w-full  py-8 px-4 lg:px-[10%]">
-          <h1 className="text-3xl font-bold mb-6">Help Center</h1>
+          <h1 className="text-3xl font-bold mb-6 w-full text-center pt-[80px]">Help Center</h1>
           {helpTopics.map((topic, index) => (
                <HelpTopic key={index} title={topic.title} content={topic.content} />
           ))}

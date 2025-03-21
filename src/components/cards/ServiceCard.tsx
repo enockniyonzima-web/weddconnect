@@ -9,10 +9,10 @@ interface ServiceCardProps {
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description }) => {
   return (
-    <div className="flex flex-col items-center text-center p-6 border rounded-lg shadow-md">
+    <div className="flex flex-col items-center text-center p-6 rounded-lg shadow-sm shadow-gray-600">
           <div className="text-4xl mb-4 bg-blue-100 text-blue-600 p-[20px] rounded-full"><i>{icon}</i></div>
-          <h2 className="text-2xl font-semibold mb-2">{title}</h2>
-          <p className="text-gray-600">{description}</p>
+          <h2 className="text-2xl font-semibold mb-2 text-white">{title}</h2>
+          <p className="text-gray-400">{description}</p>
     </div>
   );
 };
