@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
-import HeroImage from "../../../public/home/home-page-pic.webp";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
@@ -18,6 +17,9 @@ import Endpoints from "@/services/Endpoints";
 import { CategoryCard } from "../cards/Category";
 import { TrendingImages } from "../images/StaticImages";
 import { TrendingCardsSection } from "../cards/TrendingCardsSection";
+import HeroImage from '../../../public/home/new-cp-image.webp';
+
+// const NewImage = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/hero-image.webp";
 
 const Professionals: {image:StaticImport, title:string, description:string, dest: string}[] = [
      {title: "Venues", description: "Welcome to our curated selection of wedding venues, where we connect couples with beautiful spaces to celebrate their special day.", image:VenuesImage, dest:'/' },
@@ -27,9 +29,10 @@ const Professionals: {image:StaticImport, title:string, description:string, dest
 export function HeroSection () {
 
      return (
-          <section className="w-full aspect-[100/140] relative md:aspect-[100/50] lg:aspect-[100/40] bg-black">
-               <Image src={HeroImage} alt="Wedding image" fill  placeholder="blur" className="absolute top-0 object-cover z-0 left-0"/>
-               <div className="w-full h-full bg-black/50 flex flex-col items-center justify-center gap-[20px] px-[2%] relative z-10">
+          <section className="w-full aspect-[100/140] relative md:aspect-[100/50] lg:aspect-[100/40] bg-black overflow-hidden">
+               {/* <img src={NewImage} alt="Wedding image" width={1200} height={800} className="absolute -top-[10px]  object-cover z-0 w-[110%] h-[110%] -left-[5%]"/> */}
+               <Image src={HeroImage} alt="Wedding image" placeholder="blur" width={1200} height={800} className="absolute top-[50%] -translate-x-[50%] -translate-y-[50%] object-cover z-0 w-[100%] h-[100%] left-[50%]"/>
+               <div className="w-full h-full bg-gradient-to-b from-black/80 via-black/70 to-black/90 flex flex-col items-center justify-center gap-[20px] px-[2%] relative z-10">
                     <h1 className="text-[1.6rem] md:text-[2rem] lgtext-[2.4rem] font-bold md:font-extrabold text-white text-center ">Rwanda&apos;s Largest Collection of <br className="hidden lg:flex" /> Wedding Venues & Verified Vendors.</h1>
                     <p className="text-center text-[1rem] text-gray-300 font-normal whitespace-pre-line max-w-[80%]">From Only $7, Access All Wedding Venues & Top Wedding Vendor Options!</p>
                     <GetStartedBtn />
@@ -43,7 +46,7 @@ export function ProfessionalsSection () {
      return (
           <section className="w-full flex flex-col items-center justify-start gap-[30px] py-[40px] px-[2%]">
                <div className="w-full flex flex-col items-center justify-start gap-[10px]">
-                    <h1 className="text-[1.6rem] lg:text-[1.8rem] font-extrabold leading-4 text-black text-center">Our Professional Services</h1>
+                    <h1 className="text-[1.6rem] lg:text-[1.8rem] font-extrabold text-black text-center">Our Professional Services</h1>
                     <p className="text-[1rem] md:text-[1.1rem] w-full md:w-[80%] lg:w-[60%] text-gray-700 text-center">Discover our carefully curated selection of wedding professionals who will make your special day truly unforgetable </p>
                </div>
                <div className="w-full grid grid-cols-1 md:grd-cols-2 lg:grid-cols-3 gap-[20px]">

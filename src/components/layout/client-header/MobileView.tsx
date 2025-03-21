@@ -8,22 +8,22 @@ import Link from "next/link";
 import { useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 
-export default function MobileView () {
+export default function MobileView ({scrolled} :{scrolled:boolean}) {
      const {user, setAuth} = useAuthContext();
      const [navOn, setNavOn] = useState(false);
 
      return (
-          <header className="w-full md:hidden flex items-center justify-between px-[2%] py-[5px] sticky top-0 bg-white z-30 shadow-sm shadow-gray-200 ">
-               <HeaderLogo/>
+          <header className={`w-full  top-0 z-30 ml-[50%] -translate-x-[50%] flex md:hidden items-center justify-between px-[5%] py-[5px] max-w-[1512px] ${scrolled ? "sticky bg-white shadow-sm shadow-gray-400" : "absolute bg-gradient-to-b from-black/50 to-transparent"} `}>
+               <HeaderLogo scrolled={scrolled}/>
                
                     <div className="w-auto flex items-center justify-end gap-[10px]">
                     {
                          user ?
                          <ClientProfileLinks user={user} />:
-                         <button type="button" className='text-[0.8rem] px-[15px] rounded-[5px] py-[7.5px] border-[1.3px] bg-blue-800 text-white hover:bg-blue-900 transition-all duration-300' onClick={setAuth}>Login</button> 
+                         <button type="button" className='text-[1rem] px-[15px] rounded-[10px] py-[7.5px] bg-gradient-to-br from-blue-600 to-blue-800 text-white hover:text-red-100 transition-all duration-300' onClick={setAuth}>Login</button> 
                     }
                          <div className='w-auto items-center justify-end group'>
-                              <i className='text-[32px] text-black cursor-pointer' onClick={() => setNavOn(prev => !prev)}><LuAlignRight /></i>
+                              <i className={`text-[32px] ${scrolled ? "text-black" :"text-white"}  cursor-pointer`} onClick={() => setNavOn(prev => !prev)}><LuAlignRight /></i>
                               {
                                    <Dialog open={navOn} onClose={() => setNavOn(false)} className="relative z-50">
                                         <div className="w-full fixed inset-0 bg-black bg-opacity-10 flex justify-center items-center">
