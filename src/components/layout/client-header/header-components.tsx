@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 
 export const HeaderLink = ({link, }:{link:{name:string, dest: string}}) => (
-     <Link className={`text-[0.85rem] font-medium text-white hover:text-gray-200 transition-all duration-200 group flex items-start flex-col whitespace-nowrap`} href={link.dest}>{link.name} <span className='w-0 border-b-[1.5px] border-blue-600 group-hover:w-full transition-all duration-300'></span></Link>
+     <Link prefetch={true} className={`text-[0.85rem] font-medium text-white hover:text-gray-200 transition-all duration-200 group flex items-start flex-col whitespace-nowrap`} href={link.dest}>{link.name} <span className='w-0 border-b-[1.5px] border-blue-600 group-hover:w-full transition-all duration-300'></span></Link>
 )
 
 export const HeaderLogo = () => (
