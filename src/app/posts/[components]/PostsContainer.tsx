@@ -7,7 +7,7 @@ const PostsContainer = ({posts}:{posts:TPost[]}) => {
           <>
           {
                posts.length > 0 ? 
-               <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-[10px]'>
+               <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-[20px]'>
                     {posts.map((post:TPost, index:number) => <PostCard post={post} key={`posts-page-post-${index}`} />)}
                </div>
                :

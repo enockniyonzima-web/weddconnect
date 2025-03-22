@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { ENotificationType } from "@/common/CommonTypes";
 import { GoogleSignIn } from "@/server-actions/auth";
+import { showMainNotification } from "@/util/NotificationFuncs";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
@@ -39,10 +42,21 @@ export const AuthSubmitBtn = ({name, loading}:{name:string, loading: boolean}) =
 } 
 
 export const GoogleSignBtn = () => {
+     const [loading, setLoading] = useState(false);
+     const signIn = async() => {
+          try {
+               setLoading(true);
+               return await GoogleSignIn();
+          } catch (error) {
+               showMainNotification("Error logging with Google!",ENotificationType.FAIL)
+          }finally{
+               setLoading(false);
+          }
+     }
      return (
-          <button type="button" onClick={GoogleSignIn} className="w-full flex items-center justify-center gap-[10px] rounded-[20px] p-[10px] bg-blue-600 hover:bg-blue-800 transition-all duration-200">
-               <i className="text-[22px]"><FcGoogle /></i>
-               <span className="text-[0.9rem] text-white">Continue with Google</span>
+          <button disabled={loading} type="button" onClick={signIn} className="w-full flex items-center justify-center gap-[10px] rounded-[20px] p-[10px] bg-gradient-to-br from-blue-600 to-blue-800 transition-all duration-200 disabled:cursor-progress">
+               <i className="text-[28px]"><FcGoogle /></i>
+               {loading ? null :<span className="text-[0.9rem] text-white">Continue with Google</span>}
           </button>
      )
 }

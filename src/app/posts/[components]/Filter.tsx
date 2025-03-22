@@ -14,9 +14,10 @@ const Filter = ({ categories}:{ categories: TCategory[]}) => {
      const searchedCategory = search.get('category') ? Number(search.get('category')) : 0;
      const categoryLinks:{name:string, dest:string, checked:boolean}[] = categories.map(c => ({name: `${c.name} (${formatPrice(c._count.posts)} posts) `, dest: `${c.id}`, checked:searchedCategory === c.id }));
      return (
-          <div className="w-full grid grid-cols-2 lg:grid-cols-3 px-[2%] py-[5px] gap-[10px]">
+          <div className="w-full grid grid-cols-2 lg:grid-cols-3 px-[5%] gap-[20px] bg-gray-50 py-[20px]">
                <input type="search" name="search-vendor" id="search-vendor-name" title="Search vendor" className="w-full p-[5px] bg-gray-100 border border-gay-200 rounded-[5px] outline-none focus:bg-gray-200 focus:border-blue-600 placeholder:text-[0.8rem] placeholder:text-gray-600" placeholder="Search any Vendor " />
                <LinksDropDown baseLink={categorySearchBase} links={categoryLinks} label="Choose category" />
+               <input type="search" name="search-location" id="search-vendor-location" title="Search Location" className="w-full p-[5px] bg-gray-100 border border-gay-200 rounded-[5px] outline-none focus:bg-gray-200 focus:border-blue-600 placeholder:text-[0.8rem] placeholder:text-gray-600" placeholder="Search by location..." />
           </div>
      )
 }

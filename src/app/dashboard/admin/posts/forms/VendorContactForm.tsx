@@ -2,9 +2,9 @@
 'use client';
 
 import { ENotificationType } from "@/common/CommonTypes";
-import { TVendor } from "@/common/Entities";
+import { TVendor, TVendorContact } from "@/common/Entities";
 import { SelectInputGroup, SubmitButton, TextInputGroup } from "@/components/forms/DataFormsInputs";
-import { updateVendor } from "@/server-actions/vendor.actions";
+import { deleteVendorContact, updateVendor } from "@/server-actions/vendor.actions";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import { DataInputs } from "@/util/util-classes";
 import { ContactType } from "@prisma/client";
@@ -51,10 +51,29 @@ export const VendorContactForm = ({vendor, contactTypes}:{vendor: TVendor | null
                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[5px]">
                     {
                          vendor  && vendor.contacts.length > 0 ? 
-                              vendor.contacts.map(contact => <p className="w-full p-[5px] rounded-[5px] text-gray-500 border border-gray-200 line-clamp-1 text-[0.8rem]" key={`vendor-contact-${contact.id}`}>{contact.contactType.name}: {contact.value}</p>)
+                              vendor.contacts.map(contact => <VendorContactCard vendorId={vendor.id} contact={contact} key={`vendor-contact-card-${contact.id}`} />)
                          : <p className="text-[0.9rem] text-gray-600">Vendor has no contacts added</p>
                     }
                </div>
           </div>
+     )
+}
+
+const VendorContactCard  = ({contact, vendorId}:{contact: TVendorContact, vendorId:number}) => {
+     const [loading, setLoading] = useState(false);
+     const deleteContact = async () => {
+          try {
+               setLoading(true);
+               const res = await deleteVendorContact(vendorId, contact.id);
+               if(res) return showMainNotification("Successfully deleted Vendor Contact", ENotificationType.PASS);
+               return showMainNotification("Failed to delete vendor contact", ENotificationType.FAIL);
+          } catch (error) {
+               return showMainNotification("Error deleting vendor contact", ENotificationType.FAIL)
+          }finally{
+               setLoading(false)
+          }
+     }
+     return (
+          <button type="button" disabled={loading} className="w-full p-[5px] disabled:cursor-progress rounded-[5px] text-gray-500 border border-gray-200 line-clamp-1 text-[0.8rem] hover:border-orange-500" onClick={deleteContact} title="Click to delete" key={`vendor-contact-${contact.id}`}>{loading ? 'Deleting' : `${contact.contactType.name}: ${contact.value}`}</button>
      )
 }

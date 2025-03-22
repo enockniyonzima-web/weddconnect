@@ -16,14 +16,14 @@ import { TSubscription, TUser } from "@/common/Entities";
 import { createClientSubscription, updateClientSubscription } from "@/server-actions/client-subscription.actions";
 import { getFutureDate } from "@/util/DateFunctions";
 import { createTransaction } from "@/server-actions/transaction.action";
+import { FaCheck } from "react-icons/fa6";
+import { createClient } from "@/server-actions/client.actions";
 
+const USDRate = 1450;
 
 const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubscription[]}) => {
-     const activeSubscription = subscriptions[0];
-     const price = activeSubscription ? activeSubscription.price : 5000;
-     const [amount, setAmount] = useState(0);
+     const [choosenSub, setChoosenSub] = useState<TSubscription | null>(null);
      const [method, setMethod] = useState("");
-     const subscription = subscriptions[0] ||null;
 
      useEffect(() => {
           if(method === "Bank" || method === "Mobile Money") {
@@ -32,23 +32,19 @@ const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubsc
      },[method])
 
      return (
-          <div className="w-full lg:w-[70%] bg-white rounded-[5px] p-[10px] flex flex-col items-center justify-start gap-[20px] mx-auto">
-               <div className="w-full flex flex-col items-center justify-normal gap-[5px]">
-                    <h1 className="text-[1.4rem] font-bold text-black text-center">Subscribe to our Premium plans</h1>
-                    <p className="text-[0.9rem] text-gray-600 text-center">view the best and trusted wedding vendors in Rwanda by subscribing to our premium membership plan </p>
+          <div className="w-full lg:w-[70%] bg-white rounded-[10px] p-[20px] flex flex-col items-center justify-start gap-[20px] mx-auto">
+               <div className="w-full flex flex-col items-center justify-normal gap-[10px]">
+                    <h1 className="text-[1.6rem] font-extrabold text-black text-center">Choose you membership Plan</h1>
+                    <p className="text-[0.9rem] text-gray-600 text-center">View the best and trusted wedding vendors in Rwanda by subscribing to our premium membership plan </p>
                </div>
-               {amount === 0 ? 
-                    <div className="w-full flex flex-col items-center justify-start gap-[10px] rounded-[5px] p-[10px] bg-gray-200">
-                         <h2 className="text-center text-[1.6rem] font-extrabold text-black">Choose Duration</h2>
-                         <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-[15px]">
-                              <DurationCard price={price} months={1} label="A month" action={(res) => setAmount(res)}  />
-                              <DurationCard price={price} months={3} label="3 months" action={(res) => setAmount(res)}  />
-                              <DurationCard price={price} months={6} label="6 mnths" action={(res) => setAmount(res)}  />
-                              <DurationCard price={price} months={12} label="A Year" action={(res) => setAmount(res)}  />
-                         </div>
-                    </div>:
+               {choosenSub === null ? 
+                         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px]">
+                              {
+                                   subscriptions.sort((a,b) => a.price - b.price).map(sub => <SubscriptionCard key={`subscription-card-${sub.id}`} subscription={sub} action={(newSub) => setChoosenSub(newSub)} />)
+                              }
+                         </div>:
                     <div className="w-full flex flex-col items-center justify-start gap-[10px] rounded-[5px] p-[10px] border border-gray-200">
-                         <h2 className="text-center text-[1.6rem] font-extrabold text-black">Choose Payment Method</h2>
+                         <h2 className="text-center text-[1.4rem] font-bold text-black">Choose Payment Method</h2>
                          <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-[10px]">
                               <PaymentOptionCard image={VisaImage} name="Bank" action={(res) => setMethod(res)} />
                               <PaymentOptionCard image={MomoImage} name="Mobile Money" action={(res) => setMethod(res)} />
@@ -57,20 +53,29 @@ const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubsc
                     </div>
                }
                {
-                    method === "Direct Mtn" ? 
-                         <MtnDirectPayment price={price} subscription={subscription} user={user} amount={amount} />
+                    method === "Direct Mtn" && choosenSub !== null ? 
+                         <MtnDirectPayment subscription={choosenSub} user={user}/>
                     :null
                }
           </div>
      )
 }
 
-const DurationCard = ({price, months, label,action}:{price:number,label:string, months:number, action:(res:number) => unknown}) => {
+const SubscriptionCard = ({subscription, action}:{subscription: TSubscription, action:(subscription:TSubscription) => void}) => {
      return (
-          <div className="w-full bg-white flex flex-col items-center justify-start gap-[10px] rounded-[5px]  p-[20px]">
-               <h4 className="text-gray-600 text-[1rem] font-bold text-center">{label}</h4>
-               <span className="text-blue-800 text-[1.4rem] font-semibold">{formatPrice(months * price)}</span>
-               <button className="w-full p-[5px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[5px]" onClick={() => action(months * price)}>Choose Package</button>
+          <div className="w-full bg-gradient-to-br from-gray-800 to-black flex flex-col items-center justify-start gap-[20px] rounded-[10px]  p-[20px]">
+               <div className="w-full flex flex-col items-center justify-start gap-[10px]">
+                    <h3 className="text-[1.4rem] font-bold text-center text-white">{subscription.name}</h3>
+                    <h4 className="text-center text-blue-300 text-[1.6rem] font-bold">${formatPrice(subscription.price)}</h4>
+               </div>
+               <div className="w-full flex flex-col items-start justify-start gap-[10px]">
+                    {
+                         subscription.description.split(';').map((desc, index) => <p className="text-[1rem] text-white flex items-center justify-center gap-[5px] " key={`${subscription.name}-${index}`}><i className="text-[1.2rem] text-green-600"><FaCheck/></i>{desc}</p>)
+                    }
+               </div>
+               <div className="w-full flex items-center justify-center">
+                    <button type="button" className="w-auto py-[10px] px-[20px] text-white bg-gradient-to-br from-blue-600 to-blue-800 rounded-[30px]" onClick={() => action(subscription)}>Choose Plan</button>
+               </div>
           </div>
      )
 }
@@ -80,17 +85,20 @@ const PaymentOptionCard = ({image, name,action}:{image: StaticImport, name:strin
           <div className="w-full rounded-[5px] p-[5px] flex flex-col items-center justify-start gap-[5px]">
                <Image src={image} placeholder="blur" alt={name} className="w-full aspect-video rounded-[5px] object-cover" />
                <h3 className="text-gray-600 text-[1rem] font-bold text-center">{name}</h3>
-               <button className="w-full p-[5px] bg-orange-600 text-[0.9rem] text-white hover:bg-orange-800 rounded-[5px]" onClick={() => action(name)}>Pay Now</button>
+               <button type="button" className="w-full p-[5px] bg-orange-600 text-[0.9rem] text-white hover:bg-orange-800 rounded-[5px]" onClick={() => action(name)}>Pay Now</button>
           </div>
      )
 }
 
-const MtnDirectPayment = ({amount, price,user, subscription}:{amount: number, user:TUser, subscription: TSubscription | null, price: number}) => {
+const MtnDirectPayment = ({user, subscription}:{user:TUser, subscription: TSubscription}) => {
      const [phone,setPhone] = useState<string>("");
      const [isMobile, setIsMobile] = useState(false);
      const [paymentDone, setPaymentDone] = useState<boolean>(false)
      const [loading,setLoading] = useState<boolean>(false);
      const router = useRouter();
+     const expiryDate = getFutureDate(subscription.name === "Member" ? 1000 : 90);
+     
+     const amount = subscription.price * USDRate;
 
      useEffect(() => {
           const userAgent = navigator.userAgent.toLowerCase();
@@ -105,22 +113,24 @@ const MtnDirectPayment = ({amount, price,user, subscription}:{amount: number, us
 
                if(phone === "" || phone.length !== 10) return showMainNotification("Invalid phone number", ENotificationType.WARNING); 
                alert(`Confirm Payment of Rwf ${formatPrice(amount)} using phone number: ${phone}`);
+               const clientAcc  = user.client ? user.client : await createClient({name: user.email, phone: phone, user: {connect: {id: user.id}}});
                let clientSubscription = user.client?.subscription;
 
+
                if(clientSubscription){
-                    clientSubscription = await updateClientSubscription(clientSubscription.id, {expiryAt: getFutureDate(1), updatedAt: new Date()});
+                    clientSubscription = await updateClientSubscription(clientSubscription.id, {expiryAt: expiryDate, updatedAt: new Date()});
                }else {
-                    clientSubscription = await createClientSubscription({createdAt: new Date(), updatedAt: new Date(), expiryAt: getFutureDate(1), client: {connect:{id: user.client?.id || 0}}, subscription:{connect: {id: subscription?.id || 0}} })
+                    clientSubscription = await createClientSubscription({createdAt: new Date(), updatedAt: new Date(), expiryAt: expiryDate, client: {connect:{id: clientAcc?.id}}, subscription:{connect: {id: subscription?.id || 0}} })
                }
                if(isMobile) {
                     setPaymentDone(true);
                     router.push(`tel:*182*1*1*0780795232*${amount}`);
                }else{
-                    alert(`Using the number: ${phone}, Dial *182*1*1*0780795232*${amount} to complete he payment.`);
+                    alert(`Using the number: ${phone}, Dial *182*1*1*0780795232*${subscription.price * USDRate} to complete he payment.`);
                     setPaymentDone(true);
                }
 
-               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: amount / price, price, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: "Direct Mtn", clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
+               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: 1, price:amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: "Direct Mtn", clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
                if(newTransaction){
                     showMainNotification("Direct Payment recorded successfully", ENotificationType.PASS);
                     return router.push('/posts');

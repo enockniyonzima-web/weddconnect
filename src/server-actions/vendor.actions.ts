@@ -22,7 +22,7 @@ export async function updateVendor (id:number,data: Prisma.VendorUpdateInput) {
           if(res) RevalidatePages.vendor();
           return res;
      } catch (error) {
-          console.log("Error creating Vendor : ", error);
+          console.log("Error updating Vendor : ", error);
           return null
      }
 
@@ -34,8 +34,19 @@ export async function deleteVendor (id:number) {
           if(res) RevalidatePages.vendor();
           return res;
      } catch (error) {
-          console.log("Error creating Vendor: ", error);
+          console.log("Error deleting Vendor: ", error);
           return null
      }
 
+}
+
+export async function deleteVendorContact (vendorId:number, contactId:number) {
+     try {
+          const res  = await prisma.vendorContact.delete({where: {id: contactId, vendorId}});
+          if(res) RevalidatePages.vendor();
+          return res;
+     } catch (error) {
+          console.log("Error deleting contact: ", error);
+          return null
+     }
 }

@@ -31,12 +31,12 @@ export default async function PostsPage ({searchParams}:{searchParams: Promise<R
 
      return (
           <>
-               <div className="w-full flex flex-col items-center justify-center gap-[10px] px-[2%] py-[10px]">
-                    <h1 className="text-[1.8rem] font-bold text-black">Explore Our Vendors</h1>
-                    <p className="text-[0.9rem] text-gray-600">Discover our carefully curated selection of the finest wedding vendors.</p>
+               <div className="w-full flex flex-col items-center justify-center gap-[10px] px-[2%] py-[80px] bg-black ">
+                    <h1 className="text-[1.8rem] font-bold text-white">Explore Our Vendors</h1>
+                    <p className="text-[0.9rem] text-gray-400">Discover our carefully curated selection of the finest wedding vendors.</p>
                </div>
                <Filter categories={categories}  />
-               <div className="w-full px-[2%] flex-col items-center gap-[10px]">
+               <div className="w-full px-[2%] flex-col items-center gap-[10px] p-[20px]">
                     <PostsContainer posts={posts}  />
                </div>
                <Pagination totalItems={postsTotal} itemsPerPage={20} />

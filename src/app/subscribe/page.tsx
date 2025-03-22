@@ -16,10 +16,11 @@ export default async function SubscribePage() {
      }
      if(user.admin) return redirect('/dashboard/admin');
      if(user.vendor) return redirect('/dashboard/vendor');
+     
 
      return (
           <ClientPage>
-               <div className="bg-gray-100 w-full py-[50px] px-[2%]">
+               <div className="bg-black w-full py-[80px] px-[2%]">
                     <PaymentOptions subscriptions={subscriptions} user={user} />
                </div>
           </ClientPage>

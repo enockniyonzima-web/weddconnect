@@ -66,8 +66,8 @@ export default function LoginPage() {
 
      return (
           <ClientPage>
-               <div className="w-full flex px-[2%] flex-col items-center justify-center py-[40px] bg-gray-100">
-                    <div className="w-full md:w-[70%] lg:w-[40%] rounded-[5px] px-[20px] py-[20px] bg-white flex flex-col items-center justify-start gap-[30px]">
+               <div className="w-full flex px-[2%] flex-col items-center justify-center py-[80px] bg-black">
+                    <div className="w-full md:w-[70%] lg:w-[40%] rounded-[10px] px-[20px] py-[20px] bg-gradient-to-br from-white to-gray-50 flex flex-col items-center justify-start gap-[30px]">
                          <h1 className="text-[1.4rem] font-bold text-black text-center" >Sign In</h1>
                          <GoogleSignBtn />
                          <form onSubmit={submitForm} className="w-full flex flex-col items-center justify-start gap-[20px]">

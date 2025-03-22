@@ -37,7 +37,8 @@ export async function GET(req: Request) {
                                    }
                               },
                               vendor: {include:{user:{select: TUserSelectFields}, contacts:{include: {contactType:true}}}}, category: true
-                         }
+                    },
+                    orderBy:[{id:"desc"}]
                }
           );
           const count  = await prisma.post.count({where: {...filters}});
