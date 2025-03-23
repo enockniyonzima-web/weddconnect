@@ -30,7 +30,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching user info", error);
           return res.json({Error: "Error fetching user info"});
-     }finally{
-          prisma.$disconnect();
      }
 }

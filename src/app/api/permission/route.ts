@@ -24,7 +24,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching permission info", error);
           return res.json({Error: "Error fetching permission info"});
-     }finally{
-          prisma.$disconnect();
      }
 }

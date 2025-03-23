@@ -56,7 +56,5 @@ export async function getSessionUser ():Promise<{user:TUser | null | undefined, 
           return {user, session};
      }catch(error){
           return {user:null, session: null};
-     }finally{
-          prisma.$disconnect();
      }
 }

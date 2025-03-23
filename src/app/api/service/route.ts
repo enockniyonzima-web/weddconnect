@@ -24,7 +24,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching service info", error);
           return res.json({Error: "Error fetching service info"});
-     }finally{
-          prisma.$disconnect();
      }
 }

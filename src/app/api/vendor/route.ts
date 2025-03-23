@@ -32,7 +32,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching vendor info", error);
           return res.json({Error: "Error fetching vendor info"});
-     }finally{
-          prisma.$disconnect();
      }
 }

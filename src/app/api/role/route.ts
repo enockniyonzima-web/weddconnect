@@ -32,7 +32,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching role info", error);
           return res.json({Error: "Error fetching role info"}, {status:500});
-     }finally{
-          prisma.$disconnect();
      }
 }

@@ -27,7 +27,5 @@ export async function GET(req: Request) {
           return res.json({data, pagination: {total: count}});
      }catch(error){
           return res.json({Error: "Error fetching categoryFeature info"}, {status: 500});
-     }finally{
-          prisma.$disconnect();
      }
 }

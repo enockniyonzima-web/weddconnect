@@ -24,7 +24,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching contactType info", error);
           return res.json({Error: "Error fetching contactType info"});
-     }finally{
-          prisma.$disconnect();
      }
 }

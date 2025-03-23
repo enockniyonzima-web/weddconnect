@@ -47,7 +47,5 @@ export async function GET(req: Request) {
      }catch(error){
           console.log("error fetching post info", error);
           return res.json({Error: "Error fetching post info"});
-     }finally{
-          prisma.$disconnect();
      }
 }
