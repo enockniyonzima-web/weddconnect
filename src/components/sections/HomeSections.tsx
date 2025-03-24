@@ -22,6 +22,8 @@ import { IoImages } from "react-icons/io5";
 import { ReasonToJoinCard } from "../cards/ReasonToJoinCard";
 import { HiOutlineCurrencyDollar } from "react-icons/hi";
 
+import ProfessionalImage from "../../../public/home/professional-image.jpg";
+
 // const NewImage = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/hero-image.webp";
 
 const Professionals: {image:StaticImport, title:string, description:string, dest: string}[] = [
@@ -48,6 +50,20 @@ export function HeroSection () {
                </div>
           </section>
      );
+}
+
+export function OurProfessionalSection () {
+     return(
+          <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] px-[5%] py-[40px] bg-black">
+               <div className="w-full flex flex-col items-center justify-center gap-[20px]">
+                    <h2 className="text-[1.8rem] lg:text-[2.2rem] font-extrabold text-white text-center">Our Professional Servie</h2>
+                    <p className="text-gray-400 text-[1.4rem] text-center ">We provide expert wedding consultation, helping couples find the perfect venues and vendors that match their vision and budget. With WeddConnect, you get seamless connections to trusted wedding professionals, making your planning stress-free and enjoyable</p>
+               </div>
+               <div className="w-full flex items-center justify-center relative">
+                    <Image src={ProfessionalImage} alt="WeddConnect" width={600} placeholder="blur" height={800}  className="w-full aspect-[100/80] rounded-[20px] object-cover" />
+               </div>
+          </section>
+     )
 }
 
 
@@ -90,9 +106,9 @@ const ProfessionalCard = ({profession}:{profession:{image: StaticImport, title:s
 
 export function HowItWorksSection () {
      return (
-          <section id="how-it-works-section" className="w-full flex flex-col bg-gray-100 items-center justify-start gap-[40px] py-[80px] px-[2%]">
+          <section id="how-it-works-section" className="w-full flex flex-col bg-black items-center justify-start gap-[40px] py-[80px] px-[5%]">
                <div className="w-full flex flex-col items-center justify-start gap-[10px]">
-                    <h1 className="text-[1.6rem] lg:text-[1.8rem] font-extrabold leading-4 text-black text-center">How It Works</h1>
+                    <h1 className="text-[1.6rem] lg:text-[1.8rem] font-extrabold leading-4 text-white text-center">How It Works</h1>
                </div>
                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
                     <HowItWorksCard content={{title: 'Plan', description: "Set your wedding date and create your personalized timeline", Icon: MdOutlineDateRange }} />
@@ -106,12 +122,12 @@ export function HowItWorksSection () {
 const HowItWorksCard = ({content}: {content: {Icon: IconType, title:string, description: string}}) => {
      const {Icon, title, description}  = content;
      return(
-          <div className="w-full flex flex-col items-center justify-start gap-[20px] bg-white rounded-[5px] p-[10px]">
-               <div className="w-[60px] aspect-square flex rounded-full bg-blue-100 items-center justify-center" >
+          <div className="w-full flex flex-col items-center justify-start gap-[20px] bg-black shadow-blue-600 rounded-[20px] p-[20px] shadow-inner">
+               <div className="w-[60px] aspect-square flex rounded-full items-center bg-gray-800/50 justify-center" >
                     <i className="text-[30px] text-blue-600"><Icon /></i>
                </div>
-               <h3 className="text-[1.2rem] font-bold text-black">{title}</h3>
-               <p className="w-[90%] text-center text-[0.9rem] text-gray-600">{description}</p>
+               <h3 className="text-[1.6rem] font-bold text-gray-200">{title}</h3>
+               <p className="w-[90%] text-center text-[1rem] text-gray-400">{description}</p>
           </div>
 
      )
@@ -149,7 +165,7 @@ export const TrendingSection = () => {
 
 export const ReasonsToJoinSection = () => {
      return (
-          <section className="w-full bg-black flex flex-col items-start justify-start px-[5%] lg:px-[2%] gap-[40px] py-[80px]">
+          <section className="w-full bg-black flex flex-col items-start justify-start px-[5%] lg:px-[5%] gap-[40px] py-[80px]">
                <h2 className="text-[1.6rem] w-full text-center font-bold text-white">Reasons to join</h2>
                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[40px]">
                     {
