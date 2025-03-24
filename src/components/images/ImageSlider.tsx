@@ -61,7 +61,7 @@ const ImageSlider: React.FC<IImageSlider> = ({ images, onClick, link, label }) =
           ref={sliderRef}
         >
           <div
-            className="relative w-full aspect-video object-cover cursor-pointer flex"
+            className="relative w-full aspect-[4/3] object-cover cursor-pointer flex"
             onClick={onClick}
           >
             {images.map((image, index) => (
