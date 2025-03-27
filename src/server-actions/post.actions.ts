@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import prisma from "@/lib/prisma";
 import { RevalidatePages } from "@/services/Server";
 import { Prisma } from "@prisma/client";
+import { cache } from "react";
 
 export async function createPost (data: Prisma.PostCreateInput) {
      try {     
@@ -43,3 +45,60 @@ export async function deletePost (id:number) {
 export async function deletePostFeatures (postId: number) {
      return await prisma.postFeature.deleteMany({where: {postId}});
 }
+
+const TUserSelectFields = {
+     id:true,email: true, image: true, status:true, type: true, createdAt:true
+}
+
+export const fetchPosts = cache(async(params:URLSearchParams) => {
+     try{
+          const page:{skip:number, take:number} = {skip:0, take: 20};
+
+          const filters: any = {};
+          const priceFilters: any ={};
+
+          const status = params.get("status");
+          const category= params.get('category');
+          const nextPage = params.get("page");
+          const take = params.get("take");
+          const location = params.get('location');
+          const minPrice = params.get('minPrice');
+          const maxPrice  = params.get('maxPrice');
+
+          if(take) page.take = +take;
+          if(nextPage) page.skip = ((+nextPage - 1) * page.take);
+
+          if(status) filters.status = status;
+          if(category) filters.categoryId = Number(category);
+          if(location) filters.location = {contains:location}
+
+          //price filters
+          if(minPrice) priceFilters.min = {gte:Number(minPrice)}
+          if(maxPrice) priceFilters.max = {lte:Number(maxPrice)}
+          
+          const data = await prisma.post.findMany(
+               {
+                    where: {...filters, price: priceFilters}, 
+                    include:
+                         {
+                              price:true, images:true, packages:true,
+                              features:{include: {categoryFeature:true}}, 
+                              _count: {
+                                   select:{
+                                        likes:true,
+                                        reviews:true
+                                   }
+                              },
+                              vendor: {include:{user:{select: TUserSelectFields}, contacts:{include: {contactType:true}}}}, category: true
+                    },
+                    orderBy:[{id:"desc"}]
+               }
+          );
+          const count  = await prisma.post.count({where: {...filters}});
+
+          return {data, pagination: {total: count}};
+     }catch(error){
+          console.log("error fetching post info", error);
+          return {Error: "Error fetching post info"};
+     }
+}); 
