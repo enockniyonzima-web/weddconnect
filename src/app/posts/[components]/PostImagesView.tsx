@@ -33,7 +33,7 @@ export const PostImagesView = ({images}: {images: Array<PostImage>}) => {
                <div className="w-full grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-8 gap-[5px] py-[5px]">
                     {
                          images.map((image, index) => <div className="w-full" onClick={() => setImageViewed(image)} key={`vehicle-other-image-${index}`} >
-                              <DImage src={image.url} width={400} height={300} alt={"vehicle image"}  className={`w-full aspect-[4/3] rounded-[5px] cursor-pointer hover:border-[1.2px] hover:border-main-orange-400 transition-all duration-200 ${index === currentImage ? "border-[1.4px] border-gray-400 p-[2.5px] " : ""} `}  />
+                              <DImage src={image.url} width={80} height={60} alt={"vehicle image"}  className={`w-full aspect-[4/3] rounded-[5px] cursor-pointer hover:border-[1.2px] hover:border-main-orange-400 transition-all duration-200 ${index === currentImage ? "border-[1.4px] border-gray-400 p-[2.5px] " : ""} `}  />
                          </div> )
                     }
                </div>
