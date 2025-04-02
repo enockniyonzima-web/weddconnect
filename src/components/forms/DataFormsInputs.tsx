@@ -14,11 +14,7 @@ export const TextInputGroup = ({type="text",label, placeholder,name, required=tr
 }
 
 export const TextAreaInputGroup = ({label, placeholder,name, required=true, action, maxWords,defaultValue}:{label: string, placeholder:string, name:string, required?: boolean, action?:(e:string | number) => unknown, maxWords:number,defaultValue?:string}) => {
-     // const handleChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
-     //      if(maxWords && e.target.value.split(" ").length < maxWords) {
-     //           action ? action(e.target.value) : () => {};
-     //      }
-     // }
+     
      const [wordCount, setWordCount] = useState(0);
      const [text, setText] = useState("");
 

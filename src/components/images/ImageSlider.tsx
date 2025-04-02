@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PostImage } from '@prisma/client';
 import DefaultImage from '../../../public/images/default-image.jpg';
+import DImage from './Image';
 
 interface IImageSlider {
   images: PostImage[];
@@ -72,12 +73,12 @@ const ImageSlider: React.FC<IImageSlider> = ({ images, onClick, link, label }) =
                 prefetch={true}
                 aria-label={label}
               >
-                <Image
+                <DImage
                   src={image.url}
-                  placeholder="empty"
-                  fill
                   alt="listing image"
-                  className="object-cover cursor-pointer"
+                  className="object-cover w-full aspect-auto cursor-pointer"
+                  width={800}
+                  height={600}
                 />
               </Link>
             ))}
