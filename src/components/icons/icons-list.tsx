@@ -1,7 +1,7 @@
 import { IconType } from "react-icons";
-import { FaCar, FaHouseUser, FaInstagram, FaLanguage, FaPhone, FaWhatsapp } from "react-icons/fa6";
+import { FaCar, FaHouseUser, FaInstagram, FaLanguage, FaWhatsapp } from "react-icons/fa6";
 import { GiLargeDress } from "react-icons/gi";
-import { MdOutlineMailOutline, MdPeople, MdPhotoCameraFront } from "react-icons/md";
+import { MdLocalPhone, MdOutlineMailOutline, MdPeople, MdPhotoCameraFront } from "react-icons/md";
 import { RiSettingsLine } from "react-icons/ri";
 
 export const IconsList:Array<{key:string, icon:IconType, label:string}> = [
@@ -23,7 +23,7 @@ export const getContactIcon = (name:string): IconType | null => {
           case 'instagram':
                return FaInstagram;
           case 'phone':
-               return FaPhone;
+               return MdLocalPhone;
           case 'whatsapp': 
                return FaWhatsapp;
           case 'email':

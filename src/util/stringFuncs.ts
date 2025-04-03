@@ -47,3 +47,13 @@ export const formatPrice = (price:number) => {
   }
      
 }
+
+export function getSearchParams(search: Record<string, string | undefined>): URLSearchParams {
+  const searchParams = new URLSearchParams();
+  Object.entries(search).forEach(([key, value]) => {
+      if (value !== undefined) {
+          searchParams.append(key, value);
+      }
+  });
+  return searchParams;
+}

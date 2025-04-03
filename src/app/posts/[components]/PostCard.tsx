@@ -6,7 +6,7 @@ import ImageSlider from '@/components/images/ImageSlider';
 import { formatPrice } from '@/util/stringFuncs';
 import React from 'react'
 import { PostCardVendorContacts } from './VendorContactCard';
-import { FaLocationDot } from 'react-icons/fa6';
+import { IoLocationSharp } from 'react-icons/io5';
 
 const PostCard = ({post}:{post: TPost}) => {
   return (
@@ -19,17 +19,22 @@ const PostCard = ({post}:{post: TPost}) => {
           <div className=' w-full relative'>
             <ImageSlider link={`/posts/${post.id}`} images={post.images} />
             {post.vendor.contacts.length > 0 ? <PostCardVendorContacts contacts={post.vendor.contacts} /> :null}
-            <div className='w-auto flex items-center justify-end gap-[5px] bg-black/80 p-[5px] rounded-[5px] absolute bottom-[2.5px] right-[2.5px]'>
-              <i className='text-blue-200 text-[16px]'><FaLocationDot /></i>
-              <span className='text-[0.8rem] text-white'>{post.location}</span>
+            <div className='w-auto flex items-center justify-end gap-[2.5px] bg-black/80 p-[5px] rounded-[5px] absolute bottom-[5px] right-[5px] max-w-[50%]'>
+              <i className='text-blue-200 text-[0.8rem]'><IoLocationSharp /></i>
+              <p className='text-[0.8rem] line-clamp-1 text-white'>{post.location}</p>
             </div>
           </div>
         </div>
-        <div className='w-full grid grid-cols-3 gap-[10px] p-[5px]'>
-            {
-              post.features.map(f => f.categoryFeature.onCard ? <PostFeatureCard key={`post-${post.id}-fcard-${f.id}`} feature={f} /> : null)
-            }
-        </div>
+        {
+          post.features.length > 0 ? 
+          <div className='w-full grid grid-cols-3 gap-[10px] p-[5px]'>
+              {
+                post.features.map(f => f.categoryFeature.onCard ? <PostFeatureCard key={`post-${post.id}-fcard-${f.id}`} feature={f} /> : null)
+              }
+          </div>
+          : null
+        }
+        
       </div>
   )
 }

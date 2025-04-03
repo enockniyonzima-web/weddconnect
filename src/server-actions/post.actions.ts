@@ -52,7 +52,7 @@ const TUserSelectFields = {
 
 export const fetchPosts = cache(async(params:URLSearchParams) => {
      try{
-          const page:{skip:number, take:number} = {skip:0, take: 20};
+          const page:{skip:number, take:number} = {skip:0, take: 100};
 
           const filters: any = {};
           const priceFilters: any ={};

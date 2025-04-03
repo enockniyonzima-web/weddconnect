@@ -17,14 +17,14 @@ export const VendorContactCard  = ({contact}:{contact: TVendorContact}) => {
 
 export const PostCardVendorContacts = ({contacts}:{contacts: TVendorContact[]}) => {
      return (
-          <div className="w-auto absolute left-[2.5px] bottom-[2.5px]  flex items-center gap-[3px]">
+          <div className="w-auto absolute left-[5px] bottom-[5px]  flex items-center gap-[3px]">
                {
                     contacts.map(c => {
                          const Icon = getContactIcon(c.contactType.name);
                          const type = c.contactType.type.toLowerCase();
 
                          if(Icon === null) return null;
-                         return <Link href={ type === 'phone' ? `tel:${c.value}`: type === 'email' ? `mailto:${c.value}` : c.value  } target="_blank" key={`post-card-vendor-contact-icon-${c.id}`} className="text-[18px] text-white rounded-[5px] p-[3px] bg-black/80 hover:scale-110 transition-all duration-200"><Icon /></Link>})
+                         return <Link href={ type === 'phone' ? `tel:${c.value}`: type === 'email' ? `mailto:${c.value}` : c.value  } target="_blank" key={`post-card-vendor-contact-icon-${c.id}`} className="text-[16px] text-gray-200 rounded-[5px] p-[3px] bg-black/80 hover:scale-110 transition-all duration-200"><Icon /></Link>})
                }
           </div>
      )
