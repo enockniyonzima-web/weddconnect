@@ -19,7 +19,7 @@ export default function DImage({ src, alt, width,height, className}: ServerImage
   useEffect(() => {
     const fetchImage = async () => {
       const optimizedSrc = await fetchAndCacheImage(src);
-      setImageSrc(optimizedSrc);
+      if(optimizedSrc) setImageSrc(optimizedSrc);
     };
     fetchImage();
   }, [src]);

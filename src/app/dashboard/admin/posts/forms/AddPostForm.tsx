@@ -21,6 +21,7 @@ import { FormPriceForm } from './FormPriceForm';
 import { PostFeauresForm } from './PostFeaturesForm';
 import { VendorContactForm } from './VendorContactForm';
 import Link from 'next/link';
+import DImage from '@/components/images/Image';
 
 const defaultIcon = "https://tiracar-bucket.s3.eu-north-1.amazonaws.com/users/account.png"
 
@@ -229,7 +230,7 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
                                    {
                                         postImages.map((image, index) => 
                                         <div key={`listing-update-image-${index}`} className="w-full flex flex-col items-center justify-start gap-[5px] relative">
-                                             <Image  width={400} height={300} src={image.url} alt="Listing-update image" layout="responsive" className="w-full rounded-[5px] aspect-auto" />
+                                             <DImage  width={80} height={60} src={image.url} alt="Listing-update image" className="w-full rounded-[5px] aspect-auto" />
                                              <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-100 rounded-[2.5px] p-[2px] cursor-pointer" onClick={async() => await deleteImage(image)}>
                                                   <MaterialIcons.delete className="text-red-700 hover:text-red-600 text-[20px] " titleAccess="delete image" />
                                              </button>
