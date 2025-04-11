@@ -57,7 +57,7 @@ const DesktopView  = ({user}: {user: TUser | null | undefined}) => {
                </div>
                <div className='w-full flex items-center flex-wrap justify-start gap-[10px]'>
                     <Image src={user?.image || UserImage} alt='User image' width={60} height={60} className='rounded-full w-[30px] aspect-square object-cover' />
-                    <h2 className='text-black text-[0.9rem] font-semibold'>{user?.email || "Admin User"}</h2>
+                    <h2 className='text-black text-[0.8rem]'>{user?.admin?.name || user?.email || "Admin User"}</h2>
                </div>
           </div>
      )

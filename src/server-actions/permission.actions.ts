@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { RevalidatePages } from "@/services/Server";
 import { Prisma } from "@prisma/client";
+import { cache } from "react";
 
 export async function createPermission (data: Prisma.PermissionCreateInput) {
      try {     
@@ -39,3 +40,25 @@ export async function deletePermission (id:number) {
      }
 
 }
+
+
+export const fetchPermissions = cache(async<T extends Prisma.PermissionSelect>(selectType: T):Promise<{data: Prisma.PermissionGetPayload<{select:T}>[], pagination:{total:number}}> => {
+     try{
+          const res= await prisma.permission.findMany({select: selectType});
+          const total =await prisma.permission.count();
+          return {data:res, pagination: {total}}
+     }catch(error){
+          console.log(`Error fetching Permissions: `, error);
+          return {data:[], pagination:{total:0}}
+     }
+})
+
+export const fetchPermissionById = cache(async<T extends Prisma.PermissionSelect>(id:number, selectType:T):Promise<Prisma.PermissionGetPayload<{select: T}> | null> => {
+     try {
+          const res = await prisma.permission.findUnique({where:{id}, select: selectType});
+          return res;
+     } catch (error) {
+          console.log(`Error fetching Permission data for id: ${id}`,error);
+          return null;
+     }
+})

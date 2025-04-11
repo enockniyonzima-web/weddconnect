@@ -1,3 +1,5 @@
+"use server";
+
 import { s3Client, BUCKET_NAME, AWS_REGION } from '@/config/awsConfig';
 import {
      PutObjectCommand,

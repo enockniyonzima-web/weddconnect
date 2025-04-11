@@ -11,36 +11,37 @@ export const TrendingCardsSection = ({images}:{images:StaticImport[]}) => {
      const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
 
-    const updateScrollButtons = () => {
-     if (sliderRef.current) {
-          setCanScrollLeft(sliderRef.current.scrollLeft > 0);
-          setCanScrollRight(sliderRef.current.scrollLeft < sliderRef.current.scrollWidth - sliderRef.current.clientWidth);
-     }
- };
-
- const scrollContainer = (opt: number) => {
-     if (sliderRef.current) {
-         const scrollAmount = window.innerWidth * 0.4; // 40% of viewport width
-         const  newScrollLeft = sliderRef.current.scrollLeft + opt * scrollAmount;
-
-          sliderRef.current.scrollTo({
-               left: newScrollLeft,
-               behavior: "smooth",
-          });
-     }
- };
-
- useEffect(() => {
-     updateScrollButtons();
-     if (sliderRef.current) {
-          sliderRef.current.addEventListener("scroll", updateScrollButtons);
-     }
-     return () => {
+     const updateScrollButtons = () => {
           if (sliderRef.current) {
-               sliderRef.current.removeEventListener("scroll", updateScrollButtons);
+               setCanScrollLeft(sliderRef.current.scrollLeft > 0);
+               setCanScrollRight(sliderRef.current.scrollLeft < sliderRef.current.scrollWidth - sliderRef.current.clientWidth);
           }
      };
- }, []);
+
+     const scrollContainer = (opt: number) => {
+          if (sliderRef.current) {
+          const scrollAmount = window.innerWidth * 0.4; // 40% of viewport width
+          const  newScrollLeft = sliderRef.current.scrollLeft + opt * scrollAmount;
+
+               sliderRef.current.scrollTo({
+                    left: newScrollLeft,
+                    behavior: "smooth",
+               });
+          }
+     };
+
+     useEffect(() => {
+          updateScrollButtons();
+          if (sliderRef.current) {
+               sliderRef.current.addEventListener("scroll", updateScrollButtons);
+          }
+          return () => {
+               if (sliderRef.current) {
+                    sliderRef.current.removeEventListener("scroll", updateScrollButtons);
+               }
+          };
+     }, []);
+     
      return (
           <div className="w-full flex items-center justify-between overflow-hidden gap-[20px]">
                {canScrollLeft ? 

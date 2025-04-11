@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { signIn, signOut } from "next-auth/react";
 
 export async function GoogleSignIn(){
@@ -11,7 +10,7 @@ export async function CredentialsSignin(formData: FormData) {
           const result = await signIn("credentials", {redirect:false,...credentials});
           return result;
      } catch (error) {
-          // console.log(error);
+          console.log(error);
           return null;
      }
      

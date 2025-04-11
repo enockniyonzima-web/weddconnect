@@ -1,4 +1,10 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const withAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true', // only enables it conditionally
+});
+
 
 const nextConfig: NextConfig = {
   images: {
@@ -35,7 +41,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '5mb',
     },
   },
-  /* config options here */
 };
 
-export default nextConfig;
+export default withAnalyzer(nextConfig);

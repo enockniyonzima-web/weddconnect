@@ -224,6 +224,7 @@ model Transaction {
   price                Int
   quantity             Int
   amount               Int
+  proof                String             @default("")
   createdAt            DateTime
   updatedAt            DateTime
   status               String

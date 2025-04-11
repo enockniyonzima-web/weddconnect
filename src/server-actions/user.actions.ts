@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { authOptions } from "@/common/authOptions";
 import { TUser } from "@/common/Entities";
@@ -39,7 +40,7 @@ export async function deleteUser (id:string) {
           return res;
      } catch (error) {
           console.log("Error creating User: ", error);
-          return null
+          return null;
      }
 
 }

@@ -69,6 +69,7 @@ export const authOptions: NextAuthOptions = {
           maxAge: 2 * 60 * 60,
      },
      jwt: {
+          secret: process.env.NEXTAUTH_SECRET,
           maxAge: 2 * 60 * 60, // Ensure JWT also expires after 2 hours
      },
      cookies: {

@@ -3,6 +3,7 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { useAuthContext } from "../context/AuthContext";
 import { GoogleSignBtn } from "../forms/AuthForms";
+import Link from "next/link";
 
 const QuickAuth  = () => {
      const {authOn, setAuth}  = useAuthContext();
@@ -15,6 +16,7 @@ const QuickAuth  = () => {
                               <p className="text-[0.9rem] text-center text-gray-600">Sign in to discover the top wedding vendors in Rwanda.</p>
                          </div>
                          <GoogleSignBtn />
+                         <Link href="/auth/login" onClick={setAuth} className="w-full flex items-center justify-center gap-[10px] rounded-[20px] p-[10px] text-white text-[0.9rem] bg-gradient-to-br from-gray-600 to-gray-800 transition-all duration-200 disabled:cursor-progress">Use Email</Link>
                     </DialogPanel>
                </div>
           </Dialog>
