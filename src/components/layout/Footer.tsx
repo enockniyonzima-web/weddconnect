@@ -24,12 +24,12 @@ const Footer = () => {
 
      ]
      const servicesLinks = [
-          {name: "Wedding Planning", dest:'/services', icon: FaCalendarCheck},
-          {name: "Photography", dest:'/services', icon: MdMonochromePhotos},
-          {name: "Vendor Connection", dest:'/services', icon: BsPeopleFill}
+          {name: "Wedding Consulting", dest:'/services#wedding-consulting', icon: FaCalendarCheck},
+          {name: "Vendor Connection", dest:'/services#vendor-connection', icon: MdMonochromePhotos},
+          {name: "Marketing", dest:'/services#marketing', icon: BsPeopleFill}
      ]
      return (
-          <footer className='w-full px-[2%] py-[20px] flex flex-col gap-[20px] bg-black max-w-[1512px] mx-auto'>
+          <footer className='w-full px-[2%] py-[20px] flex flex-col gap-[20px] bg-black max-w-[1512px] mx-auto z-10 relative'>
                <div className='w-full flex items-center justify-between'>
                     <FooterLogo />
                     <div className='flex items-center justify-end gap-[20px]'>

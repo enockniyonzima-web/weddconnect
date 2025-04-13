@@ -19,7 +19,7 @@ const PostCard = ({post}:{post: TPost}) => {
           <div className=' w-full relative'>
             <ImageSlider link={`/posts/${post.id}`} images={post.images} />
             {post.vendor.contacts.length > 0 ? <PostCardVendorContacts contacts={post.vendor.contacts} /> :null}
-            <div className='w-auto flex items-center justify-end gap-[2.5px] bg-black/80 p-[5px] rounded-[5px] absolute bottom-[5px] right-[5px] max-w-[50%]'>
+            <div className='w-auto flex items-center justify-end gap-[2.5px] bg-gradient-to-bl from-gray-800 to-black p-[5px] rounded-[5px] absolute bottom-[5px] right-[5px] max-w-[50%]'>
               <i className='text-blue-200 text-[0.8rem]'><IoLocationSharp /></i>
               <p className='text-[0.8rem] line-clamp-1 text-white'>{post.location}</p>
             </div>

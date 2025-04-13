@@ -228,6 +228,7 @@ model Transaction {
   createdAt            DateTime
   updatedAt            DateTime
   status               String
+  verificationCode     Int @default(0)
   clientSubscriptionId Int
   payNumber            String
   transactionMethod    String

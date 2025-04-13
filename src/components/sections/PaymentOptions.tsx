@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { formatPrice } from "@/util/stringFuncs";
+import { copyToClipboard, formatPrice } from "@/util/stringFuncs";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -18,12 +18,15 @@ import { getFutureDate } from "@/util/DateFunctions";
 import { createTransaction } from "@/server-actions/transaction.action";
 import { FaCheck } from "react-icons/fa6";
 import { createClient } from "@/server-actions/client.actions";
+import { IoCopy } from "react-icons/io5";
+import { TextInputGroup } from "../forms/DataFormsInputs";
 
 const USDRate = 1450;
 
 const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubscription[]}) => {
      const [choosenSub, setChoosenSub] = useState<TSubscription | null>(null);
      const [method, setMethod] = useState("");
+     const [paymentDone,setPaymentDone] = useState(false);
 
      useEffect(() => {
           if(method === "Bank" || method === "Mobile Money") {
@@ -31,10 +34,24 @@ const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubsc
           }
      },[method])
 
+     if(paymentDone) {
+          return (
+               <div className="w-full lg:w-[70%] bg-white rounded-[10px] p-[20px] flex flex-col items-center justify-start gap-[20px] mx-auto">
+                    <div className="w-full flex flex-col items-center justify-normal gap-[10px]">
+                    <h1 className="text-[1.6rem] font-extrabold text-black text-center">Your  payment has been recorded successfully</h1>
+                    <p className="text-[0.9rem] text-gray-600 text-center">Call this number or send us whatsapp message to verify you payment.</p>
+                    <div className="w-full grid grid-cols-2 gap-[20px]">
+
+                    </div>
+               </div>
+               </div>
+          )
+     }
+
      return (
           <div className="w-full lg:w-[70%] bg-white rounded-[10px] p-[20px] flex flex-col items-center justify-start gap-[20px] mx-auto">
                <div className="w-full flex flex-col items-center justify-normal gap-[10px]">
-                    <h1 className="text-[1.6rem] font-extrabold text-black text-center">Choose you membership Plan</h1>
+                    <h1 className="text-[1.6rem] font-extrabold text-black text-center">{choosenSub ? "Complete payment" :"Choose you membership Plan"}</h1>
                     <p className="text-[0.9rem] text-gray-600 text-center">View the best and trusted wedding vendors in Rwanda by subscribing to our premium membership plan </p>
                </div>
                {choosenSub === null ? 
@@ -43,20 +60,21 @@ const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubsc
                                    subscriptions.sort((a,b) => a.price - b.price).map(sub => <SubscriptionCard key={`subscription-card-${sub.id}`} subscription={sub} action={(newSub) => setChoosenSub(newSub)} />)
                               }
                          </div>:
-                    <div className="w-full flex flex-col items-center justify-start gap-[10px] rounded-[5px] p-[10px] border border-gray-200">
-                         <h2 className="text-center text-[1.4rem] font-bold text-black">Choose Payment Method</h2>
-                         <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-[10px]">
-                              <PaymentOptionCard image={VisaImage} name="Bank" action={(res) => setMethod(res)} />
-                              <PaymentOptionCard image={MomoImage} name="Mobile Money" action={(res) => setMethod(res)} />
-                              <PaymentOptionCard image={MtnImage} name="Direct Mtn" action={(res) => setMethod(res)} />
-                         </div>
-                    </div>
+                         <MtnDirectPayment subscription={choosenSub} user={user} action={() => setPaymentDone(true)}/>
+                    // <div className="w-full flex flex-col items-center justify-start gap-[10px] rounded-[5px] p-[10px] border border-gray-200">
+                    //      <h2 className="text-center text-[1.4rem] font-bold text-black">Choose Payment Method</h2>
+                    //      <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-[10px]">
+                    //           <PaymentOptionCard image={VisaImage} name="Bank" action={(res) => setMethod(res)} />
+                    //           <PaymentOptionCard image={MomoImage} name="Mobile Money" action={(res) => setMethod(res)} />
+                    //           <PaymentOptionCard image={MtnImage} name="Direct Mtn" action={(res) => setMethod(res)} />
+                    //      </div>
+                    // </div>
                }
-               {
+               {/* {
                     method === "Direct Mtn" && choosenSub !== null ? 
                          <MtnDirectPayment subscription={choosenSub} user={user}/>
                     :null
-               }
+               } */}
           </div>
      )
 }
@@ -90,50 +108,37 @@ const PaymentOptionCard = ({image, name,action}:{image: StaticImport, name:strin
      )
 }
 
-const MtnDirectPayment = ({user, subscription}:{user:TUser, subscription: TSubscription}) => {
+const MtnDirectPayment = ({user, subscription, action}:{user:TUser, subscription: TSubscription, action:() => void}) => {
      const [phone,setPhone] = useState<string>("");
-     const [isMobile, setIsMobile] = useState(false);
+     const [names,setNames] = useState("");
      const [paymentDone, setPaymentDone] = useState<boolean>(false)
      const [loading,setLoading] = useState<boolean>(false);
      const router = useRouter();
-     const expiryDate = getFutureDate(subscription.name === "Member" ? 1000 : 90);
+     const expiryDate = getFutureDate(-1);
      
      const amount = subscription.price * USDRate;
 
-     useEffect(() => {
-          const userAgent = navigator.userAgent.toLowerCase();
-          const mobileKeywords = ["android", "iphone", "ipad", "ipod", "blackberry", "windows phone"];
-  
-          setIsMobile(mobileKeywords.some((keyword) => userAgent.includes(keyword)));
-     }, []);
+     
 
      const completePayment = async () => {
           try {
                setLoading(true);
 
-               if(phone === "" || phone.length !== 10) return showMainNotification("Invalid phone number", ENotificationType.WARNING); 
-               alert(`Confirm Payment of Rwf ${formatPrice(amount)} using phone number: ${phone}`);
+               if(phone === "") return showMainNotification("Invalid phone number. User the international format: +XXXX...", ENotificationType.WARNING); 
                const clientAcc  = user.client ? user.client : await createClient({name: user.email, phone: phone, user: {connect: {id: user.id}}});
                let clientSubscription = user.client?.subscription;
-
 
                if(clientSubscription){
                     clientSubscription = await updateClientSubscription(clientSubscription.id, {expiryAt: expiryDate, updatedAt: new Date()});
                }else {
                     clientSubscription = await createClientSubscription({createdAt: new Date(), updatedAt: new Date(), expiryAt: expiryDate, client: {connect:{id: clientAcc?.id}}, subscription:{connect: {id: subscription?.id || 0}} })
                }
-               if(isMobile) {
-                    setPaymentDone(true);
-                    router.push(`tel:*182*1*1*0780795232*${amount}`);
-               }else{
-                    alert(`Using the number: ${phone}, Dial *182*1*1*0780795232*${subscription.price * USDRate} to complete he payment.`);
-                    setPaymentDone(true);
-               }
+               
 
-               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: 1, price:amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: "Direct Mtn", clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
+               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: 1, price:amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: "Direct Mtn",proof: names, clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
                if(newTransaction){
-                    showMainNotification("Direct Payment recorded successfully", ENotificationType.PASS);
-                    return router.push('/posts');
+                    showMainNotification("Payment recorded successfully", ENotificationType.PASS);
+                    return action();
                }else {
                     showMainNotification("Error recording payment. Try again later please", ENotificationType.FAIL);
                }
@@ -146,15 +151,39 @@ const MtnDirectPayment = ({user, subscription}:{user:TUser, subscription: TSubsc
 
      }
 
+     const copyText = async(str:string) => {
+          const result = await copyToClipboard(str);
+          if(result) return showMainNotification("Copied to clipboard", ENotificationType.PASS);
+          else return showMainNotification("Error copying the text. Try again", ENotificationType.FAIL);
+     }
+
      return (
           <div className="w-full flex flex-col items-center gap-[5px]">
                {
                     !paymentDone ?
-                    <>
-                         <label htmlFor="payment-number" className="text-[0.9rem] text-gray-600">Payment Number:</label>
-                         <input onChange={(e) => setPhone(e.target.value)} type="tel" name="payment-number" inputMode="numeric" id="payment-number" className="w-auto p-[5px] outline-none bg-gray-100 border border-gray-300 rounded-[5px] text-center text-blue-600 text-[0.9rem] focus:border-blue-600" />
-                         <button type="button" disabled={loading} className="w-full lg:w-[40%] p-[5px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[5px] disabled:bg-gray-600" onClick={completePayment}>{loading? "Loading...":"Complete Payment"}</button>
-                    </>
+                    <div className="w-full flex flex-col items-center justify-start gap-[20px] px-[20px] ">
+                         <h3 className="text-[1.4rem] font-bold text-blue-950">Pay to one of these accounts:</h3>
+                         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px]">
+                              <div className="w-full flex flex-col items-start justify-start gap-[5px] p-[10px] rounded-[10px] border-[1.2px] border-gray-300">
+                                   <p className="text-[1rem] text-gray-800">Vendor: <b className="text-[1rem] text-orange-800">MTN</b></p>
+                                   <p className="text-[1rem] text-gray-800">Amount: <b className="text-[1rem] text-orange-800">Rwf {formatPrice(subscription.price * USDRate)}</b></p>
+                                   <p className="text-[1rem] text-gray-800">Account Names: <b className="text-[1rem] text-orange-800">Enock Niyonzima</b></p>
+                                   <p className="text-[1rem] text-gray-800 flex items-center gap-[2.5px]">Account Number: <b className=" text-[1.2rem] text-orange-800">0788399021</b> <IoCopy className="text-blue-600 hover:text-blue-800 text-[24px] cursor-pointer" onClick={async() => await copyText("0788399021")} /></p>
+                              </div>   
+                              <div className="w-full flex flex-col items-start justify-start gap-[5px] p-[10px] rounded-[10px] border-[1.2px] border-gray-300">
+                                   <p className="text-[1rem] text-gray-800">Vendor: <b className="text-[1rem] text-orange-800">Equity Bank</b></p>
+                                   <p className="text-[1rem] text-gray-800">Amount: <b className="text-[1rem] text-orange-800">Rwf {formatPrice(subscription.price * USDRate)}</b></p>
+                                   <p className="text-[1rem] text-gray-800">Account Names: <b className="text-[1rem] text-orange-800">Enock Niyonzima</b></p>
+                                   <p className="text-[1rem] text-gray-800 flex items-center gap-[2.5px]">Account Number: <b className=" text-[1.2rem] text-orange-800">4012100596469</b> <IoCopy className="text-blue-600 hover:text-blue-800 text-[24px] cursor-pointer" onClick={async() => await copyText("4012100596469")} /></p>
+                              </div> 
+                         </div>
+                         <form onSubmit={completePayment} className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] rounded-[10px] p-[10px] border-[1.2px] border-gray-300">
+                              <h3 className="w-full text-[1rem] font-bold lg:col-span-2">Please provide your payment details.</h3>
+                              <TextInputGroup name="name" label="Names: " placeholder="Enter you payment names" required type="text"action={res => setNames(String(res))} />
+                              <TextInputGroup name="phone" label="Account/Phone Number: " placeholder="Enter your account or phone number.." required type="text" action={res => setPhone(String(res).trim())} />
+                              <button type="button" disabled={loading} className="w-full lg:w-[40%] p-[10px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[10px] disabled:bg-gray-600" onClick={completePayment}>{loading? "Loading...":"Complete Payment"}</button>
+                         </form>
+                    </div>
                     :
                     <>
                          <p className="text-center text-[0.8rem] text-gray-700">Click below if you have compeleted the payment click <b>Proceed</b> else <b>Cancel</b> to start over. Before your payment is verified you will have limited rights to view the posts.</p>

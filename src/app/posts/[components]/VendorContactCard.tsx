@@ -24,7 +24,7 @@ export const PostCardVendorContacts = ({contacts}:{contacts: TVendorContact[]}) 
                          const type = c.contactType.type.toLowerCase();
 
                          if(Icon === null) return null;
-                         return <Link href={ type === 'phone' ? `tel:${c.value}`: type === 'email' ? `mailto:${c.value}` : c.value  } target="_blank" key={`post-card-vendor-contact-icon-${c.id}`} className="text-[16px] text-gray-200 rounded-[5px] p-[3px] bg-black/80 hover:scale-110 transition-all duration-200"><Icon /></Link>})
+                         return <Link href={ type === 'phone' ? `tel:${c.value}`: type === 'email' ? `mailto:${c.value}` : c.value  } target="_blank" key={`post-card-vendor-contact-icon-${c.id}`} className="text-[16px] text-gray-200 rounded-[5px] p-[3px] bg-gradient-to-br from-blue-800 to-black hover:scale-110 transition-all duration-200"><Icon /></Link>})
                }
           </div>
      )

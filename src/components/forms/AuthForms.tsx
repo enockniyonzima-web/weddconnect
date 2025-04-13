@@ -37,7 +37,7 @@ export const AuthPasswordInput = ({label, name, placeholder,action}:{label: stri
 
 export const AuthSubmitBtn = ({name, loading}:{name:string, loading: boolean}) => {
      return (
-          <button type="submit" disabled={loading} className="w-full p-[5px] rounded-[5px] text-[0.9rem] font-medium text-white outline-none bg-blue-600 hover:bg-blue-800 disabled:bg-gray-600 transition-all duration-200 ">{name}</button>
+          <button type="submit" disabled={loading} className="w-full p-[5px] py-[10px] rounded-[5px] text-[0.9rem] font-medium text-white outline-none bg-blue-600 hover:bg-blue-800 disabled:bg-gray-600 transition-all duration-200 ">{name}</button>
      )
 } 
 
@@ -54,7 +54,7 @@ export const GoogleSignBtn = () => {
           }
      }
      return (
-          <button disabled={loading} type="button" onClick={signIn} className="w-full flex items-center justify-center gap-[10px] rounded-[20px] p-[10px] bg-gradient-to-br from-blue-600 to-blue-800 transition-all duration-200 disabled:cursor-progress">
+          <button disabled={loading} type="button" onClick={signIn} className="w-full flex items-center justify-center gap-[10px] rounded-[30px] p-[10px] bg-gradient-to-br from-blue-600 to-blue-800 transition-all duration-200 disabled:cursor-progress">
                <i className="text-[28px]"><FcGoogle /></i>
                {loading ? null :<span className="text-[0.9rem] text-white">Continue with Google</span>}
           </button>

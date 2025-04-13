@@ -4,6 +4,7 @@
 import prisma from "@/lib/prisma";
 import { RevalidatePages } from "@/services/Server";
 import { Prisma } from "@prisma/client";
+import { cache } from "react";
 
 export async function createClient (data: Prisma.ClientCreateInput) {
      try {     
@@ -37,3 +38,15 @@ export async function deleteClient (id:number) {
      }
 
 }
+
+
+export const fetchClients = cache(async<T extends Prisma.ClientSelect>(selectType: T, filters?:Prisma.ClientWhereInput):Promise<{data: Prisma.ClientGetPayload<{select: T}>[], pagination: {total:number}}> => {
+     try{
+          const clientRes = await prisma.client.findMany({select: selectType, where:filters});
+          const total = await prisma.client.count({where: filters});
+          return {data:clientRes, pagination:{total}};
+     }catch(error){
+          console.log("Error fetching clients: ", error);
+          return {data: [], pagination:{total:0}};
+     }
+} )

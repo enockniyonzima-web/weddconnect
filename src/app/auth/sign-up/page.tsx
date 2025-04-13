@@ -20,14 +20,14 @@ export default function SignupPage() {
           
           if(formState.status === "success") {
                showMainNotification(formState.message, ENotificationType.PASS);
-               navigate("/auth/login");
+               return navigate("/auth/login");
           }else if(formState.status === "error") {
                showMainNotification(formState.message, ENotificationType.FAIL);
           }
      }, [formState]);
      return (
           <ClientPage>
-               <div className="w-full flex px-[2%] flex-col items-center justify-center py-[40px] bg-gray-100">
+               <div className="w-full flex px-[2%] flex-col items-center justify-center py-[80px] bg-black">
                     <div className="w-full md:w-[70%] lg:w-[40%] rounded-[5px] px-[20px] py-[20px] bg-white flex flex-col items-center justify-start gap-[30px]">
                          <h1 className="text-[1.4rem] font-bold text-black text-center" >Register</h1>
                          <GoogleSignBtn />

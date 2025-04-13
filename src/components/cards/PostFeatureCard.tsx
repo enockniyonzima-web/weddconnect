@@ -4,7 +4,7 @@ import { findIconByKey } from "../icons/icons-list";
 export const PostFeatureCard = ({feature}: {feature:TPostFeature}) => {
      const Icon = findIconByKey(feature.categoryFeature.icon);
      return(
-          <div title={feature.categoryFeature.name} className="w-auto cursor-pointer flex flex-col justify-start items-center gap-[3px] rounded-[2.5px] p-[2.5px] border border-gray-200 bg-white ">
+          <div title={feature.categoryFeature.name} className="w-auto cursor-pointer flex flex-col justify-start items-center gap-[3px] rounded-[10px] p-[2.5px] py-[5px] border border-gray-200 bg-white ">
                <p className='text-[0.65rem] text-black font-bold'>{feature.categoryFeature.name}</p>
                <div className="w-auto max-w-[100%] flex items-center gap-[2px] overflow-hidden">
                     {Icon && <i className="text-gray-400 text-[18px] md:text-[18px] p-[1px]"><Icon /></i>}

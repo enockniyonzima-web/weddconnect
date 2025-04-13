@@ -1,9 +1,10 @@
-import { TClient } from "@/common/Entities"
+
 import { getDate } from "@/util/DateFunctions"
 import Image from "next/image"
+import { TAdminClientSelect } from "./ClientsContainer"
 
 
-const ClientCard = ({client}:{client: TClient}) => {
+const ClientCard = ({client}:{client: TAdminClientSelect}) => {
      return (
           <div className="w-full flex flex-col items-center justify-center bg-white rounded-[10px] p-[10px] gap-[10px]">
                <div className="w-full flex items-center justify-start gap-[10px] overflow-x-hidden">
@@ -16,7 +17,6 @@ const ClientCard = ({client}:{client: TClient}) => {
                <div className="w-full flex flex-col items-start gap-[5px] ">
                     <p className="text-[0.9rem] text-gray-700 ">Subscription: <b>{client.subscription?.subscription.name || "No Subscription"}</b></p>
                     <p className="text-[0.9rem] text-gray-700 ">Expires At: <b>{client.subscription?.expiryAt ? getDate(client.subscription?.expiryAt) : "Not set"}</b></p>
-                    <p className="text-[0.9rem] text-gray-700 ">Recent Pay: <b>{client.subscription?.updatedAt ? getDate(client.subscription?.expiryAt) : "Not defined"}</b></p>
                </div>
           </div>
      )

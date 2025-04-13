@@ -9,7 +9,7 @@ export const HeroSection = () => {
                <h1 className="text-[1.6rem] text-black font-bold w-full text-start leading-3">Subscriptions</h1>
                <div className="w-full flex items-end justify-between">
                     <p className="text-[0.9rem] text-gray-600">Manage your platform subscriptions</p>
-                    <Link className="bg-blue-600 text-[0.8rem] rounded-[5px] whitespace-nowrap hover:bg-blue-800 py-[5px] px-[20px] text-white flex items-center gap-[5px]" prefetch={true} href={'/dashboard/admin/clients/subscriptions?form=add'} ><i className="text-[18px]"><FaPlus /></i>Add Post</Link>
+                    <Link className="bg-blue-600 text-[0.8rem] rounded-[5px] whitespace-nowrap hover:bg-blue-800 py-[5px] px-[20px] text-white flex items-center gap-[5px]" prefetch={true} href={'/dashboard/admin/clients/subscriptions?form=add'} ><i className="text-[18px]"><FaPlus /></i>Add Subscription</Link>
                </div>
           </div>
      )

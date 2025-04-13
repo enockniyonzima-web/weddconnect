@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import ClientCard from "./ClientCard";
+
 import { Prisma } from "@prisma/client";
 import { fetchClients } from "@/server-actions/client.actions";
+import ClientCard from "../ClientCard";
+import ClientsTable from "./ClientsTable";
 
 export const AdminClientSelect= {
      id:true, name:true, phone:true,
      user: {select:{email:true, image:true}},
      subscription:{
           select:{
+               id:true,
                transactions: {select: {proof:true, amount:true, createdAt:true, id:true, payNumber:true, transactionMethod:true}, take:1, orderBy:{createdAt:"desc"}},
                expiryAt:true,
                updatedAt:true,
@@ -19,7 +22,7 @@ export const AdminClientSelect= {
 
 export type TAdminClientSelect = Prisma.ClientGetPayload<{select: typeof AdminClientSelect }>;
 
-export default async function ClientsContainer ({search}:{search: Record<string, string | undefined>}) {
+export default async function PendingClientsContainer ({search}:{search: Record<string, string | undefined>}) {
      let total = 0;
      let clients:TAdminClientSelect[] = [];
      const currentPage = search.page ? parseInt(search.page) : 1;
@@ -41,10 +44,8 @@ export default async function ClientsContainer ({search}:{search: Record<string,
           )
      } 
      return (
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
-               {
-                    clients.map((client) => <ClientCard key={`admin-client-info-${client.id}`} client={client} />)
-               }
+          <div className="w-full">
+               <ClientsTable clients={clients} />
           </div>
           
      );
