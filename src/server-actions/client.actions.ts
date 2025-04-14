@@ -49,4 +49,14 @@ export const fetchClients = cache(async<T extends Prisma.ClientSelect>(selectTyp
           console.log("Error fetching clients: ", error);
           return {data: [], pagination:{total:0}};
      }
-} )
+} );
+
+export const fetchClientById = cache(async<T extends Prisma.ClientSelect>(id:number,selectType: T):Promise<Prisma.ClientGetPayload<{select: T}> | null> => {
+     try{
+          const clientRes = await prisma.client.findUnique({where: {id},select: selectType});
+          return clientRes;
+     }catch(error){
+          console.log("Error fetching client: ", error);
+          return null;
+     }
+} );

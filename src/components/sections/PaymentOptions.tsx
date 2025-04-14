@@ -38,10 +38,16 @@ const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubsc
           return (
                <div className="w-full lg:w-[70%] bg-white rounded-[10px] p-[20px] flex flex-col items-center justify-start gap-[20px] mx-auto">
                     <div className="w-full flex flex-col items-center justify-normal gap-[10px]">
-                    <h1 className="text-[1.6rem] font-extrabold text-black text-center">Your  payment has been recorded successfully</h1>
-                    <p className="text-[0.9rem] text-gray-600 text-center">Call this number or send us whatsapp message to verify you payment.</p>
-                    <div className="w-full grid grid-cols-2 gap-[20px]">
-
+                    <h1 className="text-[1.6rem] font-extrabold text-black text-center">Thank you for completing your payment.</h1>
+                    <p className="text-[0.9rem] text-gray-600 text-center max-w-[70%]">It usually takes five (5) minutes to 30 minutes to verify your payment. After verification, you gain full access to all wedding vendors.</p>
+                    
+                    <div className="w-full flex flex-col items-center justify-start gap-[10px] border border-gray-200 rounded-[10px] p-[20px]">
+                         <p className="text-[1rem] font-bold text-gray-800">Contact us to complete verification process if it is taking long.</p>
+                         <div className="w-full grid grid-cols-2 gap-[20px]">
+                              <Link href={`tel:0788399021`} className="w-full text-center p-[10px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[10px] disabled:bg-gray-600" target="_blank">Call Us</Link>
+                              <Link href={`https://wa.me/+250788399021`}  className="w-full text-center p-[10px] bg-green-600 text-[0.9rem] text-white hover:bg-green-800 rounded-[10px] disabled:bg-gray-600" >Send us Message</Link>
+                         </div>
+                         
                     </div>
                </div>
                </div>
@@ -113,6 +119,7 @@ const MtnDirectPayment = ({user, subscription, action}:{user:TUser, subscription
      const [names,setNames] = useState("");
      const [paymentDone, setPaymentDone] = useState<boolean>(false)
      const [loading,setLoading] = useState<boolean>(false);
+     const [method,setMethod] = useState("");
      const router = useRouter();
      const expiryDate = getFutureDate(-1);
      
@@ -131,11 +138,11 @@ const MtnDirectPayment = ({user, subscription, action}:{user:TUser, subscription
                if(clientSubscription){
                     clientSubscription = await updateClientSubscription(clientSubscription.id, {expiryAt: expiryDate, updatedAt: new Date()});
                }else {
-                    clientSubscription = await createClientSubscription({createdAt: new Date(), updatedAt: new Date(), expiryAt: expiryDate, client: {connect:{id: clientAcc?.id}}, subscription:{connect: {id: subscription?.id || 0}} })
+                    clientSubscription = await createClientSubscription({createdAt: new Date(), updatedAt: new Date(), expiryAt: expiryDate, client: {connect:{id: clientAcc?.id}},subscription:{connect: {id: subscription?.id || 0}} })
                }
                
 
-               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: 1, price:amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: "Direct Mtn",proof: names, clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
+               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: 1, price:amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: method,proof: names, clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
                if(newTransaction){
                     showMainNotification("Payment recorded successfully", ENotificationType.PASS);
                     return action();
@@ -162,27 +169,46 @@ const MtnDirectPayment = ({user, subscription, action}:{user:TUser, subscription
                {
                     !paymentDone ?
                     <div className="w-full flex flex-col items-center justify-start gap-[20px] px-[20px] ">
-                         <h3 className="text-[1.4rem] font-bold text-blue-950">Pay to one of these accounts:</h3>
-                         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px]">
-                              <div className="w-full flex flex-col items-start justify-start gap-[5px] p-[10px] rounded-[10px] border-[1.2px] border-gray-300">
-                                   <p className="text-[1rem] text-gray-800">Vendor: <b className="text-[1rem] text-orange-800">MTN</b></p>
-                                   <p className="text-[1rem] text-gray-800">Amount: <b className="text-[1rem] text-orange-800">Rwf {formatPrice(subscription.price * USDRate)}</b></p>
-                                   <p className="text-[1rem] text-gray-800">Account Names: <b className="text-[1rem] text-orange-800">Enock Niyonzima</b></p>
-                                   <p className="text-[1rem] text-gray-800 flex items-center gap-[2.5px]">Account Number: <b className=" text-[1.2rem] text-orange-800">0788399021</b> <IoCopy className="text-blue-600 hover:text-blue-800 text-[24px] cursor-pointer" onClick={async() => await copyText("0788399021")} /></p>
-                              </div>   
-                              <div className="w-full flex flex-col items-start justify-start gap-[5px] p-[10px] rounded-[10px] border-[1.2px] border-gray-300">
-                                   <p className="text-[1rem] text-gray-800">Vendor: <b className="text-[1rem] text-orange-800">Equity Bank</b></p>
-                                   <p className="text-[1rem] text-gray-800">Amount: <b className="text-[1rem] text-orange-800">Rwf {formatPrice(subscription.price * USDRate)}</b></p>
-                                   <p className="text-[1rem] text-gray-800">Account Names: <b className="text-[1rem] text-orange-800">Enock Niyonzima</b></p>
-                                   <p className="text-[1rem] text-gray-800 flex items-center gap-[2.5px]">Account Number: <b className=" text-[1.2rem] text-orange-800">4012100596469</b> <IoCopy className="text-blue-600 hover:text-blue-800 text-[24px] cursor-pointer" onClick={async() => await copyText("4012100596469")} /></p>
-                              </div> 
-                         </div>
-                         <form onSubmit={completePayment} className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] rounded-[10px] p-[10px] border-[1.2px] border-gray-300">
-                              <h3 className="w-full text-[1rem] font-bold lg:col-span-2">Please provide your payment details.</h3>
-                              <TextInputGroup name="name" label="Names: " placeholder="Enter you payment names" required type="text"action={res => setNames(String(res))} />
-                              <TextInputGroup name="phone" label="Account/Phone Number: " placeholder="Enter your account or phone number.." required type="text" action={res => setPhone(String(res).trim())} />
-                              <button type="button" disabled={loading} className="w-full lg:w-[40%] p-[10px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[10px] disabled:bg-gray-600" onClick={completePayment}>{loading? "Loading...":"Complete Payment"}</button>
-                         </form>
+                         {
+                              method === "" ? 
+                                   <>
+                                        <h3 className="text-[1.4rem] font-bold text-blue-950">Pay to one of these accounts:</h3>
+                                        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px]">
+                                             <div className="w-full flex flex-col items-start justify-start gap-[5px] p-[10px] rounded-[10px] border-[1.2px] border-gray-300">
+                                                  <p className="text-[1rem] text-gray-800">Vendor: <b className="text-[1rem] text-orange-800">MTN</b></p>
+                                                  <p className="text-[1rem] text-gray-800">Amount: <b className="text-[1rem] text-orange-800">Rwf {formatPrice(subscription.price * USDRate)}</b></p>
+                                                  <p className="text-[1rem] text-gray-800">Account Names: <b className="text-[1rem] text-orange-800">Enock Niyonzima</b></p>
+                                                  <p className="text-[1rem] text-gray-800 flex items-center gap-[2.5px]">Account Number: <b className=" text-[1.2rem] text-orange-800">0788399021</b> <IoCopy className="text-blue-600 hover:text-blue-800 text-[24px] cursor-pointer" onClick={async() => await copyText("0788399021")} /></p>
+                                                  <div className="w-full flex flex-wrap items-center justify-start gap-[10px]">
+                                                       <Link href={`tel:*182*1*1*0788399021*${subscription.price * USDRate}#`} onClick={() => setMethod("Mtn")} className="w-full text-center p-[10px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[10px] disabled:bg-gray-600" target="_blank">Pay Now</Link>
+                                                       {/* <p className="text-[1rem] text-gray-800">OR</p>
+                                                       <button onClick={() => setMethod("Mtn")} type="button" className="w-full lg:w-[40%] p-[10px] bg-green-600 text-[0.9rem] text-white hover:bg-green-800 rounded-[10px] disabled:bg-gray-600" >Already Paid</button> */}
+                                                  </div>
+                                             </div>   
+                                             <div className="w-full flex flex-col items-start justify-start gap-[5px] p-[10px] rounded-[10px] border-[1.2px] border-gray-300">
+                                                  <p className="text-[1rem] text-gray-800">Vendor: <b className="text-[1rem] text-orange-800">Equity Bank</b></p>
+                                                  <p className="text-[1rem] text-gray-800">Amount: <b className="text-[1rem] text-orange-800">Rwf {formatPrice(subscription.price * USDRate)}</b></p>
+                                                  <p className="text-[1rem] text-gray-800">Account Names: <b className="text-[1rem] text-orange-800">Enock Niyonzima</b></p>
+                                                  <p className="text-[1rem] text-gray-800 flex items-center gap-[2.5px]">Account Number: <b className=" text-[1.2rem] text-orange-800">4012100596469</b> <IoCopy className="text-blue-600 hover:text-blue-800 text-[24px] cursor-pointer" onClick={async() => await copyText("4012100596469")} /></p>
+                                                  <div className="w-full flex flex-wrap items-center justify-start gap-[10px]">
+                                                       <Link href={`tel:*555*3*2*2*4012100596469*${subscription.price * USDRate}#`} onClick={() => setMethod("Equity")} className="w-full text-center  p-[10px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[10px] disabled:bg-gray-600" target="_blank">Pay Now</Link>
+                                                       {/* <p className="text-[1rem] text-gray-800">OR</p>
+                                                       <button onClick={() => setMethod("Equity")} type="button" className="w-auto lg:w-[40%] p-[10px] bg-green-600 text-[0.9rem] text-white hover:bg-green-800 rounded-[10px] disabled:bg-gray-600" >Already Paid</button> */}
+                                                  </div>
+                                             </div> 
+                                             
+                                        </div>
+                                   </>
+                              :
+                              <form onSubmit={completePayment} className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[20px] rounded-[10px] p-[10px] border-[1.2px] border-gray-300">
+                                   <h3 className="w-full text-[1rem] font-bold lg:col-span-2">Please provide your payment details.</h3>
+                                   <TextInputGroup name="name" label="Names: " placeholder="Enter you payment names" required type="text"action={res => setNames(String(res))} />
+                                   <TextInputGroup name="phone" label="Account/Phone Number: " placeholder="Enter your account or phone number.." required type="text" action={res => setPhone(String(res).trim())} />
+                                   <button type="button" disabled={loading} className="w-full lg:w-[40%] p-[10px] bg-blue-600 text-[0.9rem] text-white hover:bg-blue-800 rounded-[10px] disabled:bg-gray-600" onClick={completePayment}>{loading? "Loading...":"Complete Payment"}</button>
+                              </form>
+                         }
+                         
+                         
                     </div>
                     :
                     <>

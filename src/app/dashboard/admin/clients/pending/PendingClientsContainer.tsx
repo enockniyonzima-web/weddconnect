@@ -11,7 +11,7 @@ export const AdminClientSelect= {
      subscription:{
           select:{
                id:true,
-               transactions: {select: {proof:true, amount:true, createdAt:true, id:true, payNumber:true, transactionMethod:true}, take:1, orderBy:{createdAt:"desc"}},
+               transactions: {select: {proof:true,amount:true, createdAt:true, id:true, payNumber:true, transactionMethod:true}, where: {status: "pending"},take:1, orderBy:{createdAt:"desc"}},
                expiryAt:true,
                updatedAt:true,
                subscription :{select:{name:true}}
@@ -25,10 +25,13 @@ export type TAdminClientSelect = Prisma.ClientGetPayload<{select: typeof AdminCl
 export default async function PendingClientsContainer ({search}:{search: Record<string, string | undefined>}) {
      let total = 0;
      let clients:TAdminClientSelect[] = [];
+     const filters:Prisma.ClientWhereInput = {
+          subscription: {expiryAt: {lt: new Date()}}
+     }
      const currentPage = search.page ? parseInt(search.page) : 1;
      const searchStr = Object.entries(search).map(([key, value]) => `${key}=${value}`).join('&');
      const searchQuery = new URLSearchParams(searchStr).toString();
-     const clientsRes = await fetchClients(AdminClientSelect);
+     const clientsRes = await fetchClients(AdminClientSelect, filters);
 
      if(clientsRes) {
           const {data, pagination} = clientsRes;
@@ -39,7 +42,7 @@ export default async function PendingClientsContainer ({search}:{search: Record<
      if(clients.length === 0){
           return (
                <div className="w-full flex items-center justify-center p-[20px]">
-                    <p>No clients found!</p>
+                    <p>No pending clients found!</p>
                </div>
           )
      } 

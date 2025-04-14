@@ -19,13 +19,17 @@ export const AdminClientSelect= {
 
 export type TAdminClientSelect = Prisma.ClientGetPayload<{select: typeof AdminClientSelect }>;
 
+
 export default async function ClientsContainer ({search}:{search: Record<string, string | undefined>}) {
      let total = 0;
      let clients:TAdminClientSelect[] = [];
+     const filters:Prisma.ClientWhereInput = {
+          subscription: {expiryAt: {gt: new Date()}}
+     }
      const currentPage = search.page ? parseInt(search.page) : 1;
      const searchStr = Object.entries(search).map(([key, value]) => `${key}=${value}`).join('&');
      const searchQuery = new URLSearchParams(searchStr).toString();
-     const clientsRes = await fetchClients(AdminClientSelect);
+     const clientsRes = await fetchClients(AdminClientSelect, filters);
 
      if(clientsRes) {
           const {data, pagination} = clientsRes;

@@ -52,6 +52,7 @@ const ClientsTable = ({clients}:{clients:TAdminClientSelect[]}) => {
                                                   <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Account No: {c.subscription?.transactions[0]?.payNumber || "Not provided"}</span>
                                                   <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Paid on: {c.subscription?.transactions[0]?.createdAt ? getDate(c.subscription?.transactions[0]?.createdAt) : "Not provided"}</span>
                                                   <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Account Names: {c.subscription?.transactions[0]?.proof || "Not provide"}</span>
+                                                  <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Vendor used: {c.subscription?.transactions[0]?.transactionMethod || "Not Defined"}</span>
                                              </>:
                                              <span className="text-white bg-blue-800 hover:bg-blue-600 whitespace-nowrap p-[10px] rounded-[10px]"  onClick={() => setActive(c.id)}>View Details</span>
                                         }

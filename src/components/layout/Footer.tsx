@@ -18,7 +18,7 @@ const Footer = () => {
      const supportLinks = [
           {name: "Help Center", dest:'/help-center', icon: BiSupport},
           {name: "FAQS", dest: '/faqs', icon: FaQuestionCircle},
-          {name: 'Message Us', dest: 'https://wa.me/+250784786392', icon: FaWhatsappSquare},
+          {name: 'Message Us', dest: 'https://wa.me/+250788399021', icon: FaWhatsappSquare},
           {name: 'Call Us', dest: 'tel:+250788399021', icon: MdCall},
           {name: 'Email Us', dest: 'mailto:enockniyonzima0@gmail.com', icon: MdEmail},
 
