@@ -9,11 +9,13 @@ import { PostCardVendorContacts } from './VendorContactCard';
 import { IoLocationSharp } from 'react-icons/io5';
 
 const PostCard = ({post}:{post: TPost}) => {
+  const price = post.price;
   return (
       <div className='w-full flex flex-col items-center justify-start bg-white shadow-sm shadow-gray-600 rounded-[10px] overflow-hidden'>
         <div className='w-full p-[5px] flex flex-col items-start justify-between' >
           <h3 className='text-[1.2rem] font-bold text-black'>{post.title.toUpperCase()}</h3>
-          <p className='text-blue-600 font-extrabold text-[1.1rem]'>{post.price ? `RWF ${formatPrice(post.price.min)} - ${formatPrice(post.price.max)} ` : 'Negotiable'}</p>
+          {/* <p className='text-blue-600 font-extrabold text-[1.1rem]'>{post.price ? `RWF ${formatPrice(post.price.min)} - ${formatPrice(post.price.max)} ` : 'Negotiable'}</p> */}
+          <p className='text-[0.85rem] font-bold text-blue-600'>{price ? `${price.min === 0 && price.max === 0 ? 'Negotiable' : `${price.currency}  ${formatPrice(price.min)} - ${price.max === 0 ? 'Above' : formatPrice(price.max)}`  }` : 'Negotiable'}</p>
         </div>
         <div className='w-full mx-auto overflow-hidden rounded-[0px]'>
           <div className=' w-full relative'>
