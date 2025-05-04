@@ -42,7 +42,6 @@ export default function LoginPage() {
                const data = new FormData();
                data.append("email", credentials.email);
                data.append("password", credentials.password);
-               console.log(credentials);
 
                const result= await CredentialsSignin(data);
                if (result) {
@@ -51,7 +50,6 @@ export default function LoginPage() {
                     }
 
                     const {user} = await getSessionUser();
-                    console.log(user);
                     showMainNotification("Login successfull", ENotificationType.PASS);
                     setUser(user);
                     return redirectUserByType(user?.type || "",  user);
