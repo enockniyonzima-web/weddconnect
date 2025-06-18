@@ -29,8 +29,10 @@ export async function updateClient (id:number,data: Prisma.ClientUpdateInput) {
 }
 
 export async function deleteClient (id:number) {
-     try {     
-          const res = await prisma.client.delete({where: {id}});
+     try {  
+          const exClient = await prisma.client.findUnique({where: {id}, include:{user:true}});
+          if(!exClient) return null;   
+          const res = await prisma.user.delete({where: {id: exClient.user.id}});
           if(res) RevalidatePages.client();
           return res;
      } catch (error) {

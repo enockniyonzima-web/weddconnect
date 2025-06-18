@@ -2,13 +2,13 @@
 "use client";
 
 import Image from "next/image";
-import { TAdminClientSelect } from "./PendingClientsContainer";
 import { getDate, getFutureDate } from "@/util/DateFunctions";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import { ENotificationType } from "@/common/CommonTypes";
 import { updateClientSubscription } from "@/server-actions/client-subscription.actions";
 import { formatPrice } from "@/util/stringFuncs";
 import { useState } from "react";
+import { TAdminClientSelect } from "../select-types";
 
 const ClientsTable = ({clients}:{clients:TAdminClientSelect[]}) => {
      const [active, setActive] = useState(0)

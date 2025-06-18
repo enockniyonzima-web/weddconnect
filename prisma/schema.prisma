@@ -44,7 +44,7 @@ model Account {
   refreshToken       String?
   accessToken        String?
   accessTokenExpires DateTime?
-  user               User      @relation(fields: [userId], references: [id])
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -193,7 +193,7 @@ model Client {
   phone        String
   userId       String              @unique @db.Uuid
   name         String
-  user         User                @relation(fields: [userId], references: [id])
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   subscription ClientSubscription?
   likedPosts   PostLike[]
   reviews      PostReview[]
@@ -214,8 +214,8 @@ model ClientSubscription {
   expiryAt       DateTime
   clientId       Int           @unique
   subscriptionId Int
-  client         Client        @relation(fields: [clientId], references: [id])
-  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+  client         Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
 }
 
@@ -232,7 +232,7 @@ model Transaction {
   clientSubscriptionId Int
   payNumber            String
   transactionMethod    String
-  clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id])
+  clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id], onDelete: Cascade)
 }
 
 model Admin {
@@ -242,5 +242,5 @@ model Admin {
   roleId    Int
   userId    String   @unique @db.Uuid
   role      Role     @relation(fields: [roleId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
