@@ -1,5 +1,6 @@
-import Image from "next/image";
-import ProfessionalImage from "../../../../public/home/professional-image.jpg";
+import Image from "@/components/ui/Image";
+
+const ProfessionalImage = "/home/professional-image.jpg";
 
 export default function VendorConnectionContainer() {
      return (

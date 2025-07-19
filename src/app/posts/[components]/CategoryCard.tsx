@@ -1,5 +1,5 @@
 import { TCategory } from '@/common/Entities'
-import Image from 'next/image'
+import Image from '@/components/ui/Image';
 import Link from 'next/link'
 import React from 'react'
 import { FaArrowRightLong } from "react-icons/fa6";

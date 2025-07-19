@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
-import Image from "next/image";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
-import VenuesImage from '../../../public/professionals/venues.webp';
-import weddingPlannerImage from '../../../public/professionals/wedding-planner.webp';
-import PhotographyImage from '../../../public/professionals/photography.webp';
 import { IconType } from "react-icons";
 import { MdCelebration, MdOutlineDateRange, MdVerified } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
@@ -17,19 +12,16 @@ import Endpoints from "@/services/Endpoints";
 import { CategoryCard } from "../cards/Category";
 import { TrendingImages } from "../images/StaticImages";
 import { TrendingCardsSection } from "../cards/TrendingCardsSection";
-import HeroImage from '../../../public/home/new-cp-image.webp';
 import { IoImages } from "react-icons/io5";
 import { ReasonToJoinCard } from "../cards/ReasonToJoinCard";
 import { HiOutlineCurrencyDollar } from "react-icons/hi";
 
-import ProfessionalImage from "../../../public/home/professional-image.jpg";
+import Image from "../ui/Image";
 
-// const NewImage = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/hero-image.webp";
-
-const Professionals: {image:StaticImport, title:string, description:string, dest: string}[] = [
-     {title: "Venues", description: "Welcome to our curated selection of wedding venues, where we connect couples with beautiful spaces to celebrate their special day.", image:VenuesImage, dest:'/' },
-     {title: "Wedding Planner", description: "Our expert wedding planners will guide through every step of your wedding journey, from initial concept to flawless execution.", image:weddingPlannerImage, dest:'/' },
-     {title: "Photography Company", description: "Discover our selection of talented photography companies who capture the magic of your wedding day in breathtaking detail.", image:PhotographyImage, dest:'/' }
+const Professionals: {image:string, title:string, description:string, dest: string}[] = [
+     {title: "Venues", description: "Welcome to our curated selection of wedding venues, where we connect couples with beautiful spaces to celebrate their special day.", image:"/professionals/venues.webp", dest:'/' },
+     {title: "Wedding Planner", description: "Our expert wedding planners will guide through every step of your wedding journey, from initial concept to flawless execution.", image:"/professionals/wedding-planner.webp", dest:'/' },
+     {title: "Photography Company", description: "Discover our selection of talented photography companies who capture the magic of your wedding day in breathtaking detail.", image:"/professionals/photography.webp", dest:'/' }
 ]
 
 const ReasonsToJoin:{name:string, icon:IconType, description:string}[] = [
@@ -42,7 +34,7 @@ export function HeroSection () {
      return (
           <section className="w-full aspect-[100/140] relative md:aspect-[100/50] lg:aspect-[100/40] bg-black overflow-hidden">
                {/* <img src={NewImage} alt="Wedding image" width={1200} height={800} className="absolute -top-[10px]  object-cover z-0 w-[110%] h-[110%] -left-[5%]"/> */}
-               <Image src={HeroImage} alt="Wedding image" placeholder="blur" loading="lazy" width={1200} height={800} className="absolute top-[50%] -translate-x-[50%] -translate-y-[50%] object-cover z-0 w-[100%] h-[100%] left-[50%]"/>
+               <Image src={"/home/new-cp-image.webp"} alt="Wedding image" placeholder="blur" loading="lazy" width={1200} height={800} className="absolute top-[50%] -translate-x-[50%] -translate-y-[50%] object-cover z-0 w-[100%] h-[100%] left-[50%]"/>
                <div className="w-full h-full bg-gradient-to-b from-black/80 via-black/70 to-black/90 flex flex-col items-center justify-center gap-[20px] px-[2%] relative z-10">
                     <h1 className="text-[1.6rem] md:text-[2rem] lgtext-[2.4rem] font-bold md:font-extrabold text-white text-center ">Rwanda&apos;s Largest Collection of <br className="hidden lg:flex" /> Wedding Venues & Verified Vendors.</h1>
                     <p className="text-center text-[1rem] text-gray-300 font-normal whitespace-pre-line max-w-[80%]">From Only $7, Access All Wedding Venues & Top Wedding Vendor Options!</p>
@@ -60,7 +52,7 @@ export function OurProfessionalSection () {
                     <p className="text-gray-400 text-[1.4rem] text-center ">We provide expert wedding consultation, helping couples find the perfect venues and vendors that match their vision and budget. With WeddConnect, you get seamless connections to trusted wedding professionals, making your planning stress-free and enjoyable</p>
                </div>
                <div className="w-full flex items-center justify-center relative">
-                    <Image loading="lazy" src={ProfessionalImage} alt="WeddConnect" width={600} placeholder="blur" height={800}  className="w-full aspect-[100/80] rounded-[20px] object-cover" />
+                    <Image loading="lazy" src={"/home/professional-image.jpg"} alt="WeddConnect" width={600} placeholder="blur" height={800}  className="w-full aspect-[100/80] rounded-[20px] object-cover" />
                </div>
           </section>
      )
@@ -86,12 +78,12 @@ export function ProfessionalsSection () {
      )
 }
 
-const ProfessionalCard = ({profession}:{profession:{image: StaticImport, title:string, description:string, dest:string}}) => {
+const ProfessionalCard = ({profession}:{profession:{image: string, title:string, description:string, dest:string}}) => {
      const {image, title, description, dest} = profession;
      return (
           <div className="w-full h-auto rounded-[5px] overflow-hidden shadow-sm shadow-gray-200">
                <div className="w-full aspect-video relative">
-                    <Image src={image} placeholder="blur" loading="lazy" fill alt={`${title} image`} className="object-cover" />
+                    <Image src={image} placeholder="blur" loading="lazy" alt={`${title} image`} className="object-cover w-full h-full" />
                </div>
                <div className="w-full flex flex-col items-start justify-between gap-[10px] p-[10px] pb-[20px]">
                     <h3 className="text-[1.1rem] font-bold text-black " >{title}</h3>

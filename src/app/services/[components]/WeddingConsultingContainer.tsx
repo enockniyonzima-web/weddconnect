@@ -1,5 +1,6 @@
-import Image from "next/image";
-import ConsultantImage from '../../../../public/services/wedding-consultant.jpg';
+import Image from "@/components/ui/Image";
+
+const  ConsultantImage = "/services/wedding-consultant.jpg";
 
 export default function WeddingConsultingContainer() {
      return (

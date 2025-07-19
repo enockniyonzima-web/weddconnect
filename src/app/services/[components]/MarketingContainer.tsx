@@ -1,5 +1,6 @@
-import Image from "next/image";
-import MarketingImage from '../../../../public/services/marketing.jpg';
+
+import Image from '@/components/ui/Image';
+const  MarketingImage = '/services/marketing.jpg';
 
 export default function MarketingContainer() {
      return (
