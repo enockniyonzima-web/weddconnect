@@ -3,10 +3,10 @@ import { IconType } from 'react-icons'
 import { BsPeopleFill } from 'react-icons/bs'
 import { FaCalendarCheck, FaFacebook, FaInstagram, FaSquareXTwitter } from 'react-icons/fa6'
 import { MdCall, MdEmail, MdMonochromePhotos } from 'react-icons/md'
-import Logo from "../../../public/logo/white-logo.png";
-import Image from 'next/image'
+const  Logo  = "/logo/white-logo.png";
 import { FaQuestionCircle, FaWhatsappSquare } from 'react-icons/fa'
 import { BiSupport } from 'react-icons/bi'
+import Image from '../ui/Image'
 
 const Footer = () => {
      const quickLinks = [
