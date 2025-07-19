@@ -1,11 +1,10 @@
 'use client';
 
-import { StaticImport } from "next/dist/shared/lib/get-img-props"
-import Image from "next/image"
 import { useAuthContext } from "../context/AuthContext";
 import Link from "next/link";
+import Image from "../ui/Image";
 
-export const TrendCard = ({image}:{image: StaticImport}) => {
+export const TrendCard = ({image}:{image: string}) => {
      const {user, setAuth} = useAuthContext();
 
      if(user) return   <Link href={'/posts'} className="w-full relative rounded-[10px] overflow-hidden aspect-[4/3]">
