@@ -39,7 +39,7 @@ export const ClientServer =  {
                const res = await axios.get(`${publicApi}/${endpoint}`);
                return res.data;
           }catch(error){
-               // console.log(error);
+               console.log(error);
                return null
           }
      },
