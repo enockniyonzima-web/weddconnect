@@ -1,6 +1,5 @@
-import Image from 'next/image';
 // import Logo from '../../../../public/logo/logo.png';
-import WhiteLogo from '../../../../public/logo/white-logo.png';
+import Image from '@/components/ui/Image';
 import Link from 'next/link';
 
 
@@ -12,7 +11,7 @@ export const HeaderLink = ({link, }:{link:{name:string, dest: string}}) => (
 
 export const HeaderLogo = () => (
      <Link href={'/'} prefetch={true} className='w-auto gap-[10px] flex items-center justify-start py-[5px] h-full'>
-          <Image src={WhiteLogo} alt='wedd connect' width={150} height={150} className='w-[70px] aspect-auto' />
+          <Image src={'/logo/white-logo.png'} alt='wedd connect' width={150} height={150} className='w-[70px] aspect-auto' />
           <h1 className={`hidden lg:inline-block text-[1.4rem] font-bold text-white leading-5`}>WeddConnect</h1>
      </Link>
 )

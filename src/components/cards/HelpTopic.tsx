@@ -17,7 +17,7 @@ const HelpTopic: React.FC<HelpTopicProps> = ({ title, content }) => {
 
   return (
     <div className="border-b border-gray-200 py-4">
-      <button
+      <button type="button"
         onClick={toggleOpen}
         className="flex justify-between items-center w-full text-left"
       >

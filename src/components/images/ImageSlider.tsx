@@ -2,10 +2,9 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import Image from 'next/image';
 import Link from 'next/link';
 import { PostImage } from '@prisma/client';
-import DefaultImage from '../../../public/images/default-image.jpg';
+import Image from '../ui/Image';
 
 interface IImageSlider {
   images: PostImage[];
@@ -13,6 +12,8 @@ interface IImageSlider {
   link?: string;
   label?: string;
 }
+
+const  DefaultImage = '/images/default-image.jpg';
 
 const ImageSlider: React.FC<IImageSlider> = ({ images, onClick, link, label }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
