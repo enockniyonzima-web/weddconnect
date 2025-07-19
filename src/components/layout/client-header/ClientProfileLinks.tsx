@@ -2,9 +2,9 @@
 
 import { ENotificationType } from '@/common/CommonTypes';
 import { TUser } from '@/common/Entities'
+import Image from '@/components/ui/Image';
 import { logoutUser } from '@/server-actions/auth';
 import { showMainNotification } from '@/util/NotificationFuncs';
-import Image from 'next/image'
 import React from 'react'
 const defaultIcon = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/account.png";
 const ClientProfileLinks = ({user}:{user:TUser}) => {
