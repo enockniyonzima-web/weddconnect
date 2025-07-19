@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { TrendCard } from "./TrendCard";
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-export const TrendingCardsSection = ({images}:{images:StaticImport[]}) => {
+export const TrendingCardsSection = ({images}:{images:string[]}) => {
      const sliderRef = useRef<HTMLDivElement>(null);
      const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
