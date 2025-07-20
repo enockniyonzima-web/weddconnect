@@ -1,6 +1,6 @@
 'use client';
+import Image from "@/components/ui/Image";
 import { PostImage } from "@prisma/client";
-import Image from "next/image";
 import { useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 

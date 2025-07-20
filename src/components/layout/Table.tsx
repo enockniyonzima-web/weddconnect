@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import Image from "next/image";
 import Link from "next/link";
 import { VscCheck, VscChromeClose } from "react-icons/vsc";
+import Image from "../ui/Image";
 
 export interface Column<T> {
      key: keyof T;

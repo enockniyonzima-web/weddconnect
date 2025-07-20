@@ -1,7 +1,7 @@
 
 import { getDate } from "@/util/DateFunctions"
-import Image from "next/image"
 import { TAdminClientSelect } from "./ClientsContainer"
+import Image from "@/components/ui/Image"
 
 
 const ClientCard = ({client}:{client: TAdminClientSelect}) => {
