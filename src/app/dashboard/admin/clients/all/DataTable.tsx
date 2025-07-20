@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react'
 import { TAdminClientSelect } from '../select-types';
-import Image from 'next/image';
 import { getDate} from '@/util/DateFunctions';
 import { formatPrice } from '@/util/stringFuncs';
 import { deleteClient } from '@/server-actions/client.actions';
 import { showMainNotification } from '@/util/NotificationFuncs';
 import { ENotificationType } from '@/common/CommonTypes';
+import Image from 'next/image';
 
 const DataTable = ({clients}: {clients: TAdminClientSelect[]}) => {
      const [active, setActive] = useState(0);

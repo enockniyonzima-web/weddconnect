@@ -12,7 +12,6 @@ import { showMainNotification } from '@/util/NotificationFuncs';
 import { DataInputs } from '@/util/util-classes'
 import React, { ChangeEvent, useState } from 'react'
 import ImageUploader from '@/components/file-upload/ImageUploader';
-import Image from 'next/image';
 import { MaterialIcons } from '@/components/icons/material-ui-icons';
 import {  ContactType, PostImage } from '@prisma/client';
 import { deleteSingleImageAction } from '@/server-actions/fileUploader';

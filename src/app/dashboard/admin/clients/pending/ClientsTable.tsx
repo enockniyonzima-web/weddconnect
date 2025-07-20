@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import Image from "next/image";
 import { getDate, getFutureDate } from "@/util/DateFunctions";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import { ENotificationType } from "@/common/CommonTypes";
@@ -9,6 +8,7 @@ import { updateClientSubscription } from "@/server-actions/client-subscription.a
 import { formatPrice } from "@/util/stringFuncs";
 import { useState } from "react";
 import { TAdminClientSelect } from "../select-types";
+import Image from "@/components/ui/Image";
 
 const ClientsTable = ({clients}:{clients:TAdminClientSelect[]}) => {
      const [active, setActive] = useState(0)

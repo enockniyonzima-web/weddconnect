@@ -6,10 +6,10 @@ import { EAspectRatio } from "@/common/enums";
 import ImageUploader from "@/components/file-upload/ImageUploader";
 import { SubmitButton, TextAreaInputGroup, TextInputGroup } from "@/components/forms/DataFormsInputs"
 import { MaterialIcons } from "@/components/icons/material-ui-icons";
+import Image from "@/components/ui/Image";
 import { createCategory } from "@/server-actions/category.actions";
 import { deleteSingleImageAction } from "@/server-actions/fileUploader";
 import { showMainNotification } from "@/util/NotificationFuncs";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -63,7 +63,7 @@ function AddCategoryForm() {
                {
                          icon ?
                          <div className="w-full lg:w-[500px] flex flex-col items-center justify-start gap-[5px] relative">
-                              <Image  width={400} height={300} src={icon} alt="Listing-update image" layout="responsive" className="w-full rounded-[5px] aspect-auto" />
+                              <Image  width={400} height={300} src={icon} alt="Listing-update image" className="w-full rounded-[5px] aspect-auto" />
                               <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-100 rounded-[2.5px] p-[2px] cursor-pointer" onClick={async() => await deleteImage(icon)}>
                                    <MaterialIcons.delete className="text-red-700 hover:text-red-600 text-[20px] " titleAccess="delete image" />
                               </button>
