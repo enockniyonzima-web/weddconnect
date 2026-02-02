@@ -16,6 +16,8 @@ import { FaUsersCog } from 'react-icons/fa';
 import  UserImage from '../../../../public/images/user-icon.png';
 import { usePathname } from 'next/navigation';
 import { useAuthContext } from '@/components/context/AuthContext';
+import { LogoutButton } from '@/components/forms/LogoutForm';
+import { LogOut } from 'lucide-react';
 
 const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
      {name: "Overview", dest: '', icon: LuLayoutDashboard},
@@ -41,13 +43,13 @@ const DesktopView  = ({user}: {user: TUser | null | undefined}) => {
      const pathname = usePathname();
      const activeLink = pathname.split('/')[3] || '';
      return (
-          <div className='w-[20%] h-full overflow-hidden bg-white rounded-[0px] shadow-md hidden  lg:flex flex-col items-center justify-between p-4'>
+          <div className='w-[20%] h-full overflow-hidden bg-white border-r border-gray-100 rounded-[0px] shadow-md hidden  lg:flex flex-col items-center justify-between'>
                <div className='w-full flex flex-col items-center justify-start gap-[30px] '>
-                    <div className='w-full flex items-center flex-wrap justify-center gap-[10px]'>
-                         <Image src={Logo} placeholder='blur' width={80} height={40} alt="wedd connect logo" className='w-[40px] aspect-auto' />
+                    <div className='w-full flex items-center flex-wrap justify-center gap-2 border-b border-gray-200 py-3'>
+                         <Image src={Logo} placeholder='blur' width={80} height={40} alt="weddconnect logo" className='w-[40px] aspect-auto' />
                          <h1 className='text-[1.2rem] font-bold text-blue-600'>WeddConnect</h1>
                     </div>
-                    <nav className='w-full flex flex-col items-center justify-start gap-[10px] transition-all duration-300'>
+                    <nav className='w-full flex flex-col items-center justify-start gap-[10px] transition-all duration-300 px-4'>
                          {
                               DesktopViewLinks.map((link, index) => (
                                    <DesktopViewLink key={index} link={link} active={link.dest === activeLink || (activeLink.split('?')[0])=== link.dest} />
@@ -55,10 +57,14 @@ const DesktopView  = ({user}: {user: TUser | null | undefined}) => {
                          }
                     </nav>
                </div>
-               <div className='w-full flex items-center flex-wrap justify-start gap-[10px]'>
-                    <Image src={user?.image || UserImage} alt='User image' width={60} height={60} className='rounded-full w-[30px] aspect-square object-cover' />
-                    <h2 className='text-black text-[0.8rem]'>{user?.admin?.name || user?.email || "Admin User"}</h2>
+               <div className='w-full flex flex-col  p-4 gap-2 border-t border-blue-600/50'>
+                    <div className='w-full flex items-center flex-wrap justify-start gap-[10px]'>
+                         <Image src={user?.image || UserImage} alt='User image' width={60} height={60} className='rounded-full w-[30px] aspect-square object-cover' />
+                         <h2 className='text-black text-[0.8rem]'>{user?.admin?.name || user?.email || "Admin User"}</h2>
+                    </div>
+                    <LogoutButton className={"py-2 flex items-center justify-center gap-2 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg  text-white"} name='Logout' icon={<LogOut className='w-5 h-5' /> } />
                </div>
+               
           </div>
      )
 }

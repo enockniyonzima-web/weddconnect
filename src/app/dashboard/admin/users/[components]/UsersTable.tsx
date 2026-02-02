@@ -21,7 +21,7 @@ export const AdminsTable = ({admins}: {admins:TAdminSelect[]}) => {
                                    <td className="p-3 text-gray-600">{a.id + 1}</td>
                                    <td className="p-3 text-gray-600">{a.name}</td>
                                    <td className="p-3 text-gray-600">{a.user.email}</td>
-                                   <td className="p-3 text-gray-600">{a.role.name}</td>
+                                   <td className="p-3 text-gray-600">{a.type}</td>
                                    <td className="p-3 text-gray-600"><AdminForm icon={<FaEdit /> } className="text-[18px] cursor-pointer text-orange-600 hover:text-blue-800" id={a.id} /></td>
                               </tr>
                          )

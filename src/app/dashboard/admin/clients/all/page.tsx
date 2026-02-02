@@ -1,7 +1,7 @@
 import { fetchClients } from "@/server-actions/client.actions";
 import { AdminClientSelect } from "../select-types";
-import DataTable from "./DataTable";
 import { HeroSection } from "./sections"
+import { ClientsContainer } from "@/components/containers/ClientsContainer";
 
 
 export default async function AdminClientsPage () {
@@ -9,7 +9,8 @@ export default async function AdminClientsPage () {
      return (
           <>
                <HeroSection />
-               <DataTable clients={clients}/>
+               {/* <DataTable clients={clients}/> */}
+               <ClientsContainer clients={clients} />
           </>
      )
 }

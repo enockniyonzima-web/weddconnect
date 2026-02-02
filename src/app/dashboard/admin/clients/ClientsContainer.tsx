@@ -3,12 +3,13 @@ import ClientCard from "./ClientCard";
 import { Prisma } from "@prisma/client";
 import { fetchClients } from "@/server-actions/client.actions";
 import { AdminClientSelect } from "./select-types";
+import { ClientsContainer } from "@/components/containers/ClientsContainer";
 
 
 export type TAdminClientSelect = Prisma.ClientGetPayload<{select: typeof AdminClientSelect }>;
 
 
-export default async function ClientsContainer ({search}:{search: Record<string, string | undefined>}) {
+export default async function ApprovedClientsContainer ({search}:{search: Record<string, string | undefined>}) {
      const filters:Prisma.ClientWhereInput = {
           subscription: {expiryAt: {gt: new Date()}}
      }
@@ -22,11 +23,6 @@ export default async function ClientsContainer ({search}:{search: Record<string,
           )
      } 
      return (
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
-               {
-                    clients.map((client) => <ClientCard key={`admin-client-info-${client.id}`} client={client} />)
-               }
-          </div>
-          
+          <ClientsContainer clients={clients} />
      );
 }

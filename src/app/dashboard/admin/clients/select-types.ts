@@ -26,7 +26,6 @@ export const AdminClientSelect= {
                subscription :{select:{name:true}}
           },
      }
-
 } satisfies Prisma.ClientSelect;
 
 export type TAdminClientSelect = Prisma.ClientGetPayload<{select: typeof AdminClientSelect }>;

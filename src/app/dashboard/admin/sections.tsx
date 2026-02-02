@@ -13,10 +13,10 @@ export const HeroSection = () => {
 
      return (
           <div className="w-full flex flex-col items-center justify-start gap-[10px]">
-               <h1 className="text-[1.6rem] text-black font-bold w-full text-start leading-3">Welcome back, {user?.admin?.name || "Admin"}</h1>
-               <div className="w-full flex items-end justify-between">
+               <h1 className="text-[1.6rem] text-black font-bold w-full text-start">Welcome back, {user?.admin?.name || "Admin"}</h1>
+               <div className="w-full flex items-end justify-between flex-wrap gap-2">
                     <p className="text-[0.9rem] text-gray-600">Here is what is happening with our platform today</p>
-                    <Link className="bg-blue-600 text-[0.9rem] rounded-[5px] whitespace-nowrap hover:bg-blue-800 py-[5px] px-[20px] text-white" prefetch={true} href={'/dashboard/admin/posts?form=add'} >New Post</Link>
+                    <Link className="bg-blue-600 text-base font-med rounded-xl whitespace-nowrap hover:bg-blue-800 py-2 px-6 text-white" prefetch={true} href={'/dashboard/admin/posts?form=add'} >New Post</Link>
                </div>
           </div>
      )
@@ -24,7 +24,7 @@ export const HeroSection = () => {
 
 export const AdminStatistics = () => {
      return (
-          <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px]">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                <StatisticsCard icon={{icon:HiUsers, iconColor:'text-blue-600', bgColor:'bg-blue-100'}} name="Total Clients" total={`2,420`} change="+5.25%" />
                <StatisticsCard icon={{icon:IoCalendarClear, iconColor:'text-purple-600', bgColor:'bg-purple-100'}} name="Events This Month" total={`145`} change="+10.2%"  />
                <StatisticsCard icon={{icon: FaDollarSign, iconColor:'text-green-600', bgColor:'bg-green-100'}} name="Revenue" total={'Rwf 24,500'} change="+2.5%"  />

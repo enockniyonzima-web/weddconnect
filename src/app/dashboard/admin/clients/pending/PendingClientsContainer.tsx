@@ -2,9 +2,8 @@
 
 import { Prisma } from "@prisma/client";
 import { fetchClients } from "@/server-actions/client.actions";
-import ClientCard from "../ClientCard";
-import ClientsTable from "./ClientsTable";
 import { AdminClientSelect } from "../select-types";
+import { ClientsContainer } from "@/components/containers/ClientsContainer";
 
 
 export default async function PendingClientsContainer ({search}:{search: Record<string, string | undefined>}) {
@@ -22,7 +21,7 @@ export default async function PendingClientsContainer ({search}:{search: Record<
      } 
      return (
           <div className="w-full">
-               <ClientsTable clients={clients} />
+               <ClientsContainer clients={clients} />
           </div>
           
      );

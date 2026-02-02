@@ -34,7 +34,6 @@ export const AdminForm = ({id, name, icon, className}:{id?:number, icon?: ReactN
 
      const [fetchingData, setFetchingData] = useState(false);
      const [submitting,setSubmitting] = useState(false);
-     const [roles,setRoles] = useState<TRoleSelect[]>([]);
      const [searchedAdmin,setSearchedAdmin] = useState<TAdminData | null>(null);
 
 
@@ -44,19 +43,19 @@ export const AdminForm = ({id, name, icon, className}:{id?:number, icon?: ReactN
           e.preventDefault();
           try {
                setSubmitting(true);
-               const check = id && searchedAdmin ? {status:true, message:""} : inputs.checkFieldsIn(['name', "email", "password", "roleId"]);
+               const check = id && searchedAdmin ? {status:true, message:""} : inputs.checkFieldsIn(['name', "email", "password"]);
                if(!check.status) return showMainNotification(check.message, ENotificationType.WARNING);
                const hashedPassword = await encryptPassword(inputs.get("password", ""));
                const res = !id ?
                     await createAdmin({
                          name:inputs.get("name", ""), createdAt: new Date(), 
                          user:{create:{email: inputs.get("email",""),password: hashedPassword, image:defaultIcon, createdAt: new Date(), type: "admin" }},
-                         role: {connect:{id:inputs.get("roleId",0)}}
+                         // role: {connect:{id:inputs.get("roleId",0)}}
                     }) :
                     await updateAdmin(id, {
                          name: inputs.get("name", searchedAdmin?.name),
                          user: {update: {email: inputs.get("email", searchedAdmin?.user.email), password: hashedPassword || searchedAdmin?.user.password}},
-                         role: {connect:{id:inputs.get("roleId", searchedAdmin?.role.id)}}
+                         // role: {connect:{id:inputs.get("roleId", searchedAdmin?.role.id)}}
                     });
                if(res) {
                     showMainNotification("Success", ENotificationType.PASS);
@@ -80,8 +79,6 @@ export const AdminForm = ({id, name, icon, className}:{id?:number, icon?: ReactN
                          if(adminData) 
                               setSearchedAdmin(adminData);
                     } 
-                    const rolesRes = await fetchRoles(RoleSelect)
-                    setRoles(rolesRes.data)
                     setFetchingData(false);
                })()
           }
@@ -100,7 +97,7 @@ export const AdminForm = ({id, name, icon, className}:{id?:number, icon?: ReactN
                                    <TextInputGroup name="user-name" label={`User Name: ${searchedAdmin?.name || ""}`} placeholder="ex: Dushime Brother" required={false} type="text" action={res => inputs.set("name", res, "string")} />
                                    <TextInputGroup name="user-name" label={`User Email: ${searchedAdmin?.user.email || ""}`} placeholder="ex: dushime@gmail.com" required={false} type="email" action={res => inputs.set("email", res, "string")} />
                                    <TextInputGroup name="user-name" label={`Password: `} placeholder="enter a strong password" required={false} type="text" action={res => inputs.set("password", res, "string")} />
-                                   <SelectInputGroup required={false} label={`Role: ${searchedAdmin?.role.name}`} name="Role" values={roles.map(r => ({label: r.name, value: r.id}))} action={res => inputs.set('roleId', res, "number")} />
+                                   {/* <SelectInputGroup required={false} label={`Role: ${searchedAdmin?.role.name}`} name="Role" values={roles.map(r => ({label: r.name, value: r.id}))} action={res => inputs.set('roleId', res, "number")} /> */}
                                    <button type="submit" disabled={submitting} className="w-full flex items-center justify-center py-[10px] text-[1rem] text-white rounded-[5px] bg-blue-600 hover:bg-blue-800 disabled:bg-gray-800">{submitting ? "Loading...": id ? "Update User" :"Save User"}</button>
                               </form>
                          }

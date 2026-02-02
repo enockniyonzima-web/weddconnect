@@ -37,5 +37,4 @@ export async function deleteTransaction (id:number) {
           console.log("Error creating Transaction: ", error);
           return null
      }
-
 }

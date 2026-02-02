@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -235,12 +234,17 @@ model Transaction {
   clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id], onDelete: Cascade)
 }
 
+enum EAdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
 model Admin {
   id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime
-  roleId    Int
+  roleId    Int?
   userId    String   @unique @db.Uuid
-  role      Role     @relation(fields: [roleId], references: [id])
+  type EAdminRole @default(ADMIN)
+  role      Role?     @relation(fields: [roleId], references: [id])
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
