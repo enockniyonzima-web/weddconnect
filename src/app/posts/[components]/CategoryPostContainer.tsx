@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import Pagination from "./Pagination";
 
-import { TCategory, TPost } from "@/common/Entities";
+import { SPost, TCategory, TPost } from "@/common/Entities";
 import { fetchCategories } from "@/server-actions/category.actions";
 import { fetchPosts } from "@/server-actions/post.actions";
 import { getSearchParams } from "@/util/stringFuncs";
@@ -13,18 +13,17 @@ export default async function CategoryPostContainer ({search}:{search: Record<st
      const categoriesRes  = await fetchCategories(getSearchParams(search));
      if(categoriesRes) categories = categoriesRes.data;
      // fetching posts
-
      const searchQuery = getSearchParams(search);
+     const category = search.category;
+     const minPrice = search.minPrice;
+     const maxPrice = search.maxPrice;
      searchQuery.set('status', 'published');
-     let posts:TPost[] = [];
-     let postsTotal = 0;
-     // const postsRes  = await MainServer.fetch(`${Endpoints.posts}?${searchQuery.toString()}`);
-     const postsRes = await fetchPosts(searchQuery);
-     if(postsRes) {
-          const {pagination, data} = postsRes;
-          posts = data as unknown as TPost[];
-          postsTotal = pagination?.total || 0;
-     }
+     const posts = await fetchPosts(SPost, {
+          status: "published", category: {id:Number(category)},
+          ...(minPrice && {price: {min: {gte:Number(minPrice)}}}),
+          ...(maxPrice && {price: {max: {lte:Number(maxPrice)}}}),
+     }, 100);
+     const postsTotal = posts.length;
 
 
      return (

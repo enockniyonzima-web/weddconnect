@@ -8,10 +8,10 @@ export default async function PostsPageLayout({children}:{children: React.ReactN
      if(!user) {
           return redirect('/auth/login');
      }
-     if(user.admin) return redirect('/dashboard/admin');
+     // if(user.admin) return redirect('/dashboard/admin');
      // if(user.vendor) return redirect('/dashboard/vendor');
 
-     if(user && (!user.client?.subscription || !user.client?.subscription.expiryAt || !isDateLaterThanToday(user.client.subscription.expiryAt))) {
+     if(user && !user.admin && (!user.client?.subscription || !user.client?.subscription.expiryAt || !isDateLaterThanToday(user.client.subscription.expiryAt))) {
           return redirect('/subscribe');
      }
      return (
