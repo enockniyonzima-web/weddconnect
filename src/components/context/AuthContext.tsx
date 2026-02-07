@@ -1,19 +1,19 @@
 "use client";
 
-import { TUser } from "@/common/Entities";
+import { TSessionUser } from "@/common/Entities";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface AuthContextType {
-     user: TUser | null | undefined;
-     setUser: (user: TUser | null | undefined) => void;
+     user: TSessionUser | null | undefined;
+     setUser: (user: TSessionUser | null | undefined) => void;
      authOn: boolean;
      setAuth: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({authUser, children}:{children: ReactNode, authUser: TUser | null | undefined}) {
-     const [user, setUser] = useState<TUser | null | undefined>(authUser);
+export function AuthProvider({authUser, children}:{children: ReactNode, authUser: TSessionUser | null | undefined}) {
+     const [user, setUser] = useState<TSessionUser | null | undefined>(authUser);
      const [authOn, setAuthOn] = useState(false);
 
      const setAuth  = () => setAuthOn(prev => !prev)

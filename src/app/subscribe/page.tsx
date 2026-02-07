@@ -1,49 +1,30 @@
 
-import { TSubscription } from "@/common/Entities";
+import { SSubscription} from "@/common/Entities";
 import ClientPage from "@/components/layout/ClientPage";
 import PaymentOptions from "@/components/sections/PaymentOptions";
-import { fetchClientById } from "@/server-actions/client.actions";
+import { fetchSubscriptions } from "@/server-actions/subscription.actions";
 import { getSessionUser } from "@/server-actions/user.actions";
-import Endpoints from "@/services/Endpoints";
-import { MainServer } from "@/services/Server";
 import { isDateLaterThanToday } from "@/util/DateFunctions";
-import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-const ClientSubSelect = {
-     subscription: {
-          select: {
-               updatedAt:true,
-               expiryAt:true,
-               transactions: {select:{createdAt:true}, orderBy:{createdAt:"desc"}, take: 1}
-          }
-     }
-}satisfies Prisma.ClientSelect;
-
-
-
 export default async function SubscribePage() {
      const {user} = await getSessionUser();
-     let subscriptions:TSubscription[] = [];
-     const subsRes  = await MainServer.fetch(`${Endpoints.subscription}`);
-     if(subsRes) subscriptions = subsRes.data;
+     const subscriptions  = await fetchSubscriptions(SSubscription);
+     
      if(!user) {
           return redirect('/auth/login');
      }
      if(user.admin) return redirect('/dashboard/admin');
-     if(user.vendor) return redirect('/dashboard/vendor');
      
      if(user.client) {
-          const clientSubData = await fetchClientById(user.client.id, ClientSubSelect );
-          console.log(clientSubData);
+          const clientSubData = user.client.subscription;
           if(clientSubData) {
-               const subData = clientSubData.subscription;
-               if(subData) {
-                    if(isDateLaterThanToday(subData.expiryAt)){
+               if(clientSubData) {
+                    if(clientSubData.expiryAt && isDateLaterThanToday(clientSubData.expiryAt)){
                          return redirect('/posts');
                     }else{
-                         if(subData.transactions && subData.transactions[0] && subData.transactions[0].createdAt.getDate() === subData.updatedAt.getDate()){
+                         if(clientSubData.transactions && clientSubData.transactions[0] && clientSubData.transactions[0].createdAt.getDate() === clientSubData.updatedAt.getDate()){
                               return (
                                    <ClientPage>
                                         <div className="bg-black w-full py-[80px] px-[2%]">

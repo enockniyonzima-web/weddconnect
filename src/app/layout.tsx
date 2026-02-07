@@ -5,6 +5,9 @@ import { Metadata } from "next";
 import MainNotificationContainer from "@/components/Notifications/ManNotificationCard";
 import { AuthProvider } from "@/components/context/AuthContext";
 import { getSessionUser } from "@/server-actions/user.actions";
+import { fetchSubscriptions } from "@/server-actions/subscription.actions";
+import { SSubscription } from "@/common/Entities";
+import { SubscriptionsProvider } from "@/context/SubscriptionContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,13 +76,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const {user} = await getSessionUser();
+  const subscriptions = await fetchSubscriptions(SSubscription);
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen overflow-x-hidden relative bg-black`}
       >
         <AuthProvider authUser={user}>
+          <SubscriptionsProvider subs={subscriptions}>
           {children}
+          </SubscriptionsProvider>
           <MainNotificationContainer />
         </AuthProvider>
       </body>

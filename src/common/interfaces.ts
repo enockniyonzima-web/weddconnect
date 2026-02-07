@@ -138,3 +138,70 @@ export interface IPopularPostsResponse {
      posts: IPopularPost[];
      totalCount: number;
 }
+
+export interface IClientStats {
+     // Overview Metrics
+     totalClients: number;
+     activeClients: number; // Clients with active subscriptions
+     inactiveClients: number; // Clients without subscriptions
+     
+     // Subscription Status
+     clientsWithActiveSubscriptions: number;
+     clientsWithExpiredSubscriptions: number;
+     clientsWithPendingSubscriptions: number;
+     clientsWithoutSubscriptions: number;
+     
+     // Growth Metrics
+     newClientsThisMonth: number;
+     newClientsLastMonth: number;
+     growthRate: number; // Percentage growth
+     
+     // Subscription Distribution
+     subscriptionDistribution: Array<{
+          subscriptionName: string;
+          count: number;
+          percentage: number;
+     }>;
+     
+     // Revenue Metrics (from client subscriptions)
+     totalClientRevenue: number;
+     averageRevenuePerClient: number;
+     monthlyRecurringRevenue: number;
+     
+     // Engagement Metrics
+     clientsWithReviews: number;
+     clientsWithLikes: number;
+     averageEngagementRate: number;
+     
+     // Retention Metrics
+     subscriptionRenewalRate: number;
+     churnRate: number;
+     
+     // Geographic Distribution
+     clientsByLocation: Array<{
+          location: string;
+          count: number;
+     }>;
+     
+     // Recent Activity
+     recentSignups: number; // Last 7 days
+     recentSubscriptions: number; // Last 7 days
+     recentTransactions: number; // Last 7 days
+     
+     // Subscription Trends (Last 6 months)
+     subscriptionTrends: Array<{
+          month: string;
+          newSubscriptions: number;
+          renewals: number;
+          cancellations: number;
+     }>;
+     
+     // Top Clients (by spending)
+     topClients: Array<{
+          id: number;
+          name: string;
+          email: string;
+          totalSpent: number;
+          subscriptionName: string;
+     }>;
+}

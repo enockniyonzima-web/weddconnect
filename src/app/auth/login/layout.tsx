@@ -30,7 +30,7 @@ export default  async function LoginLayout({
           }
 
           if(user){
-               const userType = user.vendor ? "vendor": user.client ? "client" : user.admin ? "admin" : "unknown"; 
+               const userType =  user.client ? "client" : user.admin ? "admin" : "unknown"; 
 
                if(userType === "unknown") {
                     const userId  = user.id;

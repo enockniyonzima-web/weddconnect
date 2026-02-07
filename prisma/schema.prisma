@@ -208,9 +208,9 @@ model Subscription {
 
 model ClientSubscription {
   id             Int           @id @default(autoincrement())
-  createdAt      DateTime
-  updatedAt      DateTime
-  expiryAt       DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  expiryAt       DateTime?
   clientId       Int           @unique
   subscriptionId Int
   client         Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
@@ -224,8 +224,8 @@ model Transaction {
   quantity             Int
   amount               Int
   proof                String             @default("")
-  createdAt            DateTime
-  updatedAt            DateTime
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime      @updatedAt
   status               String
   verificationCode     Int @default(0)
   clientSubscriptionId Int

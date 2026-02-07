@@ -1,6 +1,6 @@
 "use server";
 
-import { IAdminStats, IRecentActivity, IPopularPostsResponse } from "@/common/interfaces";
+import { IAdminStats, IRecentActivity, IPopularPostsResponse, IClientStats } from "@/common/interfaces";
 import prisma from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -500,6 +500,358 @@ export const fetchTrendingPosts = unstable_cache(
           tags: ['trending-posts']
      }
 );
+
+// Fetch comprehensive client statistics
+export const fetchClientStats = unstable_cache(
+     async (): Promise<IClientStats | null> => {
+          try {
+               const now = new Date();
+               const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+               const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+               const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+               const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+               // Execute all queries in parallel
+               const [
+                    totalClients,
+                    clientsWithActiveSubscriptions,
+                    clientsWithExpiredSubscriptions,
+                    clientsWithPendingSubscriptions,
+                    newClientsThisMonth,
+                    newClientsLastMonth,
+                    subscriptionDistribution,
+                    allClientSubscriptions,
+                    clientsWithReviews,
+                    clientsWithLikes,
+                    recentSignups,
+                    recentSubscriptions,
+                    recentTransactions,
+                    topClientsData,
+                    last6MonthsData,
+               ] = await Promise.all([
+                    // Total clients
+                    prisma.client.count(),
+                    
+                    // Clients with active subscriptions
+                    prisma.client.count({
+                         where: {
+                              subscription: {
+                                   expiryAt: { gte: now }
+                              }
+                         }
+                    }),
+                    
+                    // Clients with expired subscriptions
+                    prisma.client.count({
+                         where: {
+                              subscription: {
+                                   expiryAt: { lt: now, not: null }
+                              }
+                         }
+                    }),
+                    
+                    // Clients with pending subscriptions (no expiry date set but has subscription)
+                    prisma.client.count({
+                         where: {
+                              subscription: {
+                                   expiryAt: null
+                              }
+                         }
+                    }),
+                    
+                    // New clients this month
+                    prisma.client.count({
+                         where: {
+                              user: {
+                                   createdAt: { gte: startOfThisMonth }
+                              }
+                         }
+                    }),
+                    
+                    // New clients last month
+                    prisma.client.count({
+                         where: {
+                              user: {
+                                   createdAt: {
+                                        gte: startOfLastMonth,
+                                        lte: endOfLastMonth
+                                   }
+                              }
+                         }
+                    }),
+                    
+                    // Subscription distribution
+                    prisma.clientSubscription.groupBy({
+                         by: ['subscriptionId'],
+                         _count: { id: true }
+                    }),
+                    
+                    // All client subscriptions for revenue calculation
+                    prisma.clientSubscription.findMany({
+                         include: {
+                              subscription: { select: { name: true, price: true } },
+                              transactions: {
+                                   where: { status: { in: ['Approved', 'verified'] } },
+                                   select: { amount: true }
+                              }
+                         }
+                    }),
+                    
+                    // Clients with reviews (via PostReview)
+                    prisma.postReview.groupBy({
+                         by: ['clientId'],
+                         _count: { id: true }
+                    }).then(results => results.length),
+                    
+                    // Clients with likes (via PostLike)
+                    prisma.postLike.groupBy({
+                         by: ['clientId'],
+                         _count: { id: true }
+                    }).then(results => results.length),
+                    
+                    // Recent signups (last 7 days)
+                    prisma.client.count({
+                         where: {
+                              user: { createdAt: { gte: sevenDaysAgo } }
+                         }
+                    }),
+                    
+                    // Recent subscriptions (last 7 days)
+                    prisma.clientSubscription.count({
+                         where: { createdAt: { gte: sevenDaysAgo } }
+                    }),
+                    
+                    // Recent transactions (last 7 days)
+                    prisma.transaction.count({
+                         where: { createdAt: { gte: sevenDaysAgo } }
+                    }),
+                    
+                    // Top 10 clients by spending
+                    prisma.client.findMany({
+                         include: {
+                              subscription: {
+                                   include: {
+                                        subscription: { select: { name: true } },
+                                        transactions: {
+                                             where: { status: { in: ['Approved', 'verified'] } },
+                                             select: { amount: true }
+                                        }
+                                   }
+                              },
+                              user: { select: { email: true } }
+                         }
+                    }),
+                    
+                    // Last 6 months subscription data
+                    prisma.clientSubscription.findMany({
+                         where: {
+                              createdAt: {
+                                   gte: new Date(now.getFullYear(), now.getMonth() - 6, 1)
+                              }
+                         },
+                         select: {
+                              createdAt: true,
+                              expiryAt: true,
+                              transactions: {
+                                   select: {
+                                        status: true,
+                                        createdAt: true
+                                   }
+                              }
+                         }
+                    })
+               ]);
+
+               // Calculate derived metrics
+               const clientsWithoutSubscriptions = totalClients - (clientsWithActiveSubscriptions + clientsWithExpiredSubscriptions + clientsWithPendingSubscriptions);
+               const growthRate = newClientsLastMonth > 0 
+                    ? ((newClientsThisMonth - newClientsLastMonth) / newClientsLastMonth) * 100 
+                    : 0;
+
+               // Get subscription names
+               const subscriptionIds = subscriptionDistribution.map(s => s.subscriptionId);
+               const subscriptions = await prisma.subscription.findMany({
+                    where: { id: { in: subscriptionIds } },
+                    select: { id: true, name: true }
+               });
+               const subscriptionMap = new Map(subscriptions.map(s => [s.id, s.name]));
+
+               // Calculate subscription distribution with percentages
+               const totalSubscriptions = subscriptionDistribution.reduce((sum, s) => sum + s._count.id, 0);
+               const subscriptionDistributionWithPercentage = subscriptionDistribution.map(s => ({
+                    subscriptionName: subscriptionMap.get(s.subscriptionId) || 'Unknown',
+                    count: s._count.id,
+                    percentage: totalSubscriptions > 0 ? (s._count.id / totalSubscriptions) * 100 : 0
+               }));
+
+               // Calculate revenue metrics
+               const totalClientRevenue = allClientSubscriptions.reduce((sum, sub) => {
+                    const transactionRevenue = sub.transactions.reduce((txSum, tx) => txSum + tx.amount, 0);
+                    return sum + transactionRevenue;
+               }, 0);
+
+               const averageRevenuePerClient = totalClients > 0 ? totalClientRevenue / totalClients : 0;
+
+               // Calculate MRR (Monthly Recurring Revenue)
+               const monthlyRecurringRevenue = allClientSubscriptions
+                    .filter(sub => sub.expiryAt && sub.expiryAt >= now)
+                    .reduce((sum, sub) => {
+                         // Convert subscription price to monthly rate
+                         const monthlyRate = sub.subscription.name === "Member" 
+                              ? sub.subscription.price / 12 
+                              : sub.subscription.price / 3;
+                         return sum + monthlyRate;
+                    }, 0);
+
+               // Calculate engagement rate
+               const clientsEngaged = new Set([...Array(clientsWithReviews), ...Array(clientsWithLikes)]).size;
+               const averageEngagementRate = totalClients > 0 ? (clientsEngaged / totalClients) * 100 : 0;
+
+               // Calculate retention metrics
+               const expiredAndRenewed = allClientSubscriptions.filter(sub => 
+                    sub.transactions.length > 1
+               ).length;
+               const totalExpired = clientsWithExpiredSubscriptions + clientsWithActiveSubscriptions;
+               const subscriptionRenewalRate = totalExpired > 0 ? (expiredAndRenewed / totalExpired) * 100 : 0;
+               const churnRate = 100 - subscriptionRenewalRate;
+
+               // Top clients by spending
+               const topClients = topClientsData
+                    .map(client => {
+                         const totalSpent = client.subscription?.transactions.reduce((sum, tx) => sum + tx.amount, 0) || 0;
+                         return {
+                              id: client.id,
+                              name: client.name,
+                              email: client.user.email,
+                              totalSpent,
+                              subscriptionName: client.subscription?.subscription.name || 'None'
+                         };
+                    })
+                    .sort((a, b) => b.totalSpent - a.totalSpent)
+                    .slice(0, 10);
+
+               // Subscription trends (last 6 months)
+               const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+               const subscriptionTrends: IClientStats['subscriptionTrends'] = [];
+               
+               for (let i = 5; i >= 0; i--) {
+                    const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+                    const monthName = `${monthNames[monthDate.getMonth()]} ${monthDate.getFullYear()}`;
+                    
+                    const monthData = last6MonthsData.filter(sub => {
+                         const created = new Date(sub.createdAt);
+                         return created >= monthDate && created <= monthEnd;
+                    });
+                    
+                    const newSubscriptions = monthData.length;
+                    const renewals = monthData.filter(sub => 
+                         sub.transactions.filter(tx => tx.status === 'Approved').length > 1
+                    ).length;
+                    const cancellations = monthData.filter(sub =>
+                         sub.transactions.some(tx => tx.status === 'Cancelled')
+                    ).length;
+                    
+                    subscriptionTrends.push({
+                         month: monthName,
+                         newSubscriptions,
+                         renewals,
+                         cancellations
+                    });
+               }
+
+               // Get location distribution (use phone prefix or a custom field if location exists)
+               // Since Client doesn't have location field, we'll skip this or use a placeholder
+               const clientsByLocation: Array<{ location: string; count: number }> = [];
+               
+               // If you have a location field in Client model, uncomment this:
+               /*
+               const clientsByLocationData = await prisma.client.groupBy({
+                    by: ['location'],
+                    _count: { id: true },
+                    orderBy: { _count: { id: 'desc' } },
+                    take: 10
+               });
+
+               clientsByLocation = clientsByLocationData.map(loc => ({
+                    location: loc.location || 'Unknown',
+                    count: loc._count?.id || 0
+               }));
+               */
+
+               const stats: IClientStats = {
+                    // Overview Metrics
+                    totalClients,
+                    activeClients: clientsWithActiveSubscriptions,
+                    inactiveClients: clientsWithoutSubscriptions,
+                    
+                    // Subscription Status
+                    clientsWithActiveSubscriptions,
+                    clientsWithExpiredSubscriptions,
+                    clientsWithPendingSubscriptions,
+                    clientsWithoutSubscriptions,
+                    
+                    // Growth Metrics
+                    newClientsThisMonth,
+                    newClientsLastMonth,
+                    growthRate,
+                    
+                    // Subscription Distribution
+                    subscriptionDistribution: subscriptionDistributionWithPercentage,
+                    
+                    // Revenue Metrics
+                    totalClientRevenue,
+                    averageRevenuePerClient,
+                    monthlyRecurringRevenue,
+                    
+                    // Engagement Metrics
+                    clientsWithReviews,
+                    clientsWithLikes,
+                    averageEngagementRate,
+                    
+                    // Retention Metrics
+                    subscriptionRenewalRate,
+                    churnRate,
+                    
+                    // Geographic Distribution
+                    clientsByLocation,
+                    
+                    // Recent Activity
+                    recentSignups,
+                    recentSubscriptions,
+                    recentTransactions,
+                    
+                    // Subscription Trends
+                    subscriptionTrends,
+                    
+                    // Top Clients
+                    topClients
+               };
+
+               return stats;
+          } catch (err) {
+               console.error("Error fetching client stats:", err);
+               return null;
+          }
+     },
+     ['client-stats'],
+     {
+          revalidate: 300, // Revalidate every 5 minutes
+          tags: ['client-stats']
+     }
+);
+
+// Helper function to revalidate client stats cache
+export async function revalidateClientStats() {
+     "use server";
+     try {
+          const { revalidateTag } = await import('next/cache');
+          // @ts-expect-error - Next.js revalidateTag signature varies by version
+          revalidateTag('client-stats');
+     } catch (error) {
+          console.error('Error revalidating client stats:', error);
+     }
+}
 
 // Helper functions to revalidate caches
 export async function revalidateRecentActivities() {

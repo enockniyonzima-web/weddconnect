@@ -44,4 +44,13 @@ export async function customLogout () {
      }
 }
 
-
+export function getRedirectPath(role: "Admin" | "Client" | "Vendor"): string {
+     switch(role){
+          case "Admin":
+               return "/admin";
+          case "Vendor":
+               return "/dashboard";
+          default: 
+               return "/home";
+     }
+}

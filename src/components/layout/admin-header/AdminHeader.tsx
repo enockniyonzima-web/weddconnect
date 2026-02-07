@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { TUser } from '@/common/Entities'
 import React from 'react'
 import Logo from '../../../../public/logo/logo.png';
 import Image from 'next/image';
@@ -18,6 +17,7 @@ import { usePathname } from 'next/navigation';
 import { useAuthContext } from '@/components/context/AuthContext';
 import { LogoutButton } from '@/components/forms/LogoutForm';
 import { LogOut } from 'lucide-react';
+import { TSessionUser } from '@/common/Entities';
 
 const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
      {name: "Overview", dest: '', icon: LuLayoutDashboard},
@@ -39,7 +39,7 @@ const AdminHeader = () => {
      )
 }
 
-const DesktopView  = ({user}: {user: TUser | null | undefined}) => {
+const DesktopView  = ({user}: {user: TSessionUser | null | undefined}) => {
      const pathname = usePathname();
      const activeLink = pathname.split('/')[3] || '';
      return (
@@ -79,7 +79,7 @@ const DesktopViewLink = ({link, active}:{link:{name:string, dest: string, icon: 
      )
 }
 
-const MobileView = ({user}: {user: TUser | null | undefined}) => {
+const MobileView = ({user}: {user: TSessionUser | null | undefined}) => {
      const pathname = usePathname();
      const activeLink = pathname.split('/')[3] || '';
      return (

@@ -12,7 +12,7 @@ import { showMainNotification } from "@/util/NotificationFuncs";
 import { ENotificationType } from "@/common/CommonTypes";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { TSubscription, TUser } from "@/common/Entities";
+import { TSessionUser, TSubscription, TUser } from "@/common/Entities";
 import { createClientSubscription, updateClientSubscription } from "@/server-actions/client-subscription.actions";
 import { getFutureDate } from "@/util/DateFunctions";
 import { createTransaction } from "@/server-actions/transaction.action";
@@ -23,7 +23,7 @@ import { TextInputGroup } from "../forms/DataFormsInputs";
 
 const USDRate = 1450;
 
-const PaymentOptions = ({user, subscriptions}:{user:TUser, subscriptions: TSubscription[]}) => {
+const PaymentOptions = ({user, subscriptions}:{user:TSessionUser, subscriptions: TSubscription[]}) => {
      const [choosenSub, setChoosenSub] = useState<TSubscription | null>(null);
      const [method, setMethod] = useState("");
      const [paymentDone,setPaymentDone] = useState(false);
@@ -114,7 +114,7 @@ const PaymentOptionCard = ({image, name,action}:{image: StaticImport, name:strin
      )
 }
 
-const MtnDirectPayment = ({user, subscription, action}:{user:TUser, subscription: TSubscription, action:() => void}) => {
+const MtnDirectPayment = ({user, subscription, action}:{user:TSessionUser, subscription: TSubscription, action:() => void}) => {
      const [phone,setPhone] = useState<string>("");
      const [names,setNames] = useState("");
      const [paymentDone, setPaymentDone] = useState<boolean>(false)
@@ -133,22 +133,27 @@ const MtnDirectPayment = ({user, subscription, action}:{user:TUser, subscription
 
                if(phone === "") return showMainNotification("Invalid phone number. User the international format: +XXXX...", ENotificationType.WARNING); 
                const clientAcc  = user.client ? user.client : await createClient({name: user.email, phone: phone, user: {connect: {id: user.id}}});
-               let clientSubscription = user.client?.subscription;
+               const clientSubscription = user.client?.subscription;
 
                if(clientSubscription){
-                    clientSubscription = await updateClientSubscription(clientSubscription.id, {expiryAt: expiryDate, updatedAt: new Date()});
+                    const response = await updateClientSubscription(clientSubscription.id, {
+                         expiryAt: null, updatedAt: new Date(),
+                         transactions: {
+                              create: {amount, quantity: 1, price: amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: method, proof: names}
+                         }
+                    });
+                    if(!response) return showMainNotification("Error updating subscription. Try again later", ENotificationType.FAIL);
                }else {
-                    clientSubscription = await createClientSubscription({createdAt: new Date(), updatedAt: new Date(), expiryAt: expiryDate, client: {connect:{id: clientAcc?.id}},subscription:{connect: {id: subscription?.id || 0}} })
+                    const response = await createClientSubscription({
+                         createdAt: new Date(), updatedAt: new Date(), expiryAt: null, client: {connect:{id: clientAcc?.id}},subscription:{connect: {id: subscription?.id || 0}},
+                         transactions: {create: {amount, quantity: 1, price: amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: method, proof: names}}
+                    })
+                    if(!response) return showMainNotification("Error creating subscription. Try again later", ENotificationType.FAIL);
                }
                
 
-               const newTransaction = clientSubscription ? await createTransaction({amount, quantity: 1, price:amount, createdAt: new Date(), updatedAt: new Date() , status: "pending", payNumber: phone, transactionMethod: method,proof: names, clientSubscription: {connect:{id: clientSubscription.id}} }) : null;
-               if(newTransaction){
-                    showMainNotification("Payment recorded successfully", ENotificationType.PASS);
-                    return action();
-               }else {
-                    showMainNotification("Error recording payment. Try again later please", ENotificationType.FAIL);
-               }
+               showMainNotification("Payment recorded successfully", ENotificationType.PASS);
+               return action();
           } catch (error) {
                showMainNotification("Application error. Try again later", ENotificationType.FAIL);
           }finally{

@@ -1,19 +1,17 @@
 import { fetchClients } from "@/server-actions/client.actions";
-import { ClientPageHeroSection } from "../sections";
 import { AdminClientSelect } from "../select-types";
+import { ClientPageHeroSection } from "../sections";
 import { ClientsContainer } from "@/components/containers/ClientsContainer";
 
-export default async function AdminPendingClientsPage() {
+export default async function AdminNoSubscriptionsPage() {
      const {data:clients} = await fetchClients(AdminClientSelect, {
-          subscription:  {
-               expiryAt: null
-          }
+          subscription: null
      });
      return (
           <>
                <ClientPageHeroSection 
-                    title="Pending Subscriptions"
-                    description={`${clients?.length || 0} clients with pending subscription plans (no expiry date set)`}
+                    title="No Subscriptions"
+                    description={`${clients?.length || 0} clients without any subscription plan`}
                />
                <ClientsContainer clients={clients || []} />
           </>
