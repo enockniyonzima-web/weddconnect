@@ -138,6 +138,7 @@ model PostReview {
   id        Int      @id @default(autoincrement())
   content   String
   type      String
+  rating    Int @default(0)
   createdAt DateTime
   postId    Int
   clientId  Int
