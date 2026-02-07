@@ -1,7 +1,7 @@
 "use client";
 
 import { ENotificationType } from "@/common/CommonTypes";
-import { TUser } from "@/common/Entities";
+import { TSessionUser,  } from "@/common/Entities";
 import { useAuthContext } from "@/components/context/AuthContext";
 import { AuthPasswordInput, AuthSubmitBtn, AuthTextInput, GoogleSignBtn } from "@/components/forms/AuthForms";
 import ClientPage from "@/components/layout/ClientPage";
@@ -20,8 +20,8 @@ export default function LoginPage() {
 
      const router = useRouter()
 
-     const  redirectUserByType = (type:string, user: TUser | undefined | null) =>{
-          if(user && user.client && (!user.client.subscription || !isDateLaterThanToday(user.client.subscription.expiryAt))) return router.push('/subscribe')
+     const  redirectUserByType = (type:string, user: TSessionUser | undefined | null) =>{
+          if(user && user.client && (!user.client.subscription || !user.client.subscription.expiryAt || !isDateLaterThanToday(user.client.subscription.expiryAt))) return router.push('/subscribe')
           switch(type){
                case "admin":
                     return router.push('/dashboard/admin');

@@ -1,15 +1,18 @@
 import SubscriptionFormWrapper from "./forms/SubscriptionFormWrapper";
-import { HeroSection } from "./sections";
+import { ClientPageHeroSection } from "../sections";
 import SubscriptionsContainer from "./SubscriptionsContainer";
 
-export default async function SubscriptionsPage ({searchParams}:{searchParams: Promise<Record<string, string | undefined>>}){
+export default async function SubscriptionsPage({searchParams}:{searchParams: Promise<Record<string, string | undefined>>}) {
      const search = await searchParams;
      
      return (
           <>
-               <HeroSection />
+               <ClientPageHeroSection 
+                    title="Manage Subscriptions"
+                    description="Create and manage client subscription plans"
+               />
                <SubscriptionsContainer search={search} />
                <SubscriptionFormWrapper search={search} />
           </>
-     )
+     );
 }

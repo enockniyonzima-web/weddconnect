@@ -1,13 +1,13 @@
 "use client";
 
 import { ENotificationType } from '@/common/CommonTypes';
-import { TUser } from '@/common/Entities'
+import { TSessionUser } from '@/common/Entities';
 import Image from '@/components/ui/Image';
 import { logoutUser } from '@/server-actions/auth';
 import { showMainNotification } from '@/util/NotificationFuncs';
 import React from 'react'
 const defaultIcon = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/account.png";
-const ClientProfileLinks = ({user}:{user:TUser}) => {
+const ClientProfileLinks = ({user}:{user:TSessionUser}) => {
      const logout = async () => {
           showMainNotification('Logging out...', ENotificationType.PASS);
           await logoutUser();

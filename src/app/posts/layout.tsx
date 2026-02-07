@@ -9,9 +9,9 @@ export default async function PostsPageLayout({children}:{children: React.ReactN
           return redirect('/auth/login');
      }
      if(user.admin) return redirect('/dashboard/admin');
-     if(user.vendor) return redirect('/dashboard/vendor');
+     // if(user.vendor) return redirect('/dashboard/vendor');
 
-     if(user && (!user.client?.subscription || !isDateLaterThanToday(user.client.subscription.expiryAt))) {
+     if(user && (!user.client?.subscription || !user.client?.subscription.expiryAt || !isDateLaterThanToday(user.client.subscription.expiryAt))) {
           return redirect('/subscribe');
      }
      return (

@@ -18,7 +18,7 @@ export default async function PendingClientsContainer ({search}:{search: Record<
                     <p>No pending clients found!</p>
                </div>
           )
-     } 
+     }
      return (
           <div className="w-full">
                <ClientsContainer clients={clients} />
