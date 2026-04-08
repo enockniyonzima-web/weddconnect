@@ -15,9 +15,9 @@ export default async function AdminClientsPage() {
           return (
                <div className="w-full min-h-screen flex items-center justify-center">
                     <div className="text-center">
-                         <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                         <h2 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Client Statistics</h2>
-                         <p className="text-gray-600">Please try again later or contact support.</p>
+                         <Users className="w-16 h-16 mx-auto mb-4 text-gray-500" />
+                         <h2 className="text-2xl font-bold text-white mb-2">Unable to Load Client Statistics</h2>
+                         <p className="text-gray-400">Please try again later or contact support.</p>
                     </div>
                </div>
           );

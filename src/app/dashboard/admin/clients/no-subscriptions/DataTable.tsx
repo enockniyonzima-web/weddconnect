@@ -30,7 +30,7 @@ const DataTable = ({clients}: {clients: TAdminClientSelect[]}) => {
     <div className="w-full overflow-x-auto">
                    <table className="w-full border-collapse">
                         <thead>
-                             <tr className="bg-gray-100 text-left text-gray-600">
+                             <tr className="bg-gray-800 text-left text-gray-300">
                                   <th className="p-3">Picture</th>
                                   <th className="p-3">Name</th>
                                   <th className="p-3">Email</th>
@@ -43,29 +43,29 @@ const DataTable = ({clients}: {clients: TAdminClientSelect[]}) => {
                         <tbody>
                              {
                                   clients.map(c => 
-                                  <tr key={`client-${c.id}`} className={`border-b hover:bg-gray-50 cursor-pointer ${active === c.id ? "border-[2px] border-blue-600 rounded-[10px]" :""}`} >
+                                  <tr key={`client-${c.id}`} className={`border-b border-gray-800 hover:bg-gray-800/50 cursor-pointer ${active === c.id ? "border-[2px] border-blue-600 rounded-[10px]" :""}`} >
                                        <td className="p-3"><Image src={c.user.image} alt={c.name} width={40} height={40} className="w-[50px] aspect-square rounded-full object-cover " /></td>
-                                       <td className="p-3 text-black text-[0.9rem] text-nowrap">{c.name}</td>
-                                       <td className="p-3 text-black text-[0.9rem] text-nowrap">{c.user.email}</td>
-                                       <td className="p-3 text-black text-[0.9rem] text-nowrap">{c.phone}</td>
-                                       <td className="p-3 text-black text-[0.9rem] text-nowrap">{c.subscription?.subscription.name || "Not Subscription Selected"}</td>
-                                       <td className="p-3 text-black flex flex-wrap gap-[5px] w-fit max-w-full">
+                                       <td className="p-3 text-gray-300 text-sm text-nowrap">{c.name}</td>
+                                       <td className="p-3 text-gray-300 text-sm text-nowrap">{c.user.email}</td>
+                                       <td className="p-3 text-gray-300 text-sm text-nowrap">{c.phone}</td>
+                                       <td className="p-3 text-gray-300 text-sm text-nowrap">{c.subscription?.subscription.name || "Not Subscription Selected"}</td>
+                                       <td className="p-3 text-gray-300 flex flex-wrap gap-[5px] w-fit max-w-full">
                                             {
                                                  c.id === active ?
                                                  <>
-                                                      <span className="text-[0.8rem] whitespace-nowrap text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Amount Paid: {c.subscription?.transactions[0]?.amount ? `Rwf ${formatPrice(c.subscription?.transactions[0]?.amount)}` : "Not defined"}</span>
-                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Account No: {c.subscription?.transactions[0]?.payNumber || "Not provided"}</span>
-                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Paid on: {c.subscription?.transactions[0]?.createdAt ? getDate(c.subscription?.transactions[0]?.createdAt) : "Not provided"}</span>
-                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Account Names: {c.subscription?.transactions[0]?.proof || "Not provide"}</span>
-                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-800 border border-gray-400 bg-white p-[5px] rounded-[5px]">Vendor used: {c.subscription?.transactions[0]?.transactionMethod || "Not Defined"}</span>
+                                                      <span className="text-[0.8rem] whitespace-nowrap text-gray-300 border border-gray-700 bg-gray-800 p-[5px] rounded-lg">Amount Paid: {c.subscription?.transactions[0]?.amount ? `Rwf ${formatPrice(c.subscription?.transactions[0]?.amount)}` : "Not defined"}</span>
+                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-300 border border-gray-700 bg-gray-800 p-[5px] rounded-lg">Account No: {c.subscription?.transactions[0]?.payNumber || "Not provided"}</span>
+                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-300 border border-gray-700 bg-gray-800 p-[5px] rounded-lg">Paid on: {c.subscription?.transactions[0]?.createdAt ? getDate(c.subscription?.transactions[0]?.createdAt) : "Not provided"}</span>
+                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-300 border border-gray-700 bg-gray-800 p-[5px] rounded-lg">Account Names: {c.subscription?.transactions[0]?.proof || "Not provide"}</span>
+                                                      <span className="text-[0.8rem] text-nowrap w-auto text-gray-300 border border-gray-700 bg-gray-800 p-[5px] rounded-lg">Vendor used: {c.subscription?.transactions[0]?.transactionMethod || "Not Defined"}</span>
                                                  </>:
-                                                 <span className="text-white bg-blue-800 hover:bg-blue-600 whitespace-nowrap p-[10px] rounded-[10px]"  onClick={() => setActive(c.id)}>View Details</span>
+                                                 <span className="text-white bg-blue-600 hover:bg-blue-500 whitespace-nowrap p-2.5 rounded-lg transition-colors"  onClick={() => setActive(c.id)}>View Details</span>
                                             }
                                             
                                        </td>
                                        <td className="p-3">
                                             {
-                                                 <button type="button" disabled={deleting.has(c.id)} onClick={() => deleteAction(c.id)} className="text-white bg-red-800 disabled:bg-gray-800 p-[10px] rounded-[10px]">{deleting.has(c.id) ? "Deleting...":"Delete"}</button>
+                                                 <button type="button" disabled={deleting.has(c.id)} onClick={() => deleteAction(c.id)} className="text-white bg-red-600 disabled:bg-gray-700 p-2.5 rounded-lg transition-colors">{deleting.has(c.id) ? "Deleting...":"Delete"}</button>
                                             }
                                        </td>
                                   </tr> 

@@ -51,7 +51,7 @@ export const fetchCategories = cache(async (params:URLSearchParams) => {
           const res = await prisma.category.findMany({
                where: {...filters}, 
                     select:{
-                         id:true, name:true, status:true, icon:true, description:true,
+                         id:true, name:true, status:true, icon:true, description:true, rank:true,
                          features:true,
                          _count: {
                               select:{
@@ -59,7 +59,7 @@ export const fetchCategories = cache(async (params:URLSearchParams) => {
                               }
                          }
                     },
-                    orderBy: [{id: 'asc'}]
+                    orderBy: [{rank: 'desc'}]
           });
           return {data:res};
      } catch (error) {

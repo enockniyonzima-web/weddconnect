@@ -64,6 +64,7 @@ model Category {
   icon        String            @default("")
   posts       Post[]
   features    CategoryFeature[] @relation("CategoryFeatures")
+  rank        Int              @default(0)
 }
 
 model CategoryFeature {

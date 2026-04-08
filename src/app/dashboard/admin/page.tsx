@@ -4,7 +4,7 @@ import AdminPopularPosts from "@/components/containers/AdminPopularPosts";
 
 export default async function AdminPage() {
      return (
-          <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
+          <div className="w-full min-h-screen bg-gray-950">
                <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
                     {/* Hero Section */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 shadow-lg text-white">
@@ -18,7 +18,7 @@ export default async function AdminPage() {
                                    </p>
                               </div>
                               <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl border border-white/20">
-                                   <p className="text-sm text-blue-100">Last updated</p>
+                                   <p className="text-sm text-blue-200">Last updated</p>
                                    <p className="text-xl font-bold">
                                         {new Date().toLocaleDateString('en-US', { 
                                              month: 'short', 

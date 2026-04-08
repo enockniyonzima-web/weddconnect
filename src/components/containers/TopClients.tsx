@@ -11,16 +11,16 @@ export default function TopClients({ stats }: TopClientsProps) {
      const medals = ['🥇', '🥈', '🥉'];
 
      return (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-yellow-100 rounded-lg">
-                         <Trophy className="w-5 h-5 text-yellow-600" />
+                    <div className="p-2 bg-yellow-900/50 rounded-lg">
+                         <Trophy className="w-5 h-5 text-yellow-400" />
                     </div>
                     <div>
-                         <h3 className="text-xl font-bold text-gray-900">
+                         <h3 className="text-xl font-bold text-white">
                               Top Clients
                          </h3>
-                         <p className="text-sm text-gray-600">Highest spending customers</p>
+                         <p className="text-sm text-gray-400">Highest spending customers</p>
                     </div>
                </div>
 
@@ -29,10 +29,10 @@ export default function TopClients({ stats }: TopClientsProps) {
                          {stats.topClients.map((client, index) => (
                               <div 
                                    key={client.id} 
-                                   className={`flex items-center gap-4 p-4 rounded-lg border-2 transition-all hover:shadow-md ${
+                                   className={`flex items-center gap-4 p-4 rounded-lg border-2 transition-all hover:border-gray-600 ${
                                         index < 3 
-                                             ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200' 
-                                             : 'bg-gray-50 border-gray-200'
+                                             ? 'bg-gradient-to-r from-yellow-950/30 to-orange-950/30 border-yellow-800' 
+                                             : 'bg-gray-800/50 border-gray-700'
                                    }`}
                               >
                                    {/* Rank */}
@@ -42,8 +42,8 @@ export default function TopClients({ stats }: TopClientsProps) {
                                                   {medals[index]}
                                              </div>
                                         ) : (
-                                             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                  <span className="text-sm font-bold text-gray-600">
+                                             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                                                  <span className="text-sm font-bold text-gray-300">
                                                        #{index + 1}
                                                   </span>
                                              </div>
@@ -52,10 +52,10 @@ export default function TopClients({ stats }: TopClientsProps) {
 
                                    {/* Client Info */}
                                    <div className="flex-1 min-w-0">
-                                        <h4 className="font-semibold text-gray-900 truncate mb-1">
+                                        <h4 className="font-semibold text-white truncate mb-1">
                                              {client.name}
                                         </h4>
-                                        <div className="flex items-center gap-3 text-xs text-gray-600">
+                                        <div className="flex items-center gap-3 text-xs text-gray-400">
                                              <div className="flex items-center gap-1">
                                                   <Mail className="w-3 h-3" />
                                                   <span className="truncate">{client.email}</span>
@@ -90,17 +90,17 @@ export default function TopClients({ stats }: TopClientsProps) {
 
                {/* Summary Stats */}
                {stats.topClients.length > 0 && (
-                    <div className="mt-6 pt-6 border-t border-gray-200">
+                    <div className="mt-6 pt-6 border-t border-gray-800">
                          <div className="grid grid-cols-2 gap-4">
-                              <div className="bg-blue-50 rounded-lg p-3 text-center border border-blue-100">
-                                   <p className="text-sm text-gray-600 mb-1">Avg Revenue</p>
-                                   <p className="text-xl font-bold text-blue-600">
+                              <div className="bg-blue-950/30 rounded-lg p-3 text-center border border-blue-800">
+                                   <p className="text-sm text-gray-400 mb-1">Avg Revenue</p>
+                                   <p className="text-xl font-bold text-blue-400">
                                         ${stats.averageRevenuePerClient.toFixed(2)}
                                    </p>
                               </div>
-                              <div className="bg-purple-50 rounded-lg p-3 text-center border border-purple-100">
-                                   <p className="text-sm text-gray-600 mb-1">Monthly MRR</p>
-                                   <p className="text-xl font-bold text-purple-600">
+                              <div className="bg-purple-950/30 rounded-lg p-3 text-center border border-purple-800">
+                                   <p className="text-sm text-gray-400 mb-1">Monthly MRR</p>
+                                   <p className="text-xl font-bold text-purple-400">
                                         ${stats.monthlyRecurringRevenue.toFixed(2)}
                                    </p>
                               </div>

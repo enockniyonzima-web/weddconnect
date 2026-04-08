@@ -43,9 +43,9 @@ const DesktopView  = ({user}: {user: TSessionUser | null | undefined}) => {
      const pathname = usePathname();
      const activeLink = pathname.split('/')[3] || '';
      return (
-          <div className='w-[20%] h-full overflow-hidden bg-white border-r border-gray-100 rounded-[0px] shadow-md hidden  lg:flex flex-col items-center justify-between'>
+          <div className='w-[20%] h-full overflow-hidden bg-gray-900 border-r border-gray-800 rounded-[0px] shadow-md hidden  lg:flex flex-col items-center justify-between'>
                <div className='w-full flex flex-col items-center justify-start gap-[30px] '>
-                    <div className='w-full flex items-center flex-wrap justify-center gap-2 border-b border-gray-200 py-3'>
+                    <div className='w-full flex items-center flex-wrap justify-center gap-2 border-b border-gray-800 py-3'>
                          <Image src={Logo} placeholder='blur' width={80} height={40} alt="weddconnect logo" className='w-[40px] aspect-auto' />
                          <h1 className='text-[1.2rem] font-bold text-blue-600'>WeddConnect</h1>
                     </div>
@@ -57,10 +57,10 @@ const DesktopView  = ({user}: {user: TSessionUser | null | undefined}) => {
                          }
                     </nav>
                </div>
-               <div className='w-full flex flex-col  p-4 gap-2 border-t border-blue-600/50'>
+               <div className='w-full flex flex-col  p-4 gap-2 border-t border-gray-800'>
                     <div className='w-full flex items-center flex-wrap justify-start gap-[10px]'>
                          <Image src={user?.image || UserImage} alt='User image' width={60} height={60} className='rounded-full w-[30px] aspect-square object-cover' />
-                         <h2 className='text-black text-[0.8rem]'>{user?.admin?.name || user?.email || "Admin User"}</h2>
+                         <h2 className='text-gray-300 text-[0.8rem]'>{user?.admin?.name || user?.email || "Admin User"}</h2>
                     </div>
                     <LogoutButton className={"py-2 flex items-center justify-center gap-2 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg  text-white"} name='Logout' icon={<LogOut className='w-5 h-5' /> } />
                </div>
@@ -72,7 +72,7 @@ const DesktopView  = ({user}: {user: TSessionUser | null | undefined}) => {
 const DesktopViewLink = ({link, active}:{link:{name:string, dest: string, icon: IconType}, active:boolean}) => {
      const LinkIcon = link.icon;
      return (
-          <Link prefetch={true} href={`/dashboard/admin/${link.dest}`} className={`p-2 transition-all duration-300 w-full flex items-center justify-start gap-[10px] flex-wrap rounded-[5px] ${active ? 'bg-blue-600 text-white hover:bg-blue-800' : 'text-gray-800 hover:bg-blue-100'}`}>
+          <Link prefetch={true} href={`/dashboard/admin/${link.dest}`} className={`p-2 transition-all duration-300 w-full flex items-center justify-start gap-[10px] flex-wrap rounded-lg ${active ? 'bg-blue-600 text-white hover:bg-blue-500' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'}`}>
                <i className='text-[22px]'><LinkIcon /></i>
                <span className='text-[0.9rem]'>{link.name}</span>
           </Link>
@@ -84,7 +84,7 @@ const MobileView = ({user}: {user: TSessionUser | null | undefined}) => {
      const activeLink = pathname.split('/')[3] || '';
      return (
           <div className='w-full lg:hidden  p-2 box-border'>
-               <nav className='w-full bg-white shadow-md rounded-[10px] justify-between flex items-center p-2 gap-[10px]'>
+               <nav className='w-full bg-gray-900 border border-gray-800 shadow-md rounded-xl justify-between flex items-center p-2 gap-[10px]'>
                     {
                          DesktopViewLinks.map((link, index) => (
                               <MobileViewLink key={index} link={link} active={link.dest === activeLink || (activeLink.split('?')[0])=== link.dest} />
@@ -97,7 +97,7 @@ const MobileView = ({user}: {user: TSessionUser | null | undefined}) => {
 
 const MobileViewLink = ({link, active}:{link:{name:string, dest: string, icon: IconType}, active:boolean}) => {
      return (
-          <Link prefetch={true} href={`/dashboard/admin/${link.dest}`} className={`p-2 transition-all duration-300 w-full flex flex-col items-center justify-start gap-[5px] flex-wrap rounded-[5px] ${active ? 'bg-blue-600 text-white hover:bg-blue-800' : 'text-gray-800 hover:bg-blue-100'}`}>
+          <Link prefetch={true} href={`/dashboard/admin/${link.dest}`} className={`p-2 transition-all duration-300 w-full flex flex-col items-center justify-start gap-[5px] flex-wrap rounded-lg ${active ? 'bg-blue-600 text-white hover:bg-blue-500' : 'text-gray-400 hover:bg-gray-800'}`}>
                <i className='text-[22px]'><link.icon /></i>
                <span className='hidden md:block text-[0.9rem] whitespace-nowrap text-center'>{link.name}</span>
           </Link>

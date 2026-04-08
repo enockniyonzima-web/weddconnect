@@ -17,7 +17,7 @@ export default async function AdminStats() {
 
      if (!stats) {
           return (
-               <div className="w-full p-8 bg-white rounded-xl shadow-sm border border-gray-100">
+               <div className="w-full p-8 bg-gray-900 rounded-xl border border-gray-800">
                     <p className="text-gray-500 text-center">Unable to load statistics</p>
                </div>
           );
@@ -76,7 +76,7 @@ export default async function AdminStats() {
                     {statCards.map((stat, index) => (
                          <div
                               key={index}
-                              className="relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group"
+                              className="relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden hover:border-gray-700 transition-all duration-300 group"
                          >
                               {/* Gradient Background */}
                               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${stat.bgGradient} opacity-5 rounded-full -mr-16 -mt-16 group-hover:opacity-10 transition-opacity`}></div>
@@ -86,13 +86,13 @@ export default async function AdminStats() {
                                         <div className={`p-3 bg-gradient-to-br ${stat.bgGradient} rounded-lg shadow-lg`}>
                                              <stat.icon className="w-6 h-6 text-white" />
                                         </div>
-                                        <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                                        <span className="text-xs font-semibold text-green-400 bg-green-500/10 px-2 py-1 rounded-full">
                                              {stat.trend}
                                         </span>
                                    </div>
                                    
-                                   <h3 className="text-gray-600 text-sm font-medium mb-1">{stat.title}</h3>
-                                   <p className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</p>
+                                   <h3 className="text-gray-400 text-sm font-medium mb-1">{stat.title}</h3>
+                                   <p className="text-3xl font-bold text-white mb-2">{stat.value}</p>
                                    <p className="text-xs text-gray-500">{stat.subtitle}</p>
                               </div>
                          </div>
@@ -100,24 +100,24 @@ export default async function AdminStats() {
                </div>
 
                {/* Quick Stats Grid */}
-               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+               <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                     <div className="flex items-center gap-2 mb-4">
                          <Activity className="w-5 h-5 text-blue-600" />
-                         <h3 className="text-lg font-bold text-gray-900">Quick Overview</h3>
+                         <h3 className="text-lg font-bold text-white">Quick Overview</h3>
                     </div>
                     
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                          {quickStats.map((item, index) => (
                               <div
                                    key={index}
-                                   className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors"
+                                   className="flex items-center gap-3 p-4 bg-gray-800 rounded-lg hover:bg-gray-800/80 transition-colors"
                               >
-                                   <div className="p-2 bg-white rounded-lg shadow-sm">
+                                   <div className="p-2 bg-gray-700 rounded-lg">
                                         <item.icon className={`w-5 h-5 ${item.color}`} />
                                    </div>
                                    <div>
-                                        <p className="text-2xl font-bold text-gray-900">{item.value}</p>
-                                        <p className="text-xs text-gray-600">{item.label}</p>
+                                        <p className="text-2xl font-bold text-white">{item.value}</p>
+                                        <p className="text-xs text-gray-400">{item.label}</p>
                                    </div>
                               </div>
                          ))}
@@ -127,8 +127,8 @@ export default async function AdminStats() {
                {/* Categories & Subscriptions */}
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Posts by Category */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                         <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
+                         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                               <TrendingUp className="w-5 h-5 text-blue-600" />
                               Posts by Category
                          </h3>
@@ -140,12 +140,12 @@ export default async function AdminStats() {
                                    return (
                                         <div key={index} className="group">
                                              <div className="flex justify-between text-sm mb-2">
-                                                  <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                                                  <span className="font-medium text-gray-300 group-hover:text-blue-400 transition-colors">
                                                        {category.categoryName}
                                                   </span>
-                                                  <span className="font-bold text-gray-900">{category.count}</span>
+                                                  <span className="font-bold text-white">{category.count}</span>
                                              </div>
-                                             <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                             <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
                                                   <div 
                                                        className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500 group-hover:from-blue-600 group-hover:to-blue-700"
                                                        style={{ width: `${percentage}%` }}
@@ -158,8 +158,8 @@ export default async function AdminStats() {
                     </div>
 
                     {/* Subscriptions by Type */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                         <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
+                         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                               <Star className="w-5 h-5 text-blue-600" />
                               Active Subscriptions
                          </h3>
@@ -171,14 +171,14 @@ export default async function AdminStats() {
                                    return (
                                         <div key={index} className="group">
                                              <div className="flex justify-between text-sm mb-2">
-                                                  <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                                                  <span className="font-medium text-gray-300 group-hover:text-blue-400 transition-colors">
                                                        {subscription.subscriptionName}
                                                   </span>
-                                                  <span className="font-bold text-gray-900">
+                                                  <span className="font-bold text-white">
                                                        {subscription.count} ({percentage.toFixed(1)}%)
                                                   </span>
                                              </div>
-                                             <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                             <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
                                                   <div 
                                                        className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500 group-hover:from-green-600 group-hover:to-green-700"
                                                        style={{ width: `${percentage}%` }}
@@ -192,24 +192,24 @@ export default async function AdminStats() {
                </div>
 
                {/* Recent Activity Summary */}
-               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+               <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/50 rounded-xl p-6 border border-blue-800/50">
                     <div className="flex items-center justify-between flex-wrap gap-4">
                          <div>
-                              <h3 className="text-lg font-bold text-gray-900 mb-1">Last 30 Days Activity</h3>
-                              <p className="text-sm text-gray-600">Recent platform growth and engagement</p>
+                              <h3 className="text-lg font-bold text-white mb-1">Last 30 Days Activity</h3>
+                              <p className="text-sm text-gray-400">Recent platform growth and engagement</p>
                          </div>
                          <div className="flex gap-6">
                               <div className="text-center">
-                                   <p className="text-3xl font-bold text-blue-600">{stats.recentTransactions}</p>
-                                   <p className="text-xs text-gray-600 mt-1">Transactions</p>
+                                   <p className="text-3xl font-bold text-blue-400">{stats.recentTransactions}</p>
+                                   <p className="text-xs text-gray-400 mt-1">Transactions</p>
                               </div>
                               <div className="text-center">
-                                   <p className="text-3xl font-bold text-blue-600">{stats.recentPosts}</p>
-                                   <p className="text-xs text-gray-600 mt-1">New Posts</p>
+                                   <p className="text-3xl font-bold text-blue-400">{stats.recentPosts}</p>
+                                   <p className="text-xs text-gray-400 mt-1">New Posts</p>
                               </div>
                               <div className="text-center">
-                                   <p className="text-3xl font-bold text-blue-600">{stats.recentClients}</p>
-                                   <p className="text-xs text-gray-600 mt-1">New Clients</p>
+                                   <p className="text-3xl font-bold text-blue-400">{stats.recentClients}</p>
+                                   <p className="text-xs text-gray-400 mt-1">New Clients</p>
                               </div>
                          </div>
                     </div>

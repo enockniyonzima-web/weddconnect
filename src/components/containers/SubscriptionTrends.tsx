@@ -18,14 +18,14 @@ export default function SubscriptionTrends({ stats }: SubscriptionTrendsProps) {
      );
 
      return (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                <div className="flex items-center justify-between mb-6">
                     <div>
-                         <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                              <TrendingUp className="w-6 h-6 text-blue-600" />
+                         <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                              <TrendingUp className="w-6 h-6 text-blue-400" />
                               Subscription Trends
                          </h3>
-                         <p className="text-sm text-gray-600 mt-1">Last 6 months activity</p>
+                         <p className="text-sm text-gray-400 mt-1">Last 6 months activity</p>
                     </div>
                </div>
 
@@ -40,7 +40,7 @@ export default function SubscriptionTrends({ stats }: SubscriptionTrendsProps) {
                          return (
                               <div key={index} className="space-y-2">
                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium text-gray-700 min-w-[100px]">
+                                        <span className="text-sm font-medium text-gray-300 min-w-[100px]">
                                              {trend.month}
                                         </span>
                                         <span className="text-xs text-gray-500">
@@ -93,7 +93,7 @@ export default function SubscriptionTrends({ stats }: SubscriptionTrendsProps) {
                                         
                                         {/* Fill remaining space if total is 0 */}
                                         {total === 0 && (
-                                             <div className="flex-1 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">
+                                             <div className="flex-1 bg-gray-800 rounded flex items-center justify-center text-gray-500 text-xs">
                                                   No activity
                                              </div>
                                         )}
@@ -104,18 +104,18 @@ export default function SubscriptionTrends({ stats }: SubscriptionTrendsProps) {
                </div>
 
                {/* Legend */}
-               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-wrap gap-4 justify-center">
+               <div className="mt-6 pt-6 border-t border-gray-800 flex flex-wrap gap-4 justify-center">
                     <div className="flex items-center gap-2">
                          <Users className="w-4 h-4 text-green-500" />
-                         <span className="text-sm text-gray-600">New Subscriptions</span>
+                         <span className="text-sm text-gray-400">New Subscriptions</span>
                     </div>
                     <div className="flex items-center gap-2">
                          <RefreshCw className="w-4 h-4 text-blue-500" />
-                         <span className="text-sm text-gray-600">Renewals</span>
+                         <span className="text-sm text-gray-400">Renewals</span>
                     </div>
                     <div className="flex items-center gap-2">
                          <XCircle className="w-4 h-4 text-red-500" />
-                         <span className="text-sm text-gray-600">Cancellations</span>
+                         <span className="text-sm text-gray-400">Cancellations</span>
                     </div>
                </div>
           </div>

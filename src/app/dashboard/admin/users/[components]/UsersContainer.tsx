@@ -20,7 +20,7 @@ export async function UsersContainer () {
 
      if(admins.length === 0) return (
           <div className="w-full flex items-center justify-center">
-               <p className="text-lg font-medium text-gray-600">No admin users found!</p>
+               <p className="text-lg font-medium text-gray-500">No admin users found!</p>
           </div>
      )
      return (
@@ -32,7 +32,7 @@ export async function UsersContainer () {
 
 const AdminCard = ({admin}:{admin: TAdminSelect}) => {
      return (
-          <div className="w-full flex flex-col items-start gap-4 rounded-xl shadow-lg bg-white border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+          <div className="w-full flex flex-col items-start gap-4 rounded-xl bg-gray-900 border border-gray-800 overflow-hidden hover:border-gray-700 transition-colors duration-300">
                {/* Header with gradient background */}
                <div className="w-full bg-gradient-to-br from-blue-600 to-blue-700 px-6 py-4">
                     <div className="flex items-center justify-between">
@@ -46,8 +46,8 @@ const AdminCard = ({admin}:{admin: TAdminSelect}) => {
                                              className="w-14 h-14 rounded-full border-3 border-white shadow-md object-cover"
                                         />
                                    ) : (
-                                        <div className="w-14 h-14 rounded-full border-3 border-white shadow-md bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                             <span className="text-xl font-semibold text-gray-600">
+                                        <div className="w-14 h-14 rounded-full border-3 border-white shadow-md bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center">
+                                             <span className="text-xl font-semibold text-gray-300">
                                                   {admin.name.charAt(0).toUpperCase()}
                                              </span>
                                         </div>
@@ -74,7 +74,7 @@ const AdminCard = ({admin}:{admin: TAdminSelect}) => {
                {/* Content Section */}
                <div className="w-full px-6 pb-5 flex flex-col gap-3">
                     {/* Email */}
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-gray-400">
                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                          </svg>
@@ -93,7 +93,7 @@ const AdminCard = ({admin}:{admin: TAdminSelect}) => {
                          </span>
                     </div>
                     <div className="w-full flex items-center">
-                         <AdminForm className="py-2 px-4 bg-gradient-to-t from-gray-100 to-gray-200 text-gray-800 rounded-lg w-full flex items-center justify-center font-bold gap-2" name="Edit" id={admin.id} icon={<Edit2 className="w-4 h-4" />} />
+                         <AdminForm className="py-2 px-4 bg-gradient-to-t from-gray-800 to-gray-700 text-gray-200 rounded-lg w-full flex items-center justify-center font-bold gap-2" name="Edit" id={admin.id} icon={<Edit2 className="w-4 h-4" />} />
                     </div>
                </div>
           </div>

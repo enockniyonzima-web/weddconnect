@@ -17,7 +17,7 @@ export default async function AdminRecentActivities() {
 
      if (!activities) {
           return (
-               <div className="w-full p-8 bg-white rounded-xl shadow-sm border border-gray-100">
+               <div className="w-full p-8 bg-gray-900 rounded-xl border border-gray-800">
                     <p className="text-gray-500 text-center">Unable to load recent activities</p>
                </div>
           );
@@ -27,14 +27,14 @@ export default async function AdminRecentActivities() {
           switch (status.toLowerCase()) {
                case 'verified':
                case 'active':
-                    return 'text-green-600 bg-green-50 border-green-200';
+                    return 'text-green-400 bg-green-500/10 border-green-500/20';
                case 'pending':
-                    return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+                    return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
                case 'rejected':
                case 'inactive':
-                    return 'text-red-600 bg-red-50 border-red-200';
+                    return 'text-red-400 bg-red-500/10 border-red-500/20';
                default:
-                    return 'text-gray-600 bg-gray-50 border-gray-200';
+                    return 'text-gray-400 bg-gray-800 border-gray-700';
           }
      };
 
@@ -70,18 +70,18 @@ export default async function AdminRecentActivities() {
                {/* Header */}
                <div className="flex items-center justify-between">
                     <div>
-                         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                         <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                               <TrendingUp className="w-7 h-7 text-blue-600" />
                               Recent Activities
                          </h2>
-                         <p className="text-sm text-gray-600 mt-1">Latest platform activity and updates</p>
+                         <p className="text-sm text-gray-400 mt-1">Latest platform activity and updates</p>
                     </div>
                </div>
 
                {/* Activity Grid */}
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Recent Transactions */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
                          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4">
                               <div className="flex items-center gap-2 text-white">
                                    <DollarSign className="w-5 h-5" />
@@ -93,20 +93,20 @@ export default async function AdminRecentActivities() {
                                    activities.transactions.map((transaction) => (
                                         <div
                                              key={transaction.id}
-                                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group"
+                                             className="flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-800/80 transition-colors group"
                                         >
                                              <div className="flex items-center gap-3 flex-1">
-                                                  <div className="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow">
+                                                  <div className="p-2 bg-gray-700 rounded-lg group-hover:bg-gray-600 transition-shadow">
                                                        <DollarSign className="w-5 h-5 text-blue-600" />
                                                   </div>
                                                   <div className="flex-1 min-w-0">
-                                                       <p className="font-semibold text-gray-900 truncate">{transaction.clientName}</p>
+                                                       <p className="font-semibold text-white truncate">{transaction.clientName}</p>
                                                        <p className="text-xs text-gray-500 truncate">{transaction.subscriptionName}</p>
                                                        <p className="text-xs text-gray-400">{formatDate(transaction.createdAt)}</p>
                                                   </div>
                                              </div>
                                              <div className="text-right ml-3">
-                                                  <p className="font-bold text-gray-900 whitespace-nowrap">
+                                                  <p className="font-bold text-white whitespace-nowrap">
                                                        RWF {(transaction.amount / 1000).toFixed(0)}K
                                                   </p>
                                                   <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border ${getStatusColor(transaction.status)}`}>
@@ -123,7 +123,7 @@ export default async function AdminRecentActivities() {
                     </div>
 
                     {/* Recent Posts */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
                          <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4">
                               <div className="flex items-center gap-2 text-white">
                                    <Package className="w-5 h-5" />
@@ -135,7 +135,7 @@ export default async function AdminRecentActivities() {
                                    activities.posts.map((post) => (
                                         <div
                                              key={post.id}
-                                             className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-purple-50 transition-colors group"
+                                             className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg hover:bg-gray-800/80 transition-colors group"
                                         >
                                              {post.imageUrl ? (
                                                   <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
@@ -152,7 +152,7 @@ export default async function AdminRecentActivities() {
                                                   </div>
                                              )}
                                              <div className="flex-1 min-w-0">
-                                                  <p className="font-semibold text-gray-900 truncate">{post.title}</p>
+                                                  <p className="font-semibold text-white truncate">{post.title}</p>
                                                   <p className="text-xs text-gray-500">{post.vendorName} • {post.categoryName}</p>
                                                   <p className="text-xs text-gray-400">{formatDate(post.createdAt)}</p>
                                              </div>
@@ -168,7 +168,7 @@ export default async function AdminRecentActivities() {
                     </div>
 
                     {/* Recent Clients */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
                          <div className="bg-gradient-to-r from-green-600 to-green-700 p-4">
                               <div className="flex items-center gap-2 text-white">
                                    <Users className="w-5 h-5" />
@@ -180,20 +180,20 @@ export default async function AdminRecentActivities() {
                                    activities.clients.map((client) => (
                                         <div
                                              key={client.id}
-                                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-green-50 transition-colors group"
+                                             className="flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-800/80 transition-colors group"
                                         >
                                              <div className="flex items-center gap-3 flex-1">
                                                   <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center font-bold text-green-700 shadow-sm group-hover:shadow-md transition-shadow">
                                                        {client.name.charAt(0).toUpperCase()}
                                                   </div>
                                                   <div className="flex-1 min-w-0">
-                                                       <p className="font-semibold text-gray-900 truncate">{client.name}</p>
+                                                       <p className="font-semibold text-white truncate">{client.name}</p>
                                                        <p className="text-xs text-gray-500 truncate">{client.email}</p>
                                                        <p className="text-xs text-gray-400">{formatDate(client.createdAt)}</p>
                                                   </div>
                                              </div>
                                              {client.hasSubscription && (
-                                                  <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-200 flex-shrink-0">
+                                                  <span className="text-xs px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex-shrink-0">
                                                        Subscribed
                                                   </span>
                                              )}
@@ -206,7 +206,7 @@ export default async function AdminRecentActivities() {
                     </div>
 
                     {/* Recent Reviews */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
                          <div className="bg-gradient-to-r from-pink-600 to-pink-700 p-4">
                               <div className="flex items-center gap-2 text-white">
                                    <MessageSquare className="w-5 h-5" />
@@ -218,14 +218,14 @@ export default async function AdminRecentActivities() {
                                    activities.reviews.map((review) => (
                                         <div
                                              key={review.id}
-                                             className="p-3 bg-gray-50 rounded-lg hover:bg-pink-50 transition-colors group"
+                                             className="p-3 bg-gray-800 rounded-lg hover:bg-gray-800/80 transition-colors group"
                                         >
                                              <div className="flex items-start gap-3">
-                                                  <div className="p-2 bg-white rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex-shrink-0">
+                                                  <div className="p-2 bg-gray-700 rounded-lg group-hover:bg-gray-600 transition-shadow flex-shrink-0">
                                                        <MessageSquare className="w-5 h-5 text-pink-600" />
                                                   </div>
                                                   <div className="flex-1 min-w-0">
-                                                       <p className="text-sm text-gray-700 line-clamp-2 mb-1">{review.content}</p>
+                                                       <p className="text-sm text-gray-300 line-clamp-2 mb-1">{review.content}</p>
                                                        <p className="text-xs text-gray-500">
                                                             <span className="font-medium">{review.clientName}</span> on{' '}
                                                             <span className="font-medium">{review.postTitle}</span>

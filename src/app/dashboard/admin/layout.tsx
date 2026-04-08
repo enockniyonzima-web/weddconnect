@@ -14,7 +14,7 @@ export default async function AdminLayout({children}:{children:React.ReactNode})
 
      if(!user || !user.admin) return redirect('/');
      return (
-          <main className="w-screen h-screen bg-blue-100 flex flex-col-reverse lg:flex-row overflow-hidden ">
+          <main className="w-screen h-screen bg-gray-950 flex flex-col-reverse lg:flex-row overflow-hidden ">
                     <AdminHeader/>
                     <div className="w-full h-full overflow-auto">
                          {children}

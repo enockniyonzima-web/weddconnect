@@ -73,7 +73,7 @@ function AddFeatureForm({updateFeature}: {updateFeature: CategoryFeature | null 
           }
      }
      return (
-          <form onSubmit={saveCategoryFeature} className="w-full flex items-center border rounded-[10px] p-[10px] flex-col gap-[10px]">
+          <form onSubmit={saveCategoryFeature} className="w-full flex items-center border border-gray-800 rounded-xl p-4 flex-col gap-3">
                <TextInputGroup type="text" label={`Feature Name: ${updateFeature ? updateFeature.name : ""}`} placeholder="Enter Category Name" name="name" required={updateFeature ? false : true} action={(res) => dataInputs.set('name', String(res), "string")} />
                <SelectInputGroup  label={`Feature Type: ${updateFeature ? updateFeature.type : ""} `} name="feature-type" required={updateFeature ? false : true} values={FeatureTypes}  action={(res) => dataInputs.set('type',String(res), "string")}   />
                <TextInputGroup type="text" label={`Feature Values: ${updateFeature ? updateFeature.values : "" }`} placeholder="placeholder, select values, separated by comma (,)" name="values" required={updateFeature ? false : true} action={(res) => dataInputs.set('values', String(res), "string")} />

@@ -13,10 +13,10 @@ export const HeroSection = () => {
 
      return (
           <div className="w-full flex flex-col items-center justify-start gap-[10px]">
-               <h1 className="text-[1.6rem] text-black font-bold w-full text-start">Welcome back, {user?.admin?.name || "Admin"}</h1>
+               <h1 className="text-[1.6rem] text-white font-bold w-full text-start">Welcome back, {user?.admin?.name || "Admin"}</h1>
                <div className="w-full flex items-end justify-between flex-wrap gap-2">
-                    <p className="text-[0.9rem] text-gray-600">Here is what is happening with our platform today</p>
-                    <Link className="bg-blue-600 text-base font-med rounded-xl whitespace-nowrap hover:bg-blue-800 py-2 px-6 text-white" prefetch={true} href={'/dashboard/admin/posts?form=add'} >New Post</Link>
+                    <p className="text-[0.9rem] text-gray-400">Here is what is happening with our platform today</p>
+                    <Link className="bg-blue-600 text-base font-med rounded-xl whitespace-nowrap hover:bg-blue-500 py-2 px-6 text-white transition-colors" prefetch={true} href={'/dashboard/admin/posts?form=add'} >New Post</Link>
                </div>
           </div>
      )
@@ -36,9 +36,7 @@ export const AdminStatistics = () => {
 const StatisticsCard  = ({icon, name, change, total}:{icon:{icon:IconType, iconColor:string, bgColor:string},name:string, change: string, total:string}) => {
      const CardIcon = icon.icon;
      return (
-          <div className="w-full relative p-4 bg-white shadow-md rounded-2xl border border-transparent 
-               before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-300 before:to-purple-300 
-               before:rounded-2xl before:-z-10">
+          <div className="w-full relative p-4 bg-gray-900 rounded-2xl border border-gray-800">
                <div className="flex flex-col space-y-2">
                {/* Icon */}
                <div className={`p-2 ${icon.bgColor} rounded-[5px] w-fit`}>
@@ -46,10 +44,10 @@ const StatisticsCard  = ({icon, name, change, total}:{icon:{icon:IconType, iconC
                </div>
 
                {/* Title */}
-               <p className="text-gray-600 text-sm">{name}</p>
+               <p className="text-gray-400 text-sm">{name}</p>
 
                {/* Stats */}
-               <h2 className="text-xl md:text-2xl font-bold">{total}</h2>
+               <h2 className="text-xl md:text-2xl font-bold text-white">{total}</h2>
 
                {/* Growth Indicator */}
                <p className="text-sm text-green-500 font-medium">
@@ -63,21 +61,21 @@ const StatisticsCard  = ({icon, name, change, total}:{icon:{icon:IconType, iconC
 export const QuickOveriew = () => {
      return (
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-               <div className="w-full flex lg:col-span-2 flex-col items-center justify-start gap-[20px] rounded-[10px] p-[10px] bg-white" >
+               <div className="w-full flex lg:col-span-2 flex-col items-center justify-start gap-[20px] rounded-xl p-4 bg-gray-900 border border-gray-800" >
                     <div className="w-full flex items-center justify-between ">
-                         <h3 className="text-black text-[1rem] font-bold">Recent Activity</h3>
-                         <Link href="/dashboard/admin" className="flex items-center justify-start gap-[5px] text-blue-600 text-[0.8rem]" prefetch={true}>View All <i><FaArrowRight /></i></Link>
+                         <h3 className="text-white text-[1rem] font-bold">Recent Activity</h3>
+                         <Link href="/dashboard/admin" className="flex items-center justify-start gap-[5px] text-blue-400 text-[0.8rem]" prefetch={true}>View All <i><FaArrowRight /></i></Link>
                     </div>
                     <div className="w-full flex flex-col items-start justify-start gap-[5px]">
-                         <p className="text-[0.8rem] text-gray-600">Nothing Found</p>
+                         <p className="text-[0.8rem] text-gray-500">Nothing Found</p>
                     </div>
                </div>
-               <div className="w-full flex flex-col items-center justify-start gap-[20px] rounded-[10px] p-[10px] bg-white">
+               <div className="w-full flex flex-col items-center justify-start gap-[20px] rounded-xl p-4 bg-gray-900 border border-gray-800">
                     <div className="w-full flex items-center justify-between ">
-                         <h3 className="text-black text-[1rem] font-bold">Popular Services</h3>
+                         <h3 className="text-white text-[1rem] font-bold">Popular Services</h3>
                     </div>
                     <div className="w-full flex flex-col items-start justify-start gap-[5px]">
-                         <p className="text-[0.8rem] text-gray-600">Nothing Found</p>
+                         <p className="text-[0.8rem] text-gray-500">Nothing Found</p>
                     </div>
                </div>
           </div>

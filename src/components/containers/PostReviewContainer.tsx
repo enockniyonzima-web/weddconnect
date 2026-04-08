@@ -293,7 +293,7 @@ export const PostReviewContainer = ({ postId }: PostReviewContainerProps) => {
                          </div>
                     ) : reviews.length === 0 ? (
                          <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
-                              <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-600" />
+                              <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-500" />
                               <p className="text-gray-400 font-medium mb-2">No reviews yet</p>
                               <p className="text-sm text-gray-500">Be the first to review this service!</p>
                          </div>

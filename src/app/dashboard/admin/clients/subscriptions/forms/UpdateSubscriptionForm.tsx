@@ -54,7 +54,7 @@ const UpdateSubscriptionForm = ({subscription }:{subscription:TSubscription}) =>
 
 const FeatureCard = ({feature, active, action}:{feature: CategoryFeature, active:boolean, action: (id:number, status: boolean) => void}) => {
      return (
-          <span onClick={() => action(feature.id, active)} className={`py-2  text-center px-4 w-full text-[0.9rem] border-[1.5px] rounded-[5px] cursor-pointer ${active ? "border-blue-400 text-blue-600" :"border-gray-200 text-gray-700"} `}>{feature.name}</span>
+          <span onClick={() => action(feature.id, active)} className={`py-2  text-center px-4 w-full text-sm border-[1.5px] rounded-lg cursor-pointer ${active ? "border-blue-400 text-blue-400" :"border-gray-700 text-gray-400"} `}>{feature.name}</span>
      )
 }
 export default UpdateSubscriptionForm

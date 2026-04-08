@@ -77,21 +77,21 @@ export const RoleForm = ({id, name, icon, className}:{id?:number, icon?: ReactNo
      if(!formOn) return <button className={className} type="button" onClick={() => setFormOn(true)}>{icon ?icon: null} {name ? name : !name && !icon ? "Role Form": ""}</button>
      return(
           <Dialog open={formOn} onClose={() => setFormOn(false)} className="relative z-50">
-               <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-                    <DialogPanel className="bg-white p-6 rounded-lg shadow-lg w-full lg:w-[50%] max-w-[80%] max-h-[90%] overflow-y-auto flex flex-col items-center justify-start gap-[10px]">
-                         <h2 className="p-4 text-[1.2rem] font-bold text-gray-800">{id ? "Edit Role" : "Add new Role"}</h2>
+               <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center">
+                    <DialogPanel className="bg-gray-900 border border-gray-800 p-6 rounded-xl shadow-lg w-full lg:w-[50%] max-w-[80%] max-h-[90%] overflow-y-auto flex flex-col items-center justify-start gap-4">
+                         <h2 className="p-4 text-xl font-bold text-gray-100">{id ? "Edit Role" : "Add new Role"}</h2>
                          {
                               fetchingData ? 
-                              <p className="text-[1.2rem] font-medium text-gray-800">Loading data...</p>:
+                              <p className="text-lg font-medium text-gray-400">Loading data...</p>:
                               <>
                                    <form onSubmit={submitForm} className="w-full flex flex-col items-start justify-start gap-[10px]" id="Role-form">
                                         <TextInputGroup name="role-name" label={`Role Name: ${searchedRole?.name || ""}`} placeholder="ex: Admin" required={false} type="text" action={res => inputs.set("name", res, "string")} />
                                         <TextAreaInputGroup name="role-description" label="Role Description: " placeholder="simple description" maxWords={50} required={false} action={res => inputs.set("description", res, "string")} />
-                                        <button type="submit" disabled={submitting} className="w-full flex items-center justify-center py-[10px] text-[1rem] text-white rounded-[5px] bg-blue-600 hover:bg-blue-800 disabled:bg-gray-800">{submitting ? "Loading...": id ? "Update Role" :"Save Role"}</button>
+                                        <button type="submit" disabled={submitting} className="w-full flex items-center justify-center py-2.5 text-base text-white rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 transition-colors">{submitting ? "Loading...": id ? "Update Role" :"Save Role"}</button>
                                    </form>
-                                   <h3 className="w-full text-left text-[1rem] font-bold text-gray-800">Permissions:</h3>
-                                   <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-[5px]">
-                                        {permissions.map(p => <span key={`permission-${p.id}`} className="p-3 rounded-[5px] cursor-pointer text-[0.9rem] border border-gray-300 text-gray-600">{p.name}</span>)}
+                                   <h3 className="w-full text-left text-base font-bold text-gray-100">Permissions:</h3>
+                                   <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                        {permissions.map(p => <span key={`permission-${p.id}`} className="p-3 rounded-lg cursor-pointer text-sm border border-gray-700 text-gray-400 hover:border-gray-600 transition-colors">{p.name}</span>)}
                                    </div>
                               </>
                               

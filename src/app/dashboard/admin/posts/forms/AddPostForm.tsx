@@ -154,11 +154,11 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
 
      if(selectedVendor === 0) return (
           <div className='w-full flex items-center  flex-col gap-[20px]'>
-               <div className='w-full flex flex-col items-start justify-start gap-[10px] border rounded-[10px] p-[10px]'>
-                    <h2 className='text-[1.2] font-bold text-gray-600'>Vendor Information:</h2>
+               <div className='w-full flex flex-col items-start justify-start gap-[10px] border border-gray-800 rounded-xl p-4'>
+                    <h2 className='text-base font-bold text-gray-300'>Vendor Information:</h2>
                     <div className='w-full grid grid-cols-2 gap-[10px]'>
-                         <button type='button' onClick={() => setAddNewVendor(false)} className={`w-full py-[10px] text-[0.9rem] rounded-[5px]  ${!addNewVendor ? 'bg-blue-600 text-white hover:bg-blue-800 border border-blue-600' : 'bg-white border border-blue-600 text-blue-600'}`} disabled={!addNewVendor}>Select Vendors</button>
-                         <button type='button' onClick={() => setAddNewVendor(true)} className={`w-full py-[10px] text-[0.9rem] rounded-[5px]  ${addNewVendor ? 'bg-blue-600 text-white hover:bg-blue-800 border border-blue-600' : 'bg-white border border-blue-600 text-blue-600'}`} disabled={addNewVendor}>Add New Vendor</button>
+                         <button type='button' onClick={() => setAddNewVendor(false)} className={`w-full py-[10px] text-[0.9rem] rounded-lg  ${!addNewVendor ? 'bg-blue-600 text-white hover:bg-blue-500 border border-blue-600' : 'bg-gray-800 border border-gray-700 text-gray-400'}`} disabled={!addNewVendor}>Select Vendors</button>
+                         <button type='button' onClick={() => setAddNewVendor(true)} className={`w-full py-[10px] text-[0.9rem] rounded-lg  ${addNewVendor ? 'bg-blue-600 text-white hover:bg-blue-500 border border-blue-600' : 'bg-gray-800 border border-gray-700 text-gray-400'}`} disabled={addNewVendor}>Add New Vendor</button>
                     </div>
                     {
                          addNewVendor ? 
@@ -178,7 +178,7 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
                          : null
                     }
                     {post !== null ?  <div className='w-full flex items-center justify-end '>
-                         <button type='button' className='px-[10px] py-[5px] text-[0.9rem] border border-gray-300 text-gray-600 rounded-[5px] hover:text-gray-800' onClick={() => setSelectedVendor(post.vendor.id)}>Next</button> 
+                         <button type='button' className='px-4 py-2 text-sm border border-gray-700 text-gray-400 rounded-lg hover:text-gray-200 hover:border-gray-600 transition-colors' onClick={() => setSelectedVendor(post.vendor.id)}>Next</button> 
                     </div> : null}
                </div>
           </div>
@@ -200,19 +200,19 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
      }
 
      if(selectedCategory === 0) return (
-          <div className='w-full flex flex-col items-start justify-start gap-[10px] border rounded-[10px] p-[10px]'>
+          <div className='w-full flex flex-col items-start justify-start gap-[10px] border border-gray-800 rounded-xl p-4'>
                <SelectInputGroup name='post category' label='Select Category:' values={categories.map(category => ({label:category.name, value: category.id}))} action={async res => await updateCategory(Number(res))} />
-               <div className='w-full flex items-center justify-end gap-[5px] '>
-                    <button type='button' className='px-[10px] py-[5px] text-[0.9rem] border border-gray-300 text-gray-600 rounded-[5px] hover:text-gray-800' onClick={() => setSelectedVendor(0)}>Prev</button>
-                    {post !== null ?  <button type='button' className='px-[10px] py-[5px] text-[0.9rem] border border-gray-300 text-gray-600 rounded-[5px] hover:text-gray-800' onClick={() => setSelectedCategory(post.category.id)}>Next</button>  : null}
+               <div className='w-full flex items-center justify-end gap-2'>
+                    <button type='button' className='px-4 py-2 text-sm border border-gray-700 text-gray-400 rounded-lg hover:text-gray-200 hover:border-gray-600 transition-colors' onClick={() => setSelectedVendor(0)}>Prev</button>
+                    {post !== null ?  <button type='button' className='px-4 py-2 text-sm border border-gray-700 text-gray-400 rounded-lg hover:text-gray-200 hover:border-gray-600 transition-colors' onClick={() => setSelectedCategory(post.category.id)}>Next</button>  : null}
                </div> 
           </div>
      )
 
      return (
-          <div className='w-full flex flex-col items-center justify-start gap-[20px]'>
-               <div className='w-full flex flex-col items-start justify-start gap-[10px] border rounded-[10px] p-[10px]'>
-                    <h2 className='text-[1.2] font-bold text-gray-600'>Post Information:</h2>
+          <div className='w-full flex flex-col items-center justify-start gap-5'>
+               <div className='w-full flex flex-col items-start justify-start gap-[10px] border border-gray-800 rounded-xl p-4'>
+                    <h2 className='text-base font-bold text-gray-300'>Post Information:</h2>
                     <form onSubmit={savePost} className='w-full items-start justify-start flex flex-col gap-[10px]'>
                          <TextInputGroup name='post-name' label={`Post Title: ${post?.title}`} placeholder='Enter post title' type='text' action={res => postInputs.set('name', res, 'string')} />
                          <TextInputGroup name='post-name' label={`Post Location: ${post?.title}`} placeholder='ex: Kigali - Gasabo, Chez Lando' type='text' action={res => postInputs.set('location', res, 'string')} />
@@ -220,8 +220,8 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
                          <SubmitButton label="Save Post" loadText="Saving post..." loading={addingPost} />
                     </form>
                </div>
-               <div className='w-full flex flex-col items-start justify-start gap-[10px] border rounded-[10px] p-[10px]'>
-                    <h2 className='text-[1.2] font-bold text-gray-600'>Post Images:</h2>
+               <div className='w-full flex flex-col items-start justify-start gap-[10px] border border-gray-800 rounded-xl p-4'>
+                    <h2 className='text-base font-bold text-gray-300'>Post Images:</h2>
                     <div className='w-full'>
                     {
                               postImages && postImages.length > 0 ?                    
@@ -230,14 +230,14 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
                                         postImages.map((image, index) => 
                                         <div key={`listing-update-image-${index}`} className="w-full flex flex-col items-center justify-start gap-[5px] relative">
                                              <DImage  width={80} height={60} src={image.url} alt="Listing-update image" className="w-full rounded-[5px] aspect-auto" />
-                                             <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-100 rounded-[2.5px] p-[2px] cursor-pointer" onClick={async() => await deleteImage(image)}>
+                                             <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-900/80 rounded-lg p-[2px] cursor-pointer" onClick={async() => await deleteImage(image)}>
                                                   <MaterialIcons.delete className="text-red-700 hover:text-red-600 text-[20px] " titleAccess="delete image" />
                                              </button>
                                              <h4 className="text-[0.8rem] text-gray-500 text-center w-full">Image {index + 1}</h4>
                                         </div>)
                                    }
                               </div>:
-                              <p className="text-[0.8rem] text-gray-700">No Images selected!!</p>
+                              <p className="text-[0.8rem] text-gray-500">No Images selected!!</p>
                          }
                     </div>
                     <div className='w-full flex items-center justify-start'>
@@ -246,9 +246,9 @@ const AddPostForm = ({vendors,categories, post, contactTypes}: {vendors: TVendor
                </div>
                {addedPost !== 0 || post !== null ? <PostFeauresForm addedPost={addedPost} post={post} categories={categories} selectedCategory={selectedCategory} /> : null}
                {addedPost !== 0 || post !== null ? <FormPriceForm postId={post === null ? addedPost : post.id} postPrice={post !== null ? post.price : null} /> : null}
-               <div className='w-full flex items-center justify-end gap-[5px]'>
-                    <button type='button' className='px-[10px] py-[5px] text-[0.9rem] border border-gray-300 text-gray-600 rounded-[5px] hover:text-gray-800' onClick={() => setSelectedCategory(0)}>Prev</button>
-                    <Link href={'/dashboard/admin/posts'} prefetch={true} className='px-[10px] py-[5px] text-[0.9rem] border border-gray-300 text-gray-600 rounded-[5px] hover:text-gray-800 text-center' >Complete</Link>
+               <div className='w-full flex items-center justify-end gap-2'>
+                    <button type='button' className='px-4 py-2 text-sm border border-gray-700 text-gray-400 rounded-lg hover:text-gray-200 hover:border-gray-600 transition-colors' onClick={() => setSelectedCategory(0)}>Prev</button>
+                    <Link href={'/dashboard/admin/posts'} prefetch={true} className='px-4 py-2 text-sm border border-gray-700 text-gray-400 rounded-lg hover:text-gray-200 hover:border-gray-600 transition-colors text-center' >Complete</Link>
                </div>
           </div>
           

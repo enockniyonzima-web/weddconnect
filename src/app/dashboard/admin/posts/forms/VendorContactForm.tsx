@@ -42,7 +42,7 @@ export const VendorContactForm = ({vendor, contactTypes}:{vendor: TVendor | null
      }
      return (
           <div className="w-full flex flex-col items-center justify-start gap-[10px]">
-               <h2 className="w-full text-[0.9rem] font-bold text-black">Vendor Contact:</h2>
+               <h2 className="w-full text-sm font-bold text-gray-300">Vendor Contact:</h2>
                <form onSubmit={addContact} className="w-full grid grid-cols-2 gap-[10px]">
                     <SelectInputGroup name="contact-type" label="Select contact type: " values={contactTypes.map(type => ({label:`${type.name} (${type.type})`, value: type.id}))} action={res => typeInputs.set('typeId', res, "number")} />
                     <TextInputGroup name="contact-value" label="Enter contact Value: " placeholder="ex: instagram link, phone number, email" type="text" action={res => typeInputs.set('value', res, 'string')}  />
@@ -52,7 +52,7 @@ export const VendorContactForm = ({vendor, contactTypes}:{vendor: TVendor | null
                     {
                          vendor  && vendor.contacts.length > 0 ? 
                               vendor.contacts.map(contact => <VendorContactCard vendorId={vendor.id} contact={contact} key={`vendor-contact-card-${contact.id}`} />)
-                         : <p className="text-[0.9rem] text-gray-600">Vendor has no contacts added</p>
+                         : <p className="text-sm text-gray-500">Vendor has no contacts added</p>
                     }
                </div>
           </div>
@@ -74,6 +74,6 @@ const VendorContactCard  = ({contact, vendorId}:{contact: TVendorContact, vendor
           }
      }
      return (
-          <button type="button" disabled={loading} className="w-full p-[5px] disabled:cursor-progress rounded-[5px] text-gray-500 border border-gray-200 line-clamp-1 text-[0.8rem] hover:border-orange-500" onClick={deleteContact} title="Click to delete" key={`vendor-contact-${contact.id}`}>{loading ? 'Deleting' : `${contact.contactType.name}: ${contact.value}`}</button>
+          <button type="button" disabled={loading} className="w-full p-[5px] disabled:cursor-progress rounded-lg text-gray-400 border border-gray-700 line-clamp-1 text-[0.8rem] hover:border-orange-500 transition-colors" onClick={deleteContact} title="Click to delete" key={`vendor-contact-${contact.id}`}>{loading ? 'Deleting' : `${contact.contactType.name}: ${contact.value}`}</button>
      )
 }

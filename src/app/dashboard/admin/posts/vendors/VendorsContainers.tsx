@@ -22,10 +22,10 @@ export async function VendorsContainer ({search}:{search: Record<string, string 
      }
 
      if(vendors.length === 0) return <div className="w-full flex items-center justify-center p-[20px]">
-               <p className="text-[0.9rem] text-gray-600">No vendors found!</p>
+               <p className="text-sm text-gray-500">No vendors found!</p>
           </div>
      return (
-          <div className="w-full border border-gray-300 rounded-[10px] p-[10px] flex flex-col items-center gap-[20px]">
+          <div className="w-full border border-gray-800 rounded-xl p-4 flex flex-col items-center gap-5">
                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
                     {
                          vendors.map((vendor, index) => <AdminVendorCard vendor={vendor} index={index + 1} key={`admin-vendor-${index}`} />)
@@ -63,10 +63,10 @@ export async function VendorContactTypesContainer ({typeId}:{typeId: string | un
      ];
      return (
           <div className="w-full flex flex-col items-start justify-start gap-[10px]">
-               <h2 className="text-[1.2rem] font-bold text-gray-700">Vendor Contact Types</h2>
+               <h2 className="text-lg font-bold text-gray-100">Vendor Contact Types</h2>
                <div className=" w-full flex-wrap flex items-center justify-between">
-                    <p className="text-[0.9rem] text-gray-600">These the contact types that a vendor can be contacted by the client. Click to add more types.</p>
-                    <Link className="bg-blue-600 text-[0.8rem] rounded-[5px] whitespace-nowrap hover:bg-blue-800 py-[5px] px-[20px] text-white flex items-center gap-[5px]" prefetch={true} href={'/dashboard/admin/posts/vendors?form=add'} ><i className="text-[18px]"><FaPlus /></i>Add Type</Link>
+                    <p className="text-sm text-gray-400">These the contact types that a vendor can be contacted by the client. Click to add more types.</p>
+                    <Link className="bg-blue-600 text-sm rounded-lg whitespace-nowrap hover:bg-blue-500 py-2 px-4 text-white flex items-center gap-2 transition-colors" prefetch={true} href={'/dashboard/admin/posts/vendors?form=add'} ><i className="text-base"><FaPlus /></i>Add Type</Link>
                </div>
                <GenTable baseUpdateLink="/dashboard/admin/posts/vendors?form=add&typeId=" pagination={{itemsPerPage, currentPage, total, visiblePages:5}} columns={contactTypeColumns} data={contactTypes} idColumn={"id"} />
                <AddContactTypeForm contactType={contactType} />

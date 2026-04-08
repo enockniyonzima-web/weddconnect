@@ -22,16 +22,16 @@ export function GenTable<T>({data, columns, idColumn, pagination, baseUpdateLink
   const showPrev = currentPage > 1;
 
      return (
-          <div className="overflow-x-auto bg-white shadow-md rounded-lg w-full ">
+          <div className="overflow-x-auto bg-gray-900 border border-gray-800 rounded-xl w-full">
           <table className="min-w-full border-collapse">
                <thead>
-               <tr className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
+               <tr className="bg-gray-800 text-gray-300 uppercase text-sm leading-normal">
                     {columns.map((column) => (
-                    <th key={String(column.key)} className="py-3 px-6 whitespace-nowrap text-left border-b">
+                    <th key={String(column.key)} className="py-3 px-6 whitespace-nowrap text-left border-b border-gray-700">
                     {column.label}
                     </th>
                     ))}
-                    <th  className="py-3 px-6 text-left border-b">
+                    <th className="py-3 px-6 text-left border-b border-gray-700">
                     Actions
                     </th>
                </tr>
@@ -39,20 +39,20 @@ export function GenTable<T>({data, columns, idColumn, pagination, baseUpdateLink
                <tbody>
                {data.length > 0 ? (
                     data.map((row, rowIndex) => (
-                    <tr className="border-b hover:bg-gray-50 cursor-pointer group transition-all duration-300" key={`${row[idColumn]}-${rowIndex}`}>
+                    <tr className="border-b border-gray-800 hover:bg-gray-800/50 cursor-pointer group transition-all duration-300" key={`${row[idColumn]}-${rowIndex}`}>
                          {columns.map((column) => (
-                              <td key={String(column.key)} className={`py-2 px-6 text-[0.8rem] ${column.type === 'boolean' ? "flex items-center justify-center" :''}`}>
+                              <td key={String(column.key)} className={`py-2 px-6 text-sm text-gray-300 ${column.type === 'boolean' ? "flex items-center justify-center" :''}`}>
                               {column.type === "image" ? 
                                    <Image src={String(row[column.key])} alt={`${row[idColumn]} image`} />
                               : column.type === 'longText'? 
-                              <p className="whitespace-pre-line line-clamp-1 group-hover:line-clamp-none transition-all duration-300 min-w-[250px] md:min-w-[200px] lg:min-w-auto ">{String(row[column.key])}</p> :
+                              <p className="whitespace-pre-line line-clamp-1 group-hover:line-clamp-none transition-all duration-300 min-w-[250px] md:min-w-[200px] lg:min-w-auto">{String(row[column.key])}</p> :
                               column.type === 'boolean' ? 
-                              <span className={`text-[18px] inline-block ${row[column.key] ? 'text-green-600' : 'text-red-600'}`}>{row[column.key] ? <VscCheck /> : <VscChromeClose /> }</span> :
+                              <span className={`text-lg inline-block ${row[column.key] ? 'text-green-500' : 'text-red-500'}`}>{row[column.key] ? <VscCheck /> : <VscChromeClose /> }</span> :
                               String(row[column.key])}
                               </td>
                          ))}
                          <td className="py-2 px-6">
-                              <Link className="text-blue-50 bg-blue-600 hover:bg-blue-800 rounded-[5px] py-2 px-4  text-[0.8rem]" href={`${baseUpdateLink}${row[idColumn]}`}>Edit</Link>
+                              <Link className="text-white bg-blue-600 hover:bg-blue-500 rounded-lg py-1.5 px-4 text-sm transition-colors" href={`${baseUpdateLink}${row[idColumn]}`}>Edit</Link>
                          </td>
                     </tr>
                     ))
@@ -70,7 +70,7 @@ export function GenTable<T>({data, columns, idColumn, pagination, baseUpdateLink
         {showPrev && (
           <Link
             href={`?page=${currentPage - 1}`}
-            className="px-4 py-2 text-[0.8rem] rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+            className="px-4 py-2 text-sm rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
           >
             Prev
           </Link>
@@ -81,8 +81,8 @@ export function GenTable<T>({data, columns, idColumn, pagination, baseUpdateLink
           <Link
             key={page}
             href={`?page=${page}`}
-            className={`px-4 py-2 rounded-md text-[0.8rem] ${
-              currentPage === page ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+              currentPage === page ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             }`}
           >
             {page}
@@ -93,7 +93,7 @@ export function GenTable<T>({data, columns, idColumn, pagination, baseUpdateLink
         {showNext && (
           <Link
             href={`?page=${currentPage + 1}`}
-            className="px-4 py-2 text-[0.8rem] rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+            className="px-4 py-2 text-sm rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
           >
             Next
           </Link>

@@ -21,8 +21,8 @@ export default async function PostsContainer({search}:{search: Record<string, st
           return (
                <div className="w-full flex-col items-center justify-start gap-[10px]">
                     {
-                         posts.length === 0 ? <div className="w-full p-[20px] flex items-center justify-center">
-                              <p>No posts found</p>
+                         posts.length === 0 ? <div className="w-full p-5 flex items-center justify-center">
+                              <p className="text-gray-500">No posts found</p>
                          </div>:
                          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
                               {
@@ -41,7 +41,7 @@ export default async function PostsContainer({search}:{search: Record<string, st
 
           return (
                <>
-                    <div className="w-full grid grid-cols-1 gap-[20px] bg-black px-[5%] lg:px-[10%] py-[20px]">
+                    <div className="w-full grid grid-cols-1 gap-5 bg-gray-950 px-[5%] lg:px-[10%] py-5">
                          {
                               categories.map(category => <CategoryCard key={`prepage-category-${category.id}`} link={`?category=${category.id}`} category={category} />)
                          }

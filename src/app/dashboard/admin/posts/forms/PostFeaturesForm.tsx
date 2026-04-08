@@ -54,17 +54,17 @@ export const PostFeauresForm = ({addedPost, post, selectedCategory, categories}:
                     {
                          selectedCategory && 
                          <div className="w-full p-[5px] flex flex-col items-start justify-start gap-[5px]">
-                              <h3 className='text-[0.9rem] text-gray-700 font-bold'>Post Features:</h3>
+                              <h3 className='text-sm text-gray-300 font-bold'>Post Features:</h3>
                               <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-[5px]">
                                    {
                                         (categories.find(c => c.id === (selectedCategory === 0 ? post?.categoryId : selectedCategory)))?.features.map((feature, index) => 
                                              <div key={`${feature.name}-${index}`} className="w-full flex flex-col gap-[2px]" >
-                                                  <label htmlFor={`${feature.name}-${index}`} className="text-gray-600 text-[0.8rem] ">{feature.name}</label>
+                                                  <label htmlFor={`${feature.name}-${index}`} className="text-gray-400 text-[0.8rem] ">{feature.name}</label>
                                                   {
                                                        feature.type === 'textarea' ?
-                                                       <textarea className="w-full border-gray-200 text-[0.8rem] border-[1.3px] bg-gray-100 rounded-[5px] outline-none p-[5px]" onChange={(e) => updatePostFeatures({value: e.target.value, categoryFeature: feature})} cols={8} rows={5} name={`${feature.name}-${index}`} id={`${feature.name}-${index}`}></textarea>
+                                                       <textarea className="w-full border-gray-700 text-[0.8rem] border bg-gray-800/80 text-gray-100 rounded-lg outline-none p-2 focus:border-blue-500" onChange={(e) => updatePostFeatures({value: e.target.value, categoryFeature: feature})} cols={8} rows={5} name={`${feature.name}-${index}`} id={`${feature.name}-${index}`}></textarea>
                                                        :feature.type === 'select' ?
-                                                       <select className="w-full border-gray-200 border-[1.3px] bg-gray-100 rounded-[5px] outline-none p-[5px] py-[7px] text-[0.8rem] cursor-pointer" onChange={(e) => updatePostFeatures({value: e.target.value, categoryFeature: feature})} name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} >
+                                                       <select className="w-full border-gray-700 border bg-gray-800/80 text-gray-100 rounded-lg outline-none p-2 py-[7px] text-[0.8rem] cursor-pointer focus:border-blue-500" onChange={(e) => updatePostFeatures({value: e.target.value, categoryFeature: feature})} name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} >
                                                             <option value="">Select {feature.name}...</option>
                                                             {
                                                                  feature.values.split(",").map((value, index) => <option key={`${feature.name}-dropdown-${index}`} value={value} >{value}</option>)
@@ -72,10 +72,10 @@ export const PostFeauresForm = ({addedPost, post, selectedCategory, categories}:
                                                        </select>
                                                        :feature.type === 'htmlValue' ? null
                                                        :feature.type === "number" ?
-                                                       <input className="w-full border-gray-200 border-[1.3px] text-[0.8rem] bg-gray-100 rounded-[5px] outline-none p-[5px]" onChange={(e) => updatePostFeatures({ value: e.target.value, categoryFeature: feature})} type="text" inputMode="numeric" name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} />
+                                                       <input className="w-full border-gray-700 border text-[0.8rem] bg-gray-800/80 text-gray-100 rounded-lg outline-none p-2 focus:border-blue-500" onChange={(e) => updatePostFeatures({ value: e.target.value, categoryFeature: feature})} type="text" inputMode="numeric" name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} />
                                                        :feature.type === 'file' ?
-                                                       <input className="w-full border-gray-200 border-[1.3px] bg-gray-100 rounded-[5px] outline-none p-[5px] text-[0.8rem] " onChange={(e) => updatePostFeatures({ value: e.target.value, categoryFeature: feature})} type="file" name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} accept={feature.values} />
-                                                       : <input className="w-full text-[0.8rem] border-gray-200 border-[1.3px] bg-gray-100 rounded-[5px] outline-none p-[5px]" onChange={(e) => updatePostFeatures({value: e.target.value, categoryFeature: feature})} name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} type={feature.type || 'text'} placeholder={feature.values} required={feature.required} />
+                                                       <input className="w-full border-gray-700 border bg-gray-800/80 text-gray-100 rounded-lg outline-none p-2 text-[0.8rem]" onChange={(e) => updatePostFeatures({ value: e.target.value, categoryFeature: feature})} type="file" name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} accept={feature.values} />
+                                                       : <input className="w-full text-[0.8rem] border-gray-700 border bg-gray-800/80 text-gray-100 rounded-lg outline-none p-2 focus:border-blue-500" onChange={(e) => updatePostFeatures({value: e.target.value, categoryFeature: feature})} name={`${feature.name}-${index}`} id={`${feature.name}-${index}`} type={feature.type || 'text'} placeholder={feature.values} required={feature.required} />
                                                   }
                                              </div>
                                         )

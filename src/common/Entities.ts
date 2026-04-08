@@ -28,7 +28,7 @@ export type TUserSelectFields = {
 }  
 export type TUser = Prisma.UserGetPayload<{select: TUserSelectFields,include: {client: {include:{subscription:true}}, vendor: true, admin:true}}>;
 
-export type TCategory = Prisma.CategoryGetPayload<{select:{id:true, name:true, status:true, icon:true, description:true},include: {features:true, _count:{select:{posts:true}}}}>;
+export type TCategory = Prisma.CategoryGetPayload<{select:{id:true, name:true, status:true, icon:true, description:true, rank:true},include: {features:true, _count:{select:{posts:true}}}}>;
 
 export const SPostFeature = {
      id:true, value:true, postId:true, categoryFeature: {select: {id:true, name:true, type:true, icon:true, onCard:true, rank:true, inFilter:true}}
