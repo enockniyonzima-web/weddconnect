@@ -6,11 +6,14 @@ import { AuthPasswordInput, AuthSubmitBtn, AuthTextInput, GoogleSignBtn } from "
 import { showMainNotification } from "@/util/NotificationFuncs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { TermsViewer } from "@/components/views/legal/TermsViewer";
+import { PrivacyViewer } from "@/components/views/legal/TermsViewer";
 import { registerUser } from "./actions";
 
 export default function SignupPage() {
      const [formState, action] = useActionState(registerUser, {message: "", status: ""});
+     const [accepted, setAccepted] = useState(false);
      const router = useRouter();
      
      const navigate = (path: string) => router.push(path);
@@ -46,7 +49,24 @@ export default function SignupPage() {
                          <AuthTextInput label="Phone" name="sign-up-phone" placeholder="07800..." />
                          <AuthTextInput label="Email" name="sign-up-email" type="email" placeholder="you@example.com" />
                          <AuthPasswordInput label="Password" name="sign-up-password" placeholder="Create a strong password" />
-                         <AuthSubmitBtn loading={false} name="Create Account" />
+
+                         {/* Terms acceptance */}
+                         <label className="flex items-start gap-3 cursor-pointer group">
+                              <input
+                                   type="checkbox"
+                                   checked={accepted}
+                                   onChange={(e) => setAccepted(e.target.checked)}
+                                   className="mt-0.5 h-4 w-4 rounded border-gray-700 bg-gray-900 accent-blue-600 shrink-0 cursor-pointer"
+                              />
+                              <span className="text-xs text-gray-500 leading-relaxed">
+                                   I agree to the{" "}
+                                   <TermsViewer />{" "}
+                                   and{" "}
+                                   <PrivacyViewer />
+                              </span>
+                         </label>
+
+                         <AuthSubmitBtn loading={false} name="Create Account" disabled={!accepted} />
                     </form>
 
                     <p className="text-center text-sm text-gray-500">

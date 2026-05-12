@@ -43,9 +43,9 @@ export const AuthPasswordInput = ({label, name, placeholder,action}:{label: stri
      )
 }
 
-export const AuthSubmitBtn = ({name, loading}:{name:string, loading: boolean}) => {
+export const AuthSubmitBtn = ({name, loading, disabled}:{name:string, loading: boolean, disabled?: boolean}) => {
      return (
-          <button type="submit" disabled={loading} className="w-full py-3 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 mt-1">
+          <button type="submit" disabled={loading || disabled} className="w-full py-3 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 mt-1">
                {loading ? (
                     <span className="flex items-center justify-center gap-2">
                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

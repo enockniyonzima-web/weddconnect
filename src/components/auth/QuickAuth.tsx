@@ -3,6 +3,8 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { useAuthContext } from "../context/AuthContext";
 import { GoogleSignBtn } from "../forms/AuthForms";
+import { TermsViewer } from "../views/legal/TermsViewer";
+import { PrivacyViewer } from "../views/legal/TermsViewer";
 import Link from "next/link";
 
 const QuickAuth  = () => {
@@ -35,6 +37,9 @@ const QuickAuth  = () => {
                               <Link href="/auth/sign-up" onClick={setAuth} className="text-blue-500 hover:text-blue-400 transition-colors font-medium">
                                    Register free
                               </Link>
+                         </p>
+                         <p className="text-xs text-gray-700 text-center">
+                              <TermsViewer /> &middot; <PrivacyViewer />
                          </p>
                     </DialogPanel>
                </div>

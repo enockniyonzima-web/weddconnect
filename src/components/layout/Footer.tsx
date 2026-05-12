@@ -49,8 +49,8 @@ const Footer = () => {
                     <p className='w-full text-gray-400 text-[0.95rem] font-medium text-center md:text-start'>Powered by Desc Softlab Ltd</p>
                     <p className='w-full text-gray-400 text-[0.95rem] font-medium text-center md:text-start lg:text-center'>&copy; 2025 WeddConnect. All rights reserved.</p>
                     <div className='w-full flex gap-[10px] items-center justify-center lg:justify-end'>
-                         <FooterLink link={{name:"Terms", dest:"/terms"}} />
-                         <FooterLink link={{name:"Privacy Policy", dest:"/privacy-policy"}} />
+                         <FooterLink link={{name:"Terms", dest:"/legal/terms"}} />
+                         <FooterLink link={{name:"Privacy Policy", dest:"/legal/privacy-policy"}} />
                     </div>
                </div>
           </footer>
