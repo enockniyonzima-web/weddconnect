@@ -51,6 +51,6 @@ export function getRedirectPath(role: "Admin" | "Client" | "Vendor"): string {
           case "Vendor":
                return "/dashboard";
           default: 
-               return "/home";
+               return "/";
      }
 }

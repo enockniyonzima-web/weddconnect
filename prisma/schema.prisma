@@ -98,6 +98,7 @@ model Post {
   packages    PostPackage[]
   price       PostPrice?
   reviews     PostReview[]
+  sortOrder   Int @default(100)
 }
 
 model PostFeature {
@@ -113,6 +114,7 @@ model PostImage {
   id     Int    @id @default(autoincrement())
   url    String
   name   String
+  sortOrder   Int  @default(0)
   postId Int
   post   Post   @relation(fields: [postId], references: [id])
 }
@@ -131,6 +133,7 @@ model PostPackage {
   name        String
   description String
   price       Float
+  sortOrder   Int  @default(0)
   postId      Int
   post        Post   @relation(fields: [postId], references: [id])
 }

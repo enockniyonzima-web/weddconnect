@@ -3,7 +3,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ENotificationType } from "@/common/CommonTypes";
 import { AuthPasswordInput, AuthSubmitBtn, AuthTextInput, GoogleSignBtn } from "@/components/forms/AuthForms";
-import ClientPage from "@/components/layout/ClientPage";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,24 +25,37 @@ export default function SignupPage() {
           }
      }, [formState]);
      return (
-          <ClientPage>
-               <div className="w-full flex px-[2%] flex-col items-center justify-center py-[80px] bg-black">
-                    <div className="w-full md:w-[70%] lg:w-[40%] rounded-[5px] px-[20px] py-[20px] bg-white flex flex-col items-center justify-start gap-[30px]">
-                         <h1 className="text-[1.4rem] font-bold text-black text-center" >Register</h1>
-                         <GoogleSignBtn />
-                         <form action={action} className="w-full flex flex-col items-center justify-start gap-[10px]">
-                              <AuthTextInput label="Full Name:" name="sign-up-name" placeholder="ex Dushime Brother" />
-                              <AuthTextInput label="Phone:" name="sign-up-phone" placeholder="ex 07800..." />
-                              <AuthTextInput label="Email:" name="sign-up-email" type="email" placeholder="ex dushime@xyz.com" />
-                              <AuthPasswordInput label="Password:" name="sign-up-password" placeholder="password"  />
-                              <AuthSubmitBtn loading={false} name="Register" />
-                         </form>
-                         <div className="w-full flex items-center justify-center gap-[5px] border-t-[1.5px] border-gray-100 pt-[20px]">
-                              <p className="text-[0.8rem] text-gray-400">Already have an account? </p>
-                              <Link prefetch={true} href={'/auth/login'} className="text-[0.8rem] text-blue-600 hover:text-blue-800 ">Login</Link>
-                         </div>
-                    </div>
+          <div className="flex flex-col gap-6">
+               {/* Header */}
+               <div className="mb-2">
+                    <h1 className="text-2xl font-bold text-white tracking-tight">Create your account</h1>
+                    <p className="text-gray-500 text-sm mt-1.5">Join thousands of couples planning their perfect wedding</p>
                </div>
-          </ClientPage>
+
+               <div className="flex flex-col gap-5">
+                    <GoogleSignBtn />
+
+                    <div className="flex items-center gap-3">
+                         <div className="flex-1 h-px bg-gray-800" />
+                         <span className="text-xs text-gray-600 font-medium">or continue with email</span>
+                         <div className="flex-1 h-px bg-gray-800" />
+                    </div>
+
+                    <form action={action} className="flex flex-col gap-4">
+                         <AuthTextInput label="Full Name" name="sign-up-name" placeholder="John Doe" />
+                         <AuthTextInput label="Phone" name="sign-up-phone" placeholder="07800..." />
+                         <AuthTextInput label="Email" name="sign-up-email" type="email" placeholder="you@example.com" />
+                         <AuthPasswordInput label="Password" name="sign-up-password" placeholder="Create a strong password" />
+                         <AuthSubmitBtn loading={false} name="Create Account" />
+                    </form>
+
+                    <p className="text-center text-sm text-gray-500">
+                         Already have an account?{" "}
+                         <Link href="/auth/login" className="text-blue-500 hover:text-blue-400 font-medium transition-colors">
+                              Sign in
+                         </Link>
+                    </p>
+               </div>
+          </div>
      )
 }

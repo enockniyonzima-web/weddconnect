@@ -8,6 +8,7 @@ import { getSessionUser } from "@/server-actions/user.actions";
 import { fetchSubscriptions } from "@/server-actions/subscription.actions";
 import { SSubscription } from "@/common/Entities";
 import { SubscriptionsProvider } from "@/context/SubscriptionContext";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,6 +88,26 @@ export default async function RootLayout({
           {children}
           </SubscriptionsProvider>
           <MainNotificationContainer />
+          <Toaster
+              position="top-right"
+              theme="dark"
+              expand={false}
+              closeButton
+              toastOptions={{
+                classNames: {
+                  toast: "!bg-gray-900 !border !border-gray-800 !text-white !shadow-xl !rounded-xl",
+                  title: "!text-white !font-semibold",
+                  description: "!text-gray-400",
+                  success: "!border-blue-500/40 [&>[data-icon]]:!text-blue-400",
+                  error: "!border-red-500/40 [&>[data-icon]]:!text-red-400",
+                  warning: "!border-yellow-500/40 [&>[data-icon]]:!text-yellow-400",
+                  info: "!border-blue-500/40 [&>[data-icon]]:!text-blue-400",
+                  closeButton: "!bg-gray-800 !border-gray-700 !text-gray-400 hover:!text-white",
+                  actionButton: "!bg-blue-600 !text-white hover:!bg-blue-700",
+                  cancelButton: "!bg-gray-800 !text-gray-300 hover:!bg-gray-700",
+                }
+              }}
+            />
         </AuthProvider>
       </body>
     </html>
