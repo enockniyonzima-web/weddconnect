@@ -9,6 +9,7 @@ import { fetchSubscriptions } from "@/server-actions/subscription.actions";
 import { SSubscription } from "@/common/Entities";
 import { SubscriptionsProvider } from "@/context/SubscriptionContext";
 import { Toaster } from "sonner";
+import QueryProvider from "@/components/context/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -83,7 +84,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen overflow-x-hidden relative bg-black`}
       >
-        <AuthProvider authUser={user}>
+        <QueryProvider>
+          <AuthProvider authUser={user}>
           <SubscriptionsProvider subs={subscriptions}>
           {children}
           </SubscriptionsProvider>
@@ -109,6 +111,8 @@ export default async function RootLayout({
               }}
             />
         </AuthProvider>
+        </QueryProvider>
+        
       </body>
     </html>
   );

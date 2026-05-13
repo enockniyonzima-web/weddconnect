@@ -1,27 +1,18 @@
 import { TCategory } from "@/common/Entities";
-import Endpoints from "@/services/Endpoints";
-import { MainServer } from "@/services/Server";
-import CategoryFormButton from "./forms/CategoryFormButton";
+
 import { FileText, Layers, ArrowUpDown, CheckCircle, XCircle } from "lucide-react";
 
 import Link from "next/link";
 import Image from "@/components/ui/Image";
+import { CategoryFormBtn } from "@/components/forms/CategoryForm";
+import { countCategories, fetchCategories } from "@/server-actions/category.actions";
+import { SFullCategory } from "@/select-types/category";
 
 export default async function CategoriesContainer({ search }: { search: Record<string, string | undefined> }) {
-     const itemsPerPage = 12;
-     let total = 0;
-     let categories: TCategory[] = [];
+     const itemsPerPage = 21;
+     const categories = await fetchCategories(SFullCategory, undefined, itemsPerPage);
+     const total = await countCategories();
      const currentPage = search.page ? parseInt(search.page) : 1;
-     const searchStr = Object.entries(search).map(([key, value]) => `${key}=${value}`).join("&");
-     const searchQuery = new URLSearchParams(searchStr).toString();
-     const categoriesRes: { data: TCategory[]; pagination: { total: number } } = await MainServer.fetch(
-          `${Endpoints.category.main}?${searchQuery}`
-     );
-     if (categoriesRes) {
-          const { data, pagination } = categoriesRes;
-          total = pagination.total;
-          categories = data as TCategory[];
-     }
 
      const totalPages = Math.ceil(total / itemsPerPage);
      const maxVisiblePages = 5;
@@ -116,7 +107,8 @@ function CategoryCard({ category }: { category: TCategory }) {
                          </div>
                     )}
                     <div className="pt-1">
-                         <CategoryFormButton categoryId={category.id} size="sm" />
+                         <CategoryFormBtn showBtnName showBtnIcon categoryId={category.id} />
+                          {/* <CategoryFormButton categoryId={category.id} size="sm" /> */}
                     </div>
                </div>
           </div>

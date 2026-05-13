@@ -58,7 +58,7 @@ const StatisticsCard  = ({icon, name, change, total}:{icon:{icon:IconType, iconC
      )
 }
 
-export const QuickOveriew = () => {
+export const QuickOverview = () => {
      return (
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
                <div className="w-full flex lg:col-span-2 flex-col items-center justify-start gap-[20px] rounded-xl p-4 bg-gray-900 border border-gray-800" >
