@@ -1,16 +1,15 @@
 
+import { AdminContactTypeContainer } from "@/components/containers/admin/AdminContactTypesContainer";
 import { HeroSection } from "./sections";
-import { VendorContactTypesContainer, VendorsContainer } from "./VendorsContainers";
+import {  VendorsContainer } from "./VendorsContainers";
 
-export default async function VendorsPage({searchParams}: {searchParams:Promise<Record<string, string | undefined>>}) {
-     const search = await searchParams;
-     const id = search.typeId;
+export default function VendorsPage() {
          
      return (
           <>
                <HeroSection />
-               <VendorsContainer search={search} />
-               <VendorContactTypesContainer typeId={id} />
+               <VendorsContainer />
+               <AdminContactTypeContainer />
                
           </>
      )

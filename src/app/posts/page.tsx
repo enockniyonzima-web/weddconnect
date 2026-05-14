@@ -1,21 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import CategoryContainer from "./[components]/CategoryContainer";
 import CategoryPostContainer from "./[components]/CategoryPostContainer";
 
+export default function PostsPage() {
+     const [selectedCategory, setSelectedCategory] = useState<number>(0);
 
-
-export default async function PostsPage ({searchParams}:{searchParams: Promise<Record<string, string | undefined>>}) {
-     const search = await searchParams;
-     
-     const category = search.category;
-     if(category) {
-          return <CategoryPostContainer search={search} />
+     if (selectedCategory) {
+          return (
+               <CategoryPostContainer
+                    categoryId={selectedCategory}
+                    onBack={() => setSelectedCategory(0)}
+               />
+          );
      }
-     return (
-          <CategoryContainer search={search} />
-     )
-
-     
-     
-     
-     
+     return <CategoryContainer onCategorySelect={(id) => setSelectedCategory(id)} />;
 }

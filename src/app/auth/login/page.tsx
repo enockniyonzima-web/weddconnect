@@ -1,17 +1,15 @@
 "use client";
 
-import { ENotificationType } from "@/common/CommonTypes";
-import { TSessionUser,  } from "@/common/Entities";
+import { TSessionUser } from "@/common/Entities";
 import { useAuthContext } from "@/components/context/AuthContext";
 import { AuthPasswordInput, AuthSubmitBtn, AuthTextInput, GoogleSignBtn } from "@/components/forms/AuthForms";
-import ClientPage from "@/components/layout/ClientPage";
 import { CredentialsSignin } from "@/server-actions/auth";
 import { getSessionUser } from "@/server-actions/user.actions";
 import { isDateLaterThanToday } from "@/util/DateFunctions";
-import { showMainNotification } from "@/util/NotificationFuncs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
      const [credentials, setCredentials] = useState<{email:string, password: string}>({email:"", password: ""});
@@ -36,51 +34,93 @@ export default function LoginPage() {
 
      const submitForm = async (e: React.FormEvent) => {
           e.preventDefault();
-          try {
-               showMainNotification("Authenticating...", ENotificationType.WARNING);
-               setLoading(true);
-               const data = new FormData();
-               data.append("email", credentials.email);
-               data.append("password", credentials.password);
+          setLoading(true);
+          return toast.promise(
+               (async() => {
+                    try {
+                         const data = new FormData();
+                         data.append("email", credentials.email);
+                         data.append("password", credentials.password);
 
-               const result= await CredentialsSignin(data);
-               if (result) {
-                    if(result.error){
-                         return showMainNotification("Invalid email or password", ENotificationType.FAIL);
+                         const result= await CredentialsSignin(data);
+                         if (result) {
+                              if(result.error){
+                                   throw new Error("Invalid email or password");
+                              }
+
+                              const {user} = await getSessionUser();
+                              setUser(user);
+                              redirectUserByType(user?.type || "",  user);
+
+                         } else {
+                              throw new Error("Error authenticating your credentials");
+                         }
+                    } catch (error) {
+                         throw error instanceof Error ? error : new Error("Error authenticating your credentials");
+                    }finally {
+                         setLoading(false);
                     }
-
-                    const {user} = await getSessionUser();
-                    showMainNotification("Login successfull", ENotificationType.PASS);
-                    setUser(user);
-                    return redirectUserByType(user?.type || "",  user);
-               } else {
-                    return showMainNotification("Error logging in", ENotificationType.FAIL)
+               })(),
+               {
+                    loading: "Authenticating your credentials...",
+                    success: "Login successful! Redirecting...",
+                    error: error => error.message || "Error authenticating your credentials",
+                    
                }
-          } catch (error) {
-               console.error(error);
-               showMainNotification(`Error authenticating your credentials`, ENotificationType.FAIL);
-          }finally{
-               setLoading(false);
-          }
+          )
+          
      }
 
      return (
-          <ClientPage>
-               <div className="w-full flex px-[2%] flex-col items-center justify-center py-[80px] bg-black">
-                    <div className="w-full md:w-[70%] lg:w-[40%] rounded-[10px] px-[20px] py-[20px] bg-gradient-to-br from-white to-gray-50 flex flex-col items-center justify-start gap-[30px]">
-                         <h1 className="text-[1.4rem] font-bold text-black text-center" >Sign In</h1>
-                         <GoogleSignBtn />
-                         <form onSubmit={submitForm} className="w-full flex flex-col items-center justify-start gap-[20px]">
-                              <AuthTextInput action={(res) => setCredentials(prev => ({...prev, email:res}))} label="Email:" name="login-email" placeholder="ex dushime@xyz.com" />
-                              <AuthPasswordInput action={(res) => setCredentials(prev => ({...prev, password:res}))}  label="Password:" name="login-password" placeholder="password"  />
-                              <AuthSubmitBtn loading={loading} name={loading ? "Authenticating..." :"Sign In"} />
-                         </form>
-                         <div className="w-full flex items-center justify-center gap-[5px] border-t-[1.5px] border-gray-100 pt-[20px]">
-                              <p className="text-[0.8rem] text-gray-400">Your first time? </p>
-                              <Link prefetch={true} href={'/auth/sign-up'} className="text-[0.8rem] text-blue-600 hover:text-blue-800 ">Register</Link>
-                         </div>
-                    </div>
+          <div className="flex flex-col gap-6">
+               {/* Header */}
+               <div className="mb-2">
+                    <h1 className="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
+                    <p className="text-gray-500 text-sm mt-1.5">Sign in to continue to WeddConnect</p>
                </div>
-          </ClientPage>
+
+               <div className="flex flex-col gap-5">
+                    <GoogleSignBtn />
+
+                    <div className="flex items-center gap-3">
+                         <div className="flex-1 h-px bg-gray-800" />
+                         <span className="text-xs text-gray-600 font-medium">or continue with email</span>
+                         <div className="flex-1 h-px bg-gray-800" />
+                    </div>
+
+                    <form onSubmit={submitForm} className="flex flex-col gap-4">
+                         <AuthTextInput
+                              action={(res) => setCredentials(prev => ({...prev, email: res}))}
+                              label="Email"
+                              name="login-email"
+                              placeholder="you@example.com"
+                         />
+                         <div className="flex flex-col gap-1.5">
+                              <AuthPasswordInput
+                                   action={(res) => setCredentials(prev => ({...prev, password: res}))}
+                                   label="Password"
+                                   name="login-password"
+                                   placeholder="Enter your password"
+                              />
+                              <div className="flex justify-end">
+                                   <Link
+                                        href="/auth/reset-password"
+                                        className="text-xs text-blue-500 hover:text-blue-400 transition-colors"
+                                   >
+                                        Forgot password?
+                                   </Link>
+                              </div>
+                         </div>
+                         <AuthSubmitBtn loading={loading} name={loading ? "Signing in..." : "Sign In"} />
+                    </form>
+
+                    <p className="text-center text-sm text-gray-500">
+                         Don&apos;t have an account?{" "}
+                         <Link href="/auth/sign-up" className="text-blue-500 hover:text-blue-400 font-medium transition-colors">
+                              Create one
+                         </Link>
+                    </p>
+               </div>
+          </div>
      )
 }

@@ -10,9 +10,13 @@ import { FcGoogle } from "react-icons/fc";
 
 export const AuthTextInput = ({label, type, name, placeholder,action}:{label: string,type?:string, name:string, placeholder: string, action?:(res:string)=> unknown }) => {
      return (
-          <div className="w-full flex flex-col items-start justify-normal gap-[5px]">
-               <label className="text-[0.9rem] font-bold text-gray-700" htmlFor={name}>{label}</label>
-               <input className="outline-none py-[5px] placeholder:text-[0.8rem] placeholder:text-gray-600 px-[10px] text-[0.9rem] text-gray-600 bg-gray-50 border-[1.3px] border-gray-300 rounded-[5px] w-full  " type={type || "text"} name={name} id={name} placeholder={placeholder} onChange={e => action ?  action(e.target.value) : null}  />
+          <div className="w-full flex flex-col items-start gap-1.5">
+               <label className="text-sm font-semibold text-gray-300" htmlFor={name}>{label}</label>
+               <input
+                    className="outline-none py-3 px-4 text-sm text-white placeholder:text-gray-600 bg-gray-900 border border-gray-800 rounded-lg w-full focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all duration-200"
+                    type={type || "text"} name={name} id={name} placeholder={placeholder}
+                    onChange={e => action ? action(e.target.value) : null}
+               />
           </div>
      )
 }
@@ -20,24 +24,38 @@ export const AuthTextInput = ({label, type, name, placeholder,action}:{label: st
 export const AuthPasswordInput = ({label, name, placeholder,action}:{label: string, name:string, placeholder: string, action?:(res:string)=> unknown }) => {
      const [showPassword, setShowPassword] = useState<boolean>(false);
      return (
-          <div className="w-full flex flex-col items-start justify-normal gap-[5px]">
-               <label className="text-[0.9rem] font-bold text-gray-700" htmlFor={name}>{label}</label>
+          <div className="w-full flex flex-col items-start gap-1.5">
+               <label className="text-sm font-semibold text-gray-300" htmlFor={name}>{label}</label>
                <div className="w-full relative">
-                    <input className="outline-none py-[5px] placeholder:text-[0.8rem] placeholder:text-gray-600 px-[10px] text-[0.9rem] text-gray-600 bg-gray-50 border-[1.3px] border-gray-300 rounded-[5px] w-full  " type={showPassword ? "text":"password"} name={name} id={name} placeholder={placeholder} onChange={e => action ?  action(e.target.value) : null}  />
-                    {
-                         !showPassword ? 
-                         <i className="text-gray-500 text-[16px] absolute right-[5px] top-[50%] -translate-y-[50%] cursor-pointer hover:text-gray-700 " onClick={() => setShowPassword(true)}><FaEye /></i>
-                         :
-                         <i className="text-gray-500 text-[16px] absolute right-[5px] top-[50%] -translate-y-[50%] cursor-pointer hover:text-gray-700 " onClick={() => setShowPassword(false) } ><FaEyeSlash /></i>
-                    }
+                    <input
+                         className="outline-none py-3 px-4 pr-10 text-sm text-white placeholder:text-gray-600 bg-gray-900 border border-gray-800 rounded-lg w-full focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all duration-200"
+                         type={showPassword ? "text" : "password"} name={name} id={name} placeholder={placeholder}
+                         onChange={e => action ? action(e.target.value) : null}
+                    />
+                    <i
+                         className="text-gray-500 text-base absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer hover:text-blue-400 transition-colors"
+                         onClick={() => setShowPassword(p => !p)}
+                    >
+                         {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </i>
                </div>
           </div>
      )
 }
 
-export const AuthSubmitBtn = ({name, loading}:{name:string, loading: boolean}) => {
+export const AuthSubmitBtn = ({name, loading, disabled}:{name:string, loading: boolean, disabled?: boolean}) => {
      return (
-          <button type="submit" disabled={loading} className="w-full p-[5px] py-[10px] rounded-[5px] text-[0.9rem] font-medium text-white outline-none bg-blue-600 hover:bg-blue-800 disabled:bg-gray-600 transition-all duration-200 ">{name}</button>
+          <button type="submit" disabled={loading || disabled} className="w-full py-3 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 mt-1">
+               {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                         <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                         </svg>
+                         {name}
+                    </span>
+               ) : name}
+          </button>
      )
 } 
 
@@ -54,9 +72,15 @@ export const GoogleSignBtn = () => {
           }
      }
      return (
-          <button disabled={loading} type="button" onClick={signIn} className="w-full flex items-center justify-center gap-[10px] rounded-[30px] p-[10px] bg-gradient-to-br from-blue-600 to-blue-800 transition-all duration-200 disabled:cursor-progress">
-               <i className="text-[28px]"><FcGoogle /></i>
-               {loading ? null :<span className="text-[0.9rem] text-white">Continue with Google</span>}
+          <button disabled={loading} type="button" onClick={signIn} className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg bg-gray-900 border border-gray-800 hover:border-blue-600 hover:bg-gray-800 transition-all duration-200 disabled:cursor-progress disabled:opacity-60">
+               <i className="text-2xl flex-shrink-0"><FcGoogle /></i>
+               {!loading && <span className="text-sm font-medium text-white">Continue with Google</span>}
+               {loading && (
+                    <svg className="w-4 h-4 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
+                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+               )}
           </button>
      )
 }

@@ -1,4 +1,5 @@
 
+import { SCategoryFeature } from '@/select-types/category-feature';
 import { Prisma } from '@prisma/client';
 
 export const SSessionUser = {
@@ -28,10 +29,10 @@ export type TUserSelectFields = {
 }  
 export type TUser = Prisma.UserGetPayload<{select: TUserSelectFields,include: {client: {include:{subscription:true}}, vendor: true, admin:true}}>;
 
-export type TCategory = Prisma.CategoryGetPayload<{select:{id:true, name:true, status:true, icon:true, description:true},include: {features:true, _count:{select:{posts:true}}}}>;
+export type TCategory = Prisma.CategoryGetPayload<{select:{id:true, name:true, status:true, icon:true, description:true, rank:true},include: {features:true, _count:{select:{posts:true}}}}>;
 
 export const SPostFeature = {
-     id:true, value:true, postId:true, categoryFeature: {select: {id:true, name:true, type:true, icon:true, onCard:true, rank:true, inFilter:true}}
+     id:true, value:true, postId:true, categoryFeature: {select: SCategoryFeature}
 } satisfies Prisma.PostFeatureSelect;
 export type TPostFeature = Prisma.PostFeatureGetPayload<{select: typeof SPostFeature}>;
 
@@ -41,7 +42,7 @@ export const SPostPage = {
      vendor: {select: {id:true, name:true, contacts: {select: SVendorContact}}},
      price: {select: {id:true, min:true, max:true,currency:true, }},
      packages: {select: {id:true, name:true, description:true, price:true}},
-     images: {select: {id:true, url:true, name:true, postId:true }},
+     images: {select: {id:true, url:true, name:true, postId:true, sortOrder:true }},
      features: {select: SPostFeature},
      _count: {select: {likes:true, reviews:true}}
 } satisfies Prisma.PostSelect;
@@ -57,7 +58,7 @@ export const SPost = {
                user: {select: {id:true,email: true, image: true, status:true, type: true, createdAt:true,}}, contacts: {select: SVendorContact}
           }
      },
-     images: {select: {id:true, url:true, name:true, postId:true }},
+     images: {select: {id:true, url:true, name:true, sortOrder:true, postId:true }},
      features: {select: SPostFeature},
      _count: {
           select:{

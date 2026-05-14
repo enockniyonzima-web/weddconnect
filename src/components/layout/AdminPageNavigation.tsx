@@ -18,6 +18,6 @@ const NavLink = ({link}:{link: {name:string, dest:string}}) =>{
      const pathname = usePathname();
      const isActive = pathname === link.dest;
      return (
-          <Link className={cn("text-base font-medium text-nowrap text-gray-600 hover:text-blue-600 border border-gray-200 rounded-xl py-2 px-3 ", isActive ? "bg-gradient-to-br from-blue-600 to-blue-800 text-white hover:text-white" :"")} href={link.dest}>{link.name}</Link>
+          <Link className={cn("text-sm font-medium text-nowrap text-gray-400 hover:text-blue-400 border border-gray-700 rounded-xl py-2 px-3 transition-colors", isActive ? "bg-blue-600 text-white hover:text-white border-blue-600" :"")} href={link.dest}>{link.name}</Link>
      )
 }

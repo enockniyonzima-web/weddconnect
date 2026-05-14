@@ -15,7 +15,7 @@ import { TSubscription } from "@/common/Entities";
 export const ClientsContainer = ({clients}:{clients: TAdminClientSelect[]}) => {
      if(clients.length === 0) return (
           <div className="w-full flex items-center gap-6">
-               <p className="text-lg font-medium text-gray-600">No data found</p>
+               <p className="text-lg font-medium text-gray-500">No data found</p>
           </div>
      )
      const handleDeleteComplete = (id:number) => {console.log(id)}
@@ -195,7 +195,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
 
      return (
           <>
-               <div className="w-full flex h-auto flex-col rounded-xl shadow-sm bg-white border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300">
+               <div className="w-full flex h-auto flex-col rounded-xl bg-gray-900 border border-gray-800 overflow-hidden hover:border-gray-700 transition-all duration-300">
                     {/* Main Card Content */}
                     <div className="w-full p-5">
                          <div className="flex items-start gap-4">
@@ -205,10 +205,10 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                         <Image 
                                              src={client.user.image} 
                                              alt={client.name}
-                                             className="w-16 h-16 rounded-full border-2 border-gray-200 shadow-sm object-cover"
+                                             className="w-16 h-16 rounded-full border-2 border-gray-700 shadow-sm object-cover"
                                         />
                                    ) : (
-                                        <div className="w-16 h-16 rounded-full border-2 border-gray-200 shadow-sm bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                                        <div className="w-16 h-16 rounded-full border-2 border-gray-700 shadow-sm bg-gradient-to-br from-blue-800 to-blue-900 flex items-center justify-center">
                                              <span className="text-2xl font-semibold text-blue-700">
                                                   {client.name.charAt(0).toUpperCase()}
                                              </span>
@@ -225,7 +225,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                               {/* Client Info */}
                               <div className="flex flex-col gap-2 flex-1 min-w-0">
                                    <div>
-                                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                                        <h3 className="text-lg font-semibold text-white truncate">
                                              {client.name}
                                         </h3>
                                         {hasSubscription && (
@@ -241,14 +241,14 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
 
                                    {/* Contact Info */}
                                    <div className="flex flex-col gap-1.5">
-                                        <div className="flex items-center gap-2 text-gray-600">
-                                             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="flex items-center gap-2 text-gray-400">
+                                             <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                              </svg>
                                              <span className="text-sm truncate">{client.user.email}</span>
                                         </div>
-                                        <div className="flex items-center gap-2 text-gray-600">
-                                             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="flex items-center gap-2 text-gray-400">
+                                             <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                              </svg>
                                              <span className="text-sm">{client.phone}</span>
@@ -259,7 +259,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                     </div>
 
                     {/* Action Bar */}
-                    <div className="w-full border-t border-gray-200 bg-gray-50 p-3 flex items-center justify-between gap-2">
+                    <div className="w-full border-t border-gray-800 bg-gray-800/50 p-3 flex items-center justify-between gap-2">
                          <button
                               onClick={() => setShowDialog(true)}
                               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
@@ -335,7 +335,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                               <button
                                    onClick={handleDelete}
                                    disabled={isDeleting}
-                                   className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                   className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                    title="Delete Client"
                               >
                                    {isDeleting ? (
@@ -353,8 +353,8 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
 
                {/* Details Dialog */}
                {showDialog && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-                         <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                         <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                               {/* Dialog Header */}
                               <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
                                    <div className="flex items-center justify-between">
@@ -391,54 +391,54 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                    <div className="space-y-6">
                                         {/* Contact Information */}
                                         <div>
-                                             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                                                   <div className="w-1 h-6 bg-blue-600 rounded"></div>
                                                   Contact Information
                                              </h3>
                                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                  <div className="bg-gray-50 p-4 rounded-lg">
-                                                       <p className="text-sm text-gray-600 mb-1">Email</p>
-                                                       <p className="font-medium text-gray-900">{client.user.email}</p>
+                                                  <div className="bg-gray-800 p-4 rounded-lg">
+                                                       <p className="text-sm text-gray-400 mb-1">Email</p>
+                                                       <p className="font-medium text-white">{client.user.email}</p>
                                                   </div>
-                                                  <div className="bg-gray-50 p-4 rounded-lg">
-                                                       <p className="text-sm text-gray-600 mb-1">Phone</p>
-                                                       <p className="font-medium text-gray-900">{client.phone}</p>
+                                                  <div className="bg-gray-800 p-4 rounded-lg">
+                                                       <p className="text-sm text-gray-400 mb-1">Phone</p>
+                                                       <p className="font-medium text-white">{client.phone}</p>
                                                   </div>
                                              </div>
                                         </div>
 
                                         {/* Subscription Details */}
                                         <div>
-                                             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                                                   <div className="w-1 h-6 bg-blue-600 rounded"></div>
                                                   Subscription Status
                                              </h3>
                                              {hasSubscription && client.subscription ? (
-                                                  <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                                                  <div className="bg-gray-800 p-4 rounded-lg space-y-3">
                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-gray-600">Plan</span>
-                                                            <span className="font-semibold text-gray-900">{client.subscription.subscription.name}</span>
+                                                            <span className="text-gray-400">Plan</span>
+                                                            <span className="font-semibold text-white">{client.subscription.subscription.name}</span>
                                                        </div>
                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-gray-600">Last Updated</span>
-                                                            <span className="font-medium text-gray-900">
+                                                            <span className="text-gray-400">Last Updated</span>
+                                                            <span className="font-medium text-white">
                                                                  {new Date(client.subscription.updatedAt).toLocaleDateString()}
                                                             </span>
                                                        </div>
                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-gray-600">Expires</span>
+                                                            <span className="text-gray-400">Expires</span>
                                                             <span className={`font-semibold ${isExpired ? 'text-red-600' : 'text-green-600'}`}>
                                                                  {client.subscription.expiryAt ? new Date(client.subscription.expiryAt).toLocaleDateString() : "N/A"}
                                                             </span>
                                                        </div>
-                                                       <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                                                            <span className="text-gray-600">Status</span>
+                                                       <div className="flex items-center justify-between pt-2 border-t border-gray-700">
+                                                            <span className="text-gray-400">Status</span>
                                                             <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${
                                                                  hasPendingTransaction 
-                                                                      ? 'bg-amber-100 text-amber-700'
+                                                                      ? 'bg-amber-500/10 text-amber-400'
                                                                       : isExpired 
-                                                                           ? 'bg-red-100 text-red-700' 
-                                                                           : 'bg-green-100 text-green-700'
+                                                                           ? 'bg-red-500/10 text-red-400' 
+                                                                           : 'bg-green-500/10 text-green-400'
                                                             }`}>
                                                                  {hasPendingTransaction ? (
                                                                       <>
@@ -461,15 +461,15 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                                   </div>
                                              ) : (
                                                   <div className="space-y-4">
-                                                       <div className="bg-gray-50 p-8 rounded-lg text-center">
-                                                            <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                                                            <p className="text-gray-600 font-medium">No active subscription</p>
+                                                       <div className="bg-gray-800 p-8 rounded-lg text-center">
+                                                            <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-500" />
+                                                            <p className="text-gray-400 font-medium">No active subscription</p>
                                                             <p className="text-sm text-gray-500 mt-1">Select a plan below to get started</p>
                                                        </div>
                                                        
                                                        {/* Subscription Plan Selector */}
                                                        <div>
-                                                            <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                                            <label className="block text-sm font-semibold text-gray-300 mb-3">
                                                                  Choose Subscription Plan
                                                             </label>
                                                             <div className="grid grid-cols-1 gap-3">
@@ -479,21 +479,21 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                                                            onClick={() => setSelectedSub(sub)}
                                                                            className={`p-4 rounded-lg border-2 text-left transition-all ${
                                                                                 selectedSub?.id === sub.id
-                                                                                     ? 'border-blue-600 bg-blue-50'
-                                                                                     : 'border-gray-200 hover:border-blue-300 bg-white'
+                                                                                     ? 'border-blue-600 bg-blue-500/10'
+                                                                                     : 'border-gray-700 hover:border-blue-500 bg-gray-800'
                                                                            }`}
                                                                       >
                                                                            <div className="flex items-start justify-between">
                                                                                 <div className="flex-1">
                                                                                      <div className="flex items-center gap-2 mb-1">
-                                                                                          <h4 className="font-bold text-gray-900">{sub.name}</h4>
+                                                                                          <h4 className="font-bold text-white">{sub.name}</h4>
                                                                                           {selectedSub?.id === sub.id && (
                                                                                                <CheckCircle className="w-5 h-5 text-blue-600" />
                                                                                           )}
                                                                                      </div>
-                                                                                     <p className="text-sm text-gray-600 mb-2">{sub.description}</p>
+                                                                                     <p className="text-sm text-gray-400 mb-2">{sub.description}</p>
                                                                                      <div className="flex items-baseline gap-1">
-                                                                                          <span className="text-2xl font-bold text-gray-900">
+                                                                                          <span className="text-2xl font-bold text-white">
                                                                                                RWF {(sub.price * USDRate).toLocaleString()}
                                                                                           </span>
                                                                                           <span className="text-sm text-gray-500">
@@ -518,46 +518,46 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                         {/* Transaction History */}
                                         {hasPendingTransaction && (
                                              <div>
-                                                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                                                        <div className="w-1 h-6 bg-blue-600 rounded"></div>
                                                        Transaction History
                                                   </h3>
                                                   <div className="space-y-3">
                                                        {client.subscription?.transactions.map((transaction) => (
-                                                            <div key={transaction.id} className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                                            <div key={transaction.id} className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
                                                                  <div className="flex items-start justify-between mb-3">
-                                                                      <span className="font-semibold text-gray-900">Transaction #{transaction.id}</span>
-                                                                      <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">
+                                                                      <span className="font-semibold text-white">Transaction #{transaction.id}</span>
+                                                                      <span className="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-xs font-semibold">
                                                                            Pending
                                                                       </span>
                                                                  </div>
                                                                  <div className="grid grid-cols-2 gap-3 text-sm">
                                                                       <div>
-                                                                           <p className="text-gray-600">Amount</p>
-                                                                           <p className="font-semibold text-gray-900">RWF {transaction.amount.toLocaleString()}</p>
+                                                                           <p className="text-gray-400">Amount</p>
+                                                                           <p className="font-semibold text-white">RWF {transaction.amount.toLocaleString()}</p>
                                                                       </div>
                                                                       <div>
-                                                                           <p className="text-gray-600">Method</p>
-                                                                           <p className="font-medium text-gray-900">{transaction.transactionMethod}</p>
+                                                                           <p className="text-gray-400">Method</p>
+                                                                           <p className="font-medium text-white">{transaction.transactionMethod}</p>
                                                                       </div>
                                                                       <div>
-                                                                           <p className="text-gray-600">Pay Number</p>
-                                                                           <p className="font-medium text-gray-900">{transaction.payNumber}</p>
+                                                                           <p className="text-gray-400">Pay Number</p>
+                                                                           <p className="font-medium text-white">{transaction.payNumber}</p>
                                                                       </div>
                                                                       <div>
-                                                                           <p className="text-gray-600">Date</p>
-                                                                           <p className="font-medium text-gray-900">
+                                                                           <p className="text-gray-400">Date</p>
+                                                                           <p className="font-medium text-white">
                                                                                 {new Date(transaction.createdAt).toLocaleDateString()}
                                                                            </p>
                                                                       </div>
                                                                  </div>
                                                                  {transaction.proof && (
-                                                                      <div className="mt-3 pt-3 border-t border-amber-200">
+                                                                      <div className="mt-3 pt-3 border-t border-amber-500/20">
                                                                            <a 
                                                                                 href={transaction.proof} 
                                                                                 target="_blank" 
                                                                                 rel="noopener noreferrer"
-                                                                                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-2 font-medium"
+                                                                                className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-2 font-medium"
                                                                            >
                                                                                 <Eye className="w-4 h-4" />
                                                                                 View Payment Proof
@@ -573,11 +573,11 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                               </div>
 
                               {/* Dialog Footer */}
-                              <div className="border-t border-gray-200 bg-gray-50 p-6">
+                              <div className="border-t border-gray-800 bg-gray-800/50 p-6">
                                    <div className="flex items-center justify-between gap-3">
                                         <button
                                              onClick={() => setShowDialog(false)}
-                                             className="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                                             className="px-6 py-2 border-2 border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors font-medium"
                                         >
                                              Close
                                         </button>

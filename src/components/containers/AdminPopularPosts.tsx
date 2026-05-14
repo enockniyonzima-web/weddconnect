@@ -18,7 +18,7 @@ export default async function AdminPopularPosts() {
 
      if (!popularPosts && !trendingPosts) {
           return (
-               <div className="w-full p-8 bg-white rounded-xl shadow-sm border border-gray-100">
+               <div className="w-full p-8 bg-gray-900 rounded-xl border border-gray-800">
                     <p className="text-gray-500 text-center">Unable to load popular posts</p>
                </div>
           );
@@ -28,19 +28,19 @@ export default async function AdminPopularPosts() {
           <div className="w-full space-y-6">
                {/* Header */}
                <div>
-                    <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                          <Award className="w-7 h-7 text-blue-600" />
                          Popular & Trending Posts
                     </h2>
-                    <p className="text-sm text-gray-600 mt-1">Top performing posts based on engagement</p>
+                    <p className="text-sm text-gray-400 mt-1">Top performing posts based on engagement</p>
                </div>
 
                {/* Trending Posts (Last 7 Days) */}
                {trendingPosts && trendingPosts.posts.length > 0 && (
-                    <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
+                    <div className="bg-gradient-to-br from-orange-950/50 to-red-950/50 rounded-xl p-6 border border-orange-800/50">
                          <div className="flex items-center gap-2 mb-4">
                               <Flame className="w-6 h-6 text-orange-600" />
-                              <h3 className="text-xl font-bold text-gray-900">🔥 Trending This Week</h3>
+                              <h3 className="text-xl font-bold text-white">🔥 Trending This Week</h3>
                               <span className="ml-auto text-xs bg-orange-600 text-white px-3 py-1 rounded-full font-semibold">
                                    HOT
                               </span>
@@ -50,7 +50,7 @@ export default async function AdminPopularPosts() {
                               {trendingPosts.posts.map((post, index) => (
                                    <div
                                         key={post.id}
-                                        className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group relative"
+                                        className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden hover:border-gray-700 transition-all duration-300 group relative"
                                    >
                                         {/* Rank Badge */}
                                         <div className="absolute top-3 left-3 z-10 bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg">
@@ -58,7 +58,7 @@ export default async function AdminPopularPosts() {
                                         </div>
 
                                         {/* Image */}
-                                        <div className="relative h-40 bg-gray-100 overflow-hidden">
+                                        <div className="relative h-40 bg-gray-800 overflow-hidden">
                                              {post.imageUrl ? (
                                                   <Image
                                                        src={post.imageUrl}
@@ -75,7 +75,7 @@ export default async function AdminPopularPosts() {
 
                                         {/* Content */}
                                         <div className="p-4">
-                                             <h4 className="font-bold text-gray-900 mb-1 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                                             <h4 className="font-bold text-white mb-1 line-clamp-1 group-hover:text-blue-400 transition-colors">
                                                   {post.title}
                                              </h4>
                                              <p className="text-xs text-gray-500 mb-3">
@@ -107,7 +107,7 @@ export default async function AdminPopularPosts() {
 
                {/* All-Time Popular Posts */}
                {popularPosts && popularPosts.posts.length > 0 && (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
                          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4">
                               <div className="flex items-center gap-2 text-white">
                                    <Star className="w-6 h-6" />
@@ -117,24 +117,24 @@ export default async function AdminPopularPosts() {
 
                          <div className="overflow-x-auto">
                               <table className="w-full">
-                                   <thead className="bg-gray-50 border-b border-gray-200">
+                                   <thead className="bg-gray-800 border-b border-gray-700">
                                         <tr>
-                                             <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Rank</th>
-                                             <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Post</th>
-                                             <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Category</th>
-                                             <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Vendor</th>
-                                             <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase">
+                                             <th className="px-6 py-3 text-left text-xs font-semibold text-blue-400 uppercase">Rank</th>
+                                             <th className="px-6 py-3 text-left text-xs font-semibold text-blue-400 uppercase">Post</th>
+                                             <th className="px-6 py-3 text-left text-xs font-semibold text-blue-400 uppercase">Category</th>
+                                             <th className="px-6 py-3 text-left text-xs font-semibold text-blue-400 uppercase">Vendor</th>
+                                             <th className="px-6 py-3 text-center text-xs font-semibold text-blue-400 uppercase">
                                                   <Heart className="w-4 h-4 inline" />
                                              </th>
-                                             <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase">
+                                             <th className="px-6 py-3 text-center text-xs font-semibold text-blue-400 uppercase">
                                                   <MessageSquare className="w-4 h-4 inline" />
                                              </th>
-                                             <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase">Score</th>
+                                             <th className="px-6 py-3 text-center text-xs font-semibold text-blue-400 uppercase">Score</th>
                                         </tr>
                                    </thead>
-                                   <tbody className="divide-y divide-gray-100">
+                                   <tbody className="divide-y divide-gray-800">
                                         {popularPosts.posts.map((post, index) => (
-                                             <tr key={post.id} className="hover:bg-blue-50 transition-colors group">
+                                             <tr key={post.id} className="hover:bg-gray-800/50 transition-colors group">
                                                   {/* Rank */}
                                                   <td className="px-6 py-4">
                                                        <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export default async function AdminPopularPosts() {
                                                                  </div>
                                                             )}
                                                             <div className="min-w-0">
-                                                                 <p className="font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                                                                 <p className="font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
                                                                       {post.title}
                                                                  </p>
                                                                  <p className="text-xs text-gray-500 flex items-center gap-1 truncate">
@@ -186,7 +186,7 @@ export default async function AdminPopularPosts() {
 
                                                   {/* Vendor */}
                                                   <td className="px-6 py-4">
-                                                       <p className="text-sm text-gray-700 font-medium">{post.vendorName}</p>
+                                                       <p className="text-sm text-gray-300 font-medium">{post.vendorName}</p>
                                                   </td>
 
                                                   {/* Likes */}
@@ -218,15 +218,15 @@ export default async function AdminPopularPosts() {
                          </div>
 
                          {/* Summary Footer */}
-                         <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                         <div className="bg-gray-800/50 px-6 py-4 border-t border-gray-800">
                               <div className="flex items-center justify-between text-sm">
-                                   <p className="text-gray-600">
+                                   <p className="text-gray-400">
                                         Showing top {popularPosts.posts.length} posts out of {popularPosts.totalCount} active posts
                                    </p>
                                    <div className="flex items-center gap-4">
                                         <div className="flex items-center gap-2">
                                              <Eye className="w-4 h-4 text-gray-500" />
-                                             <span className="text-gray-700">
+                                             <span className="text-gray-300">
                                                   Total Engagement: <span className="font-bold">
                                                        {popularPosts.posts.reduce((sum, p) => sum + p.likesCount + p.reviewsCount, 0)}
                                                   </span>

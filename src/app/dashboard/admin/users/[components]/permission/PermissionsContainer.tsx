@@ -16,7 +16,7 @@ export async function PermissionsContainer () {
 
      return (
           <div className="w-full overflow-x-auto flex flex-col items-center justify-start gap-[20px]">
-               <h2 className="text-[1.2rem] font-bold text-gray-800 w-full text-left">Permissions</h2>
+               <h2 className="text-xl font-bold text-gray-100 w-full text-left">Permissions</h2>
                <PermissionsTable Permissions={Permissions} />
           </div>
      )

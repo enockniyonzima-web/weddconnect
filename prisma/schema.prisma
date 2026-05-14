@@ -12,7 +12,7 @@ model User {
   password  String
   image     String
   status    Boolean   @default(true)
-  createdAt DateTime
+  createdAt DateTime @default(now())
   type      String
   accounts  Account[]
   admin     Admin?
@@ -60,10 +60,11 @@ model Category {
   id          Int               @id @default(autoincrement())
   name        String            @unique
   description String
-  status      Boolean
+  status      Boolean @default(true)
   icon        String            @default("")
   posts       Post[]
   features    CategoryFeature[] @relation("CategoryFeatures")
+  rank        Int              @default(0)
 }
 
 model CategoryFeature {
@@ -97,6 +98,7 @@ model Post {
   packages    PostPackage[]
   price       PostPrice?
   reviews     PostReview[]
+  sortOrder   Int @default(100)
 }
 
 model PostFeature {
@@ -104,16 +106,17 @@ model PostFeature {
   value             String
   categoryFeatureId Int
   postId            Int
-  categoryFeature   CategoryFeature @relation(fields: [categoryFeatureId], references: [id])
-  post              Post            @relation(fields: [postId], references: [id])
+  categoryFeature   CategoryFeature @relation(fields: [categoryFeatureId], references: [id], onDelete: Cascade)
+  post              Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostImage {
   id     Int    @id @default(autoincrement())
   url    String
   name   String
+  sortOrder   Int  @default(0)
   postId Int
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostPrice {
@@ -122,7 +125,7 @@ model PostPrice {
   max      Float
   currency String
   postId   Int    @unique
-  post     Post   @relation(fields: [postId], references: [id])
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostPackage {
@@ -130,8 +133,9 @@ model PostPackage {
   name        String
   description String
   price       Float
+  sortOrder   Int  @default(0)
   postId      Int
-  post        Post   @relation(fields: [postId], references: [id])
+  post        Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostReview {
@@ -141,18 +145,18 @@ model PostReview {
   rating    Int @default(0)
   createdAt DateTime
   postId    Int
-  clientId  Int
-  client    Client   @relation(fields: [clientId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
+  clientId  Int?
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostLike {
   id        Int      @id @default(autoincrement())
   createdAt DateTime
   postId    Int
-  clientId  Int
-  client    Client   @relation(fields: [clientId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
+  clientId  Int?
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Service {
@@ -167,7 +171,7 @@ model Vendor {
   status   Boolean
   userId   String          @unique @db.Uuid
   posts    Post[]
-  user     User            @relation(fields: [userId], references: [id])
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   contacts VendorContact[]
 }
 
@@ -184,8 +188,8 @@ model VendorContact {
   value         String
   vendorId      Int
   contactTypeId Int
-  contactType   ContactType @relation(fields: [contactTypeId], references: [id])
-  vendor        Vendor      @relation(fields: [vendorId], references: [id])
+  contactType   ContactType @relation(fields: [contactTypeId], references: [id], onDelete: Cascade)
+  vendor        Vendor      @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 }
 
 model Client {

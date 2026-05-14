@@ -106,7 +106,7 @@ const UpdateCategoryForm = ({category, features}:{category:TCategory, features: 
                          category.icon ?
                          <div className="w-full lg:w-[500px] flex flex-col items-center justify-start gap-[5px] relative">
                               <Image  width={400} height={300} src={category.icon} alt="Listing-update image" layout="responsive" className="w-full rounded-[5px] aspect-auto" />
-                              <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-100 rounded-[2.5px] p-[2px] cursor-pointer" onClick={async() => await deleteImage(category.icon)}>
+                              <button type='button' title="Delete image" className="absolute top-0 right-0 bg-gray-800 rounded-[2.5px] p-[2px] cursor-pointer" onClick={async() => await deleteImage(category.icon)}>
                                    <MaterialIcons.delete className="text-red-700 hover:text-red-600 text-[20px] " titleAccess="delete image" />
                               </button>
                          </div>:
@@ -122,7 +122,7 @@ const UpdateCategoryForm = ({category, features}:{category:TCategory, features: 
 
 const FeatureCard = ({feature, active, action}:{feature: CategoryFeature, active:boolean, action: (id:number, status: boolean) => void}) => {
      return (
-          <span onClick={() => action(feature.id, active)} className={`py-2  text-center px-4 w-full text-[0.9rem] border-[1.5px] rounded-[5px] cursor-pointer ${active ? "border-blue-400 text-blue-600" :"border-gray-200 text-gray-700"} `}>{feature.name}</span>
+          <span onClick={() => action(feature.id, active)} className={`py-2  text-center px-4 w-full text-[0.9rem] border-[1.5px] rounded-[5px] cursor-pointer ${active ? "border-blue-400 text-blue-600" :"border-gray-700 text-gray-400"} `}>{feature.name}</span>
      )
 }
 export default UpdateCategoryForm
