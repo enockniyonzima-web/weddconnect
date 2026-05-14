@@ -1,75 +1,142 @@
-import { TVendor } from "@/common/Entities";
-import Endpoints from "@/services/Endpoints"
-import { MainServer } from "@/services/Server"
+"use client";
+
 import { AdminVendorCard } from "./VendorCard";
-import { FaPlus } from "react-icons/fa6";
-import Link from "next/link";
-import { ContactType } from "@prisma/client";
-import { Column, GenTable } from "@/components/layout/Table";
-import Pagination from "@/app/posts/[components]/Pagination";
-import { AddContactTypeForm } from "./ContactTypeForm";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { countVendors, fetchVendors } from "@/server-actions/vendor.actions";
+import { SVendorCard } from "@/select-types/vendor";
+import { Search, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export async function VendorsContainer ({search}:{search: Record<string, string | undefined>}) {
-     let vendors: TVendor[] = [];
-     let total = 0;
-     const searchStr = Object.entries(search).map(([key, value]) => `${key}=${value}`).join('&');
-     const searchQuery = new URLSearchParams(searchStr).toString();
-     const vendorsRes = await MainServer.fetch(`${Endpoints.vendors}?${searchQuery}`);
-     if(vendorsRes){
-          const {data, pagination} = vendorsRes;
-          vendors = data;
-          total = pagination.total;
-     }
+export function VendorsContainer() {
+     const perPage = 12;
+     const [page, setPage] = useState(1);
+     const [search, setSearch] = useState("");
+     const [debouncedSearch, setDebouncedSearch] = useState("");
+     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-     if(vendors.length === 0) return <div className="w-full flex items-center justify-center p-[20px]">
-               <p className="text-sm text-gray-500">No vendors found!</p>
-          </div>
+     const handleSearch = useCallback((value: string) => {
+          setSearch(value);
+          setPage(1);
+          if (debounceRef.current) clearTimeout(debounceRef.current);
+          debounceRef.current = setTimeout(() => setDebouncedSearch(value), 350);
+     }, []);
+
+     useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current); }, []);
+
+     const searchFilter = debouncedSearch.trim()
+          ? { OR: [
+               { name: { contains: debouncedSearch, mode: "insensitive" as const } },
+               { user: { email: { contains: debouncedSearch, mode: "insensitive" as const } } },
+            ]}
+          : undefined;
+
+     const { data: vendors, isLoading: fetchingVendors, isFetching } = useQuery({
+          queryKey: ["admin-vendors", page, debouncedSearch],
+          queryFn: () => fetchVendors(SVendorCard, searchFilter, perPage, (page - 1) * perPage),
+     });
+
+     const { data: total } = useQuery({
+          queryKey: ["admin-vendors-total", debouncedSearch],
+          queryFn: () => countVendors(searchFilter),
+     });
+
+     const totalPages = total ? Math.ceil(total / perPage) : 1;
+     const isEmpty = !fetchingVendors && (!vendors || vendors.length === 0);
+
      return (
-          <div className="w-full border border-gray-800 rounded-xl p-4 flex flex-col items-center gap-5">
-               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
-                    {
-                         vendors.map((vendor, index) => <AdminVendorCard vendor={vendor} index={index + 1} key={`admin-vendor-${index}`} />)
-                    }
+          <div className="flex flex-col gap-5 w-full">
+               {/* Toolbar */}
+               <div className="flex items-center gap-3 flex-wrap">
+                    {/* Search */}
+                    <div className="relative flex-1 min-w-[200px]">
+                         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                         <input
+                              type="text"
+                              value={search}
+                              onChange={(e) => handleSearch(e.target.value)}
+                              placeholder="Search by name or email…"
+                              className="w-full pl-8 pr-4 py-2 rounded-lg border border-gray-800 bg-gray-900 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/20 transition-colors"
+                         />
+                    </div>
+
+                    {/* Count badge */}
+                    {total !== undefined && (
+                         <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-800 bg-gray-900 text-xs text-gray-400">
+                              <Users size={13} />
+                              <span><span className="text-white font-medium">{total}</span> vendors</span>
+                         </div>
+                    )}
                </div>
-               <Pagination totalItems={total} itemsPerPage={10} />
+
+               {/* Grid */}
+               <div className={cn("relative w-full transition-opacity duration-200", isFetching && "opacity-50 pointer-events-none")}>
+                    {fetchingVendors ? (
+                         <VendorGridSkeleton />
+                    ) : isEmpty ? (
+                         <EmptyVendors search={debouncedSearch} />
+                    ) : (
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {vendors!.map((vendor, i) => (
+                                   <AdminVendorCard vendor={vendor} index={(page - 1) * perPage + i + 1} key={vendor.id} />
+                              ))}
+                         </div>
+                    )}
+                    {/* Refetch overlay spinner */}
+                    {isFetching && !fetchingVendors && (
+                         <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900/90 border border-gray-800 text-xs text-gray-400 backdrop-blur-sm">
+                                   <svg className="h-3.5 w-3.5 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                   </svg>
+                                   Updating…
+                              </div>
+                         </div>
+                    )}
+               </div>
+
+               {/* Pagination */}
+               {!isEmpty && totalPages > 1 && (
+                    <div className="flex items-center justify-between pt-1">
+                         <button
+                              disabled={page === 1}
+                              onClick={() => setPage((p) => Math.max(1, p - 1))}
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-800 bg-gray-900 text-xs text-gray-400 hover:border-gray-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                         >
+                              <ChevronLeft size={13} /> Previous
+                         </button>
+                         <span className="text-xs text-gray-600">
+                              Page <span className="text-white">{page}</span> of <span className="text-white">{totalPages}</span>
+                         </span>
+                         <button
+                              disabled={page >= totalPages}
+                              onClick={() => setPage((p) => p + 1)}
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-800 bg-gray-900 text-xs text-gray-400 hover:border-gray-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                         >
+                              Next <ChevronRight size={13} />
+                         </button>
+                    </div>
+               )}
           </div>
-          
-     )
+     );
 }
 
-export async function VendorContactTypesContainer ({typeId}:{typeId: string | undefined}) {
-     let contactTypes: ContactType[] = [];
-     let contactType: ContactType | undefined = undefined;
-     const itemsPerPage = 10;
-     const currentPage = 1;
-     let total = 0;
-     const contactTypeRes = await MainServer.fetch(`${Endpoints.contactType}`);
-     if(contactTypeRes) {
-          const {data, pagination} = contactTypeRes;
-          contactTypes = data;
-          total = pagination.total;
-          if(contactTypes.length > 0 && typeId) {
-               contactType  = contactTypes.find(c => c.id === Number(typeId));
-          }
-     }
+const VendorGridSkeleton = () => (
+     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+               <div key={i} className="h-36 rounded-2xl bg-gray-900 border border-gray-800 animate-pulse" />
+          ))}
+     </div>
+);
 
-     const contactTypeColumns:Column<{ id:number, name: string, type:string,description:string}>[] = [
-               // { key: "id", label: "ID" },
-               {key: "id", label: "Index", type:'number' },
-               {key: "name", label: "Name", type:'text' },
-               {key: "type", label: "Type", type:'text' },
-               { key: "description", label: "Description", type:"longText" },
-     
-     ];
-     return (
-          <div className="w-full flex flex-col items-start justify-start gap-[10px]">
-               <h2 className="text-lg font-bold text-gray-100">Vendor Contact Types</h2>
-               <div className=" w-full flex-wrap flex items-center justify-between">
-                    <p className="text-sm text-gray-400">These the contact types that a vendor can be contacted by the client. Click to add more types.</p>
-                    <Link className="bg-blue-600 text-sm rounded-lg whitespace-nowrap hover:bg-blue-500 py-2 px-4 text-white flex items-center gap-2 transition-colors" prefetch={true} href={'/dashboard/admin/posts/vendors?form=add'} ><i className="text-base"><FaPlus /></i>Add Type</Link>
-               </div>
-               <GenTable baseUpdateLink="/dashboard/admin/posts/vendors?form=add&typeId=" pagination={{itemsPerPage, currentPage, total, visiblePages:5}} columns={contactTypeColumns} data={contactTypes} idColumn={"id"} />
-               <AddContactTypeForm contactType={contactType} />
+const EmptyVendors = ({ search }: { search: string }) => (
+     <div className="flex flex-col items-center justify-center gap-3 py-16 rounded-2xl border border-dashed border-gray-800">
+          <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gray-900 border border-gray-800 text-gray-600">
+               <Users size={20} strokeWidth={1.5} />
           </div>
-     )
-}
+          <p className="text-sm text-gray-500">
+               {search ? `No vendors matching "${search}"` : "No vendors found"}
+          </p>
+     </div>
+);

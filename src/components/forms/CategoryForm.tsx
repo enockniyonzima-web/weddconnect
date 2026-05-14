@@ -127,7 +127,7 @@ export const CategoryFormBtn = ({categoryId, showBtnName, showBtnIcon, btnSize =
                               <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-white/5 bg-gray-900/95 backdrop-blur-md px-6 py-4 rounded-t-2xl">
                                    <div className="flex items-center gap-3">
                                         <div className={cn("flex items-center justify-center h-9 w-9 rounded-lg", categoryId ? "bg-blue-600/10 border border-blue-600/20 text-blue-600" : "bg-blue-600 text-white shadow-md shadow-blue-600/25")}><FolderTree size={18} strokeWidth={2} /></div>
-                                        <div><h3 className="text-base font-semibold text-white">{categoryId ? "Edit Document" : "Upload Document"}</h3><p className="text-xs text-gray-400">{categoryId ? "Update document details" : "Upload a new document"}</p></div>
+                                        <div><h3 className="text-base font-semibold text-white">{categoryId ? "Edit Category" : "Create Category"}</h3><p className="text-xs text-gray-400">{categoryId ? "Update Category details" : "Create a new Category"}</p></div>
                                    </div>
                                    <button type="button" onClick={() => setOpen(false)} title="Close" className="flex items-center justify-center h-8 w-8 rounded-lg border border-white/10 bg-white/5 text-gray-400 cursor-pointer transition-all hover:bg-white/10 hover:text-white hover:border-white/20"><X size={16} strokeWidth={2} /></button>
                               </div>

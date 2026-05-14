@@ -16,7 +16,7 @@ interface IImageUploaderProps {
      allowedTypes?: string[];
      uploadToServer?: boolean;
      onUpload?: (result: string[] | string) => void;
-     onSelect?: (selected: FileList | File) => void;
+     onSelect?: (selected: File[] |FileList | File) => void;
      onFileDelete?: (deleted: File) => void;
      onUrlDelete?: (deleted: string) => void;
      maxFiles?: number;
@@ -258,7 +258,7 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({
                {(existingUrls.length > 0 || localFiles.length > 0) && (
                     <div className={cn(
                          "grid gap-2",
-                         selectMultiple ? "grid-cols-3 sm:grid-cols-4" : "grid-cols-2"
+                         selectMultiple ? "grid-cols-2 lg:grid-cols-3 sm:grid-cols-4" : "grid-cols-2"
                     )}>
                          {existingUrls.map((url) => (
                               <ImagePreview key={url} src={url} onDelete={() => handleUrlDelete(url)} />

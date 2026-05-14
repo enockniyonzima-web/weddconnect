@@ -1,14 +1,14 @@
-import PostFormsWrapper from "./forms/PostFormsWrapper";
-import PostsContainer from "./posts-container/PostsContainer";
+import { AdminPostsContainer } from "@/components/containers/admin/AdminPostsContainer";
+
+
 import { HeroSection } from "./sections";
 
-export default async function AdminPostsPage ({searchParams}:{searchParams: Promise<Record<string, string | undefined>>}) {
-     const search = await searchParams;
+export default async function AdminPostsPage () {
+
      return (
           <div className="w-full flex flex-col items-center gap-5 justify-start bg-gray-950 p-2 lg:p-4">
                <HeroSection />
-               <PostsContainer search={search} />
-               <PostFormsWrapper search={search} />
+               <AdminPostsContainer />
           </div>
      )
 } 

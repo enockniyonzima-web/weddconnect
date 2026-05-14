@@ -10,7 +10,7 @@ import {
 export const uploadSingleImage = async (file: File, folder:string = "production"): Promise<string> => {
      const arrayBuffer = await file.arrayBuffer();
      const buffer = Buffer.from(arrayBuffer);
-     console.log(AWS_REGION, BUCKET_NAME)
+
      try {
           const params = {
                Bucket: BUCKET_NAME,
@@ -32,9 +32,14 @@ export const uploadSingleImage = async (file: File, folder:string = "production"
      }
 };
 
-export const uploadMultipleImages = async (files: File[], folder: string ="production"): Promise<string[]> => {
+export const uploadMultipleImages = async (files: File[], folder: string = "production"): Promise<string[]> => {
      const uploadPromises = files.map((file) => uploadSingleImage(file, folder));
      return Promise.all(uploadPromises);
+};
+
+export const uploadImagesFromFormData = async (formData: FormData, folder: string = "production"): Promise<string[]> => {
+     const files = formData.getAll("images") as File[];
+     return Promise.all(files.map((file) => uploadSingleImage(file, folder)));
 };
 
 // export const deleteSingleImage = async (key: string): Promise<void> => {

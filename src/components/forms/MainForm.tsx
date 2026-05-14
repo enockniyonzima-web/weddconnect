@@ -48,7 +48,7 @@ export const MainForm = ({children, submitData, btnTitle, btnIcon, showSubmitBtn
 
 export const MainFormLoader = () => {
   return (
-    <div className="flex items-center justify-center min-h-100 bg-white">
+    <div className="flex items-center justify-center min-h-100 border border-gray-700 rounded-lg p-6 bg-gray-800/20">
       <div className="text-center space-y-4">
         {/* Animated spinner */}
         <div className="relative w-16 h-16 mx-auto">

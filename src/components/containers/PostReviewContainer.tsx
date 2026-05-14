@@ -307,10 +307,10 @@ export const PostReviewContainer = ({ postId }: PostReviewContainerProps) => {
                                         <div className="flex items-start gap-3 md:gap-4">
                                              {/* Avatar */}
                                              <div className="flex-shrink-0">
-                                                  {review.client.user.image ? (
+                                                  {review.client?.user.image ? (
                                                        <Image
                                                             src={review.client.user.image}
-                                                            alt={review.client.name}
+                                                            alt={review.client?.name ?? "User"}
                                                             width={48}
                                                             height={48}
                                                             className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-700"
@@ -327,7 +327,7 @@ export const PostReviewContainer = ({ postId }: PostReviewContainerProps) => {
                                                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-2">
                                                        <div>
                                                             <h4 className="font-semibold text-white text-sm md:text-base">
-                                                                 {review.client.name}
+                                                                 {review.client?.name ?? "Anonymous"}
                                                             </h4>
                                                             <div className="flex items-center gap-2 mt-1">
                                                                  {renderStars(review.rating, false, "sm")}

@@ -286,7 +286,7 @@ export const fetchRecentActivities = unstable_cache(
                          content: r.content,
                          type: r.type,
                          createdAt: r.createdAt,
-                         clientName: r.client.name,
+                         clientName: r.client?.name ?? "",
                          postTitle: r.post.title
                     })),
                     
