@@ -77,7 +77,10 @@ export const deleteSingleImage = async (imageUrl: string): Promise<void> => {
 };
 
 export const deleteMultipleImages = async (keys: string[]): Promise<void> => {
-     const objects = keys.map((key) => ({ Key: key }));
+     if (!keys || keys.length === 0) return;
+
+
+     const objects = keys.filter(Boolean).map((key) => ({ Key: key }));
      const params = {
           Bucket: BUCKET_NAME,
           Delete: { Objects: objects },

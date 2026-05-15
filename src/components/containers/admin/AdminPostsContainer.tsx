@@ -8,7 +8,7 @@ import { fetchPosts } from "@/server-actions/post.actions";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPostCard } from "@/components/cards/admin/AdminPostCard";
-import { ChevronRight, ImageIcon, LayoutGrid } from "lucide-react";
+import { ChevronRight, ImageIcon, LayoutGrid, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ─── Main Container ───────────────────────────────────────────────────────────
@@ -21,22 +21,25 @@ export const AdminPostsContainer = () => {
 
      const [categoryId, setCategoryId] = useState<number | null>(null);
      const [page, setPage] = useState(1);
+     const [search, setSearch] = useState("");
      const perPage = 20;
 
      const selectedCategory = categoriesData?.find((c) => c.id === categoryId) ?? null;
 
+     const where = categoryId
+          ? { categoryId, ...(search.trim() ? { title: { contains: search.trim(), mode: "insensitive" as const } } : {}) }
+          : undefined;
+
      const { data: postData, isLoading: fetchingPosts } = useQuery({
-          queryKey: ["posts", categoryId, page],
-          queryFn: () =>
-               categoryId
-                    ? fetchPosts(SAdminPostCard, { categoryId }, perPage, (page - 1) * perPage)
-                    : undefined,
+          queryKey: ["posts", categoryId, page, search],
+          queryFn: () => categoryId ? fetchPosts(SAdminPostCard, where, perPage, (page - 1) * perPage) : undefined,
           enabled: !!categoryId,
      });
 
      const handleSelectCategory = (id: number) => {
           setCategoryId(id);
           setPage(1);
+          setSearch("");
      };
 
      const categories = categoriesData ?? [];
@@ -100,10 +103,26 @@ export const AdminPostsContainer = () => {
                     <div className="flex flex-col gap-4">
                          {/* Selected category heading */}
                          {selectedCategory && (
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between gap-3 flex-wrap">
                                    <div>
                                         <h3 className="text-sm font-semibold text-white">{selectedCategory.name}</h3>
-                                        <p className="text-xs text-gray-500">{selectedCategory._count.posts} listings</p>
+                                        <p className="text-xs text-gray-500">{selectedCategory._count?.posts ?? 0} listings</p>
+                                   </div>
+                                   {/* Search */}
+                                   <div className="relative flex items-center">
+                                        <Search size={13} className="absolute left-2.5 text-gray-500 pointer-events-none" />
+                                        <input
+                                             type="text"
+                                             value={search}
+                                             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                                             placeholder="Search posts..."
+                                             className="pl-8 pr-8 py-1.5 text-xs rounded-lg border border-gray-800 bg-gray-900 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-600/50 w-48"
+                                        />
+                                        {search && (
+                                             <button onClick={() => { setSearch(""); setPage(1); }} className="absolute right-2 text-gray-500 hover:text-white">
+                                                  <X size={12} />
+                                             </button>
+                                        )}
                                    </div>
                               </div>
                          )}
