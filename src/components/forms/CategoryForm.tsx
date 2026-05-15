@@ -58,12 +58,18 @@ export const CategoryForm = ({categoryId, onComplete}:{categoryId?: number, onCo
      const handleDelete = () => {
           toast.promise(
                (async () => {
-                    if(!category) throw new Error("No category to delete");
-                    await deleteSingleImage(category?.icon || "");
-                    const res = await deleteCategory(category.id);
-                    if(!res) throw new Error("Failed to delete category");
-                    onComplete();
-                    await queryClient.invalidateQueries();
+                    try {
+                         if(!category) throw new Error("No category to delete");
+                         if(category.icon) await deleteSingleImage(category?.icon || "");
+                         const res = await deleteCategory(category.id);
+                         if(!res) throw new Error("Failed to delete category");
+                         onComplete();
+                         await queryClient.invalidateQueries();
+                    } catch (error) {
+                         console.log("Error deleting category:", error);
+                         throw new Error("Failed to delete category");
+                    }
+                    
                })(),
                {
                     loading: "Deleting category...",

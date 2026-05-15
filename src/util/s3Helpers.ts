@@ -52,16 +52,17 @@ export const uploadImagesFromFormData = async (formData: FormData, folder: strin
 export const deleteSingleImage = async (imageUrl: string): Promise<void> => {
      try {
        // Extract the key from the image URL
+       if(!imageUrl) return;
           const bucketDomain = `https://${BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/`;
           if (!imageUrl.startsWith(bucketDomain)) {
-               throw new Error("Invalid image URL. It does not match the expected bucket domain.");
+              return;
           }
      
           // Extract the key portion (folder/filename)
           const key = imageUrl.replace(bucketDomain, "");
 
           if (!key) {
-               throw new Error("Key could not be extracted from the URL.");
+               return;
           }
 
        // Delete the object using the extracted key
