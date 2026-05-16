@@ -1,5 +1,5 @@
 import { Instagram, Twitter, Youtube } from "lucide-react";
-import { FaTiktok } from "react-icons/fa6";
+import { FaTiktok, FaWhatsapp } from "react-icons/fa6";
 import type { LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
 
@@ -33,11 +33,11 @@ export const SocialLinks: ISocialLink[] = [
     iconColor: "text-white",
   },
   {
-    name: "X (Twitter)",
-    handle: "@weddconnect",
-    description: "Latest news, tips and trending wedding content.",
-    icon: Twitter,
-    href: "https://www.twitter.com/weddconnect",
+    name: "Whatsapp",
+    handle: "Weddconnect",
+    description: "Get more information about how we can help you plan your wedding.",
+    icon: FaWhatsapp,
+    href: "https://wa.me/250790860446",
     color: "hover:border-gray-400/60 hover:bg-gray-400/5",
     iconColor: "text-gray-300",
   },
