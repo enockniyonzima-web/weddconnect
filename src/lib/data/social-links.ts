@@ -1,4 +1,4 @@
-import { Instagram, Twitter, Youtube } from "lucide-react";
+import { Instagram, Youtube } from "lucide-react";
 import { FaTiktok, FaWhatsapp } from "react-icons/fa6";
 import type { LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
