@@ -3,32 +3,72 @@ import AboutImage1 from "../../../public/about/about-image-1.png"
 import AboutImage2 from "../../../public/about/about-image-2.png";
 import Image from "next/image";
 import { OurProfessionSection, StartPlanningSection } from "@/components/sections/AboutSections";
+import { Target, Eye } from "lucide-react";
 
 export default function AboutPage () {
      return (
           <ClientPage>
-               <div className="w-full flex flex-col items-center justify-start gap-2 py-16 px-[2%] bg-black">
-                    <h1 className="text-[2.2rem] font-bold text-white">WeddConnect</h1>
-                    <p className="text-gray-200">Creating unforgetable wedding experiences with passion and dedication.</p>
-               </div>
-               <div className="w-full grid grid-cols-1 gap-4 lg:grid-cols-2 py-[40px] px-[2%]">
-                    <div className="w-full flex flex-col items-center justify-center gap-[20px]">
-                         <h2 className="text-black text-3xl md:text-5xl font-bold">Disover our journey so far</h2>
-                         <p className="md:text-lg text-gray-600">At WeddConnect, we’re excited to begin our adventure in bringing couples and vendors together. Our focus is on creating smooth and meaningful connections, ensuring your wedding planning experience is stress-free and delightful. As we start this journey, we’re committed to delivering exceptional service and building lasting relationships along the way.</p>
+               {/* Hero */}
+               <section className="relative w-full flex flex-col items-center justify-center gap-5 py-24 px-[5%] bg-black overflow-hidden text-center">
+                    <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-blue-800/10 rounded-full blur-3xl pointer-events-none" />
+                    <span className="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-600/30 bg-blue-600/10 text-blue-400 text-xs font-medium tracking-wide">
+                         Our Story
+                    </span>
+                    <h1 className="relative text-4xl md:text-6xl font-bold text-white leading-tight max-w-3xl">
+                         Connecting Couples with Rwanda&apos;s <span className="text-blue-500">Best Wedding Vendors</span>
+                    </h1>
+                    <p className="relative text-gray-400 text-base md:text-lg max-w-2xl leading-relaxed">
+                         WeddConnect was built to make wedding planning stress-free and delightful — bringing couples and vendors together on one seamless platform.
+                    </p>
+               </section>
+
+               {/* Journey */}
+               <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-10 py-20 px-[5%] bg-gray-950 items-center">
+                    <div className="flex flex-col gap-5">
+                         <span className="text-blue-500 text-xs font-semibold uppercase tracking-widest">Our Journey</span>
+                         <h2 className="text-white text-3xl md:text-4xl font-bold leading-snug">Discover how we got here</h2>
+                         <p className="text-gray-400 text-base leading-relaxed">
+                              At WeddConnect, we&apos;re excited to begin our adventure in bringing couples and vendors together. Our focus is on creating smooth and meaningful connections, ensuring your wedding planning experience is stress-free and delightful. As we grow, we remain committed to delivering exceptional service and building lasting relationships along the way.
+                         </p>
                     </div>
-                    <Image src={AboutImage1} placeholder="blur" alt="Wedd Connect image" width={800} height={600} className="w-full lg:w-[80%] mx-auto rounded-[5px] aspect-[100/80] object-cover object-bottom " />
-               </div>
-               <div className="w-full gap-6 grid grid-cols-1 lg:grid-cols-2 py-[40px] px-[2%] bg-gradient-to-br from-gray-300 to-blue-200">
-                    <Image src={AboutImage2} placeholder="blur" alt="Wedd Connect image" width={800} height={600} className="w-full lg:w-[80%] mx-auto rounded-[5px] aspect-auto" />
-                    <div className="w-full flex flex-col items-center justify-center gap-[20px]">
-                         <h2 className="text-black text-3xl md:text-5xl font-bold">Our Mission</h2>
-                         <p className="md:text-lg text-gray-600">our mission is to simplify the process of bringing couples and vendors together by providing an efficient, user-friendly platform. We strive to empower couples to easily find and connect with the perfect vendors for their dream weddings. At the same time, we aim to support vendors by offering opportunities to grow their business</p>
+                    <div className="relative rounded-2xl overflow-hidden border border-gray-800 aspect-[4/3]">
+                         <Image src={AboutImage1} placeholder="blur" alt="WeddConnect journey" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-bottom" />
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
-                    <div className="w-full flex flex-col items-center justify-center gap-[20px]">
-                         <h2 className="text-black text-3xl md:text-5xl font-bold">Our Vision</h2>
-                         <p className="md:text-lg text-gray-600">our vision is to be the premier platform for connecting couples with trusted vendors in rwanda, making the wedding planning process smooth and efficient. We aim to provide an easy-to-use, reliable service that helps couples find the perfect partners for their big day, while also supporting vendors in growing their businesses. Through our commitment to quality and innovation, we strive to create seamless connections and memorable experiences for everyone involved.</p>
+               </section>
+
+               {/* Mission & Vision */}
+               <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 py-20 px-[5%] bg-black items-center">
+                    <div className="relative rounded-2xl overflow-hidden border border-gray-800 aspect-[4/3]">
+                         <Image src={AboutImage2} placeholder="blur" alt="WeddConnect mission" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
-               </div>
+                    <div className="flex flex-col gap-8">
+                         <div className="flex flex-col gap-3">
+                              <div className="flex items-center gap-2 text-blue-400">
+                                   <Target size={18} />
+                                   <span className="text-sm font-semibold uppercase tracking-widest">Our Mission</span>
+                              </div>
+                              <h3 className="text-white text-2xl font-bold">Simplifying wedding planning</h3>
+                              <p className="text-gray-400 text-base leading-relaxed">
+                                   Our mission is to simplify the process of bringing couples and vendors together through an efficient, user-friendly platform empowering couples to find the perfect vendors while helping businesses grow.
+                              </p>
+                         </div>
+                         <div className="w-full h-px bg-gray-800" />
+                         <div className="flex flex-col gap-3">
+                              <div className="flex items-center gap-2 text-blue-400">
+                                   <Eye size={18} />
+                                   <span className="text-sm font-semibold uppercase tracking-widest">Our Vision</span>
+                              </div>
+                              <h3 className="text-white text-2xl font-bold">Premier wedding platform in Rwanda</h3>
+                              <p className="text-gray-400 text-base leading-relaxed">
+                                   We envision being Rwanda&apos;s most trusted platform for wedding planning, connecting couples with quality vendors, making every big day smooth, memorable, and stress-free.
+                              </p>
+                         </div>
+                    </div>
+               </section>
+
                <OurProfessionSection />
                <StartPlanningSection />
           </ClientPage>

@@ -1,75 +1,89 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { TrendCard } from "./TrendCard";
-import { useEffect, useRef, useState } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useRef, useState } from "react";
+import { motion, useAnimationFrame, useMotionValue } from "motion/react";
+import { useAuthContext } from "../context/AuthContext";
+import Link from "next/link";
+import Image from "../ui/Image";
 
-export const TrendingCardsSection = ({images}:{images:string[]}) => {
-     const sliderRef = useRef<HTMLDivElement>(null);
-     const [canScrollLeft, setCanScrollLeft] = useState(false);
-    const [canScrollRight, setCanScrollRight] = useState(false);
+export const TrendingCardsSection = ({ images }: { images: string[] }) => {
+     const paused = useRef(false);
+     const x = useMotionValue(0);
+     // Each card: 280px wide + 16px gap = 296px
+     const CARD_W = 296;
+     const TOTAL = images.length * CARD_W;
+     const SPEED = 0.6; // px per frame
 
-     const updateScrollButtons = () => {
-          if (sliderRef.current) {
-               setCanScrollLeft(sliderRef.current.scrollLeft > 0);
-               setCanScrollRight(sliderRef.current.scrollLeft < sliderRef.current.scrollWidth - sliderRef.current.clientWidth);
-          }
-     };
+     useAnimationFrame(() => {
+          if (paused.current) return;
+          const current = x.get();
+          // Reset seamlessly at half the duplicated list
+          x.set(current <= -TOTAL ? 0 : current - SPEED);
+     });
 
-     const scrollContainer = (opt: number) => {
-          if (sliderRef.current) {
-          const scrollAmount = window.innerWidth * 0.4; // 40% of viewport width
-          const  newScrollLeft = sliderRef.current.scrollLeft + opt * scrollAmount;
+     const doubled = [...images, ...images];
 
-               sliderRef.current.scrollTo({
-                    left: newScrollLeft,
-                    behavior: "smooth",
-               });
-          }
-     };
-
-     useEffect(() => {
-          updateScrollButtons();
-          if (sliderRef.current) {
-               sliderRef.current.addEventListener("scroll", updateScrollButtons);
-          }
-          return () => {
-               if (sliderRef.current) {
-                    sliderRef.current.removeEventListener("scroll", updateScrollButtons);
-               }
-          };
-     }, []);
-     
      return (
-          <div className="w-full flex items-center justify-between overflow-hidden gap-[20px]">
-               {canScrollLeft ? 
-                    <i
-                         className="inline-flex text-white bg-gradient-to-bl from-gray-600  to-gray-800 cursor-pointer rounded-[10px] px-[5px] h-[100px] text-[20px] items-center justify-center"
-                         onClick={() => scrollContainer(-1)}
-                    ><IoIosArrowBack /></i> :
-                    <i
-                         className="inline-flex text-white bg-gradient-to-bl from-gray-400 cursor-not-allowed to-gray-600 rounded-[10px] px-[5px] h-[100px] text-[20px] items-center justify-center"
-                    ><IoIosArrowBack /></i>
-               }
-               <div className="w-full overflow-hidden relative overflow-x-auto scroll-smooth scrollbar-hide" ref={sliderRef}>
-                    <div className="relative w-full cursor-pointer grid grid-flow-col auto-cols-[80%]  lg:auto-cols-[30%] gap-[40px]">
-                         {
-                              images.map((image, index) => <TrendCard key={`trending-card-${index}`} image={image} />)
-                         }
-                    </div>
-               </div>
-               {canScrollRight ?
-                    <i
-                         className="inline-flex text-white bg-gradient-to-bl cursor-pointer from-gray-600 to-gray-800 rounded-[10px] px-[5px] h-[100px] text-[20px] items-center justify-center"
-                         onClick={() => scrollContainer(1)}
-                    ><IoIosArrowForward /></i>:
-                    <i
-                         className="inline-flex text-white bg-gradient-to-bl from-gray-400 cursor-not-allowed to-gray-600 rounded-[10px] px-[5px] h-[100px] text-[20px] items-center justify-center"
-                    ><IoIosArrowForward /></i>
+          <div
+               className="relative w-full overflow-hidden"
+               onMouseEnter={() => (paused.current = true)}
+               onMouseLeave={() => (paused.current = false)}
+               onTouchStart={() => (paused.current = true)}
+               onTouchEnd={() => (paused.current = false)}
+          >
+               {/* Edge fades */}
+               <div className="pointer-events-none absolute left-0 top-0 h-full w-20 z-10 bg-gradient-to-r from-black to-transparent" />
+               <div className="pointer-events-none absolute right-0 top-0 h-full w-20 z-10 bg-gradient-to-l from-black to-transparent" />
 
-               }
+               <motion.div
+                    style={{ x }}
+                    className="flex gap-4 w-max"
+               >
+                    {doubled.map((image, i) => (
+                         <TrendCard key={i} image={image} />
+                    ))}
+               </motion.div>
           </div>
-          
-     )
-}
+     );
+};
+
+// ─── Individual Card ──────────────────────────────────────────────────────────
+
+const TrendCard = ({ image }: { image: string }) => {
+     const { user, setAuth } = useAuthContext();
+     const [hovered, setHovered] = useState(false);
+
+     const content = (
+          <motion.div
+               className="relative w-[280px] shrink-0 rounded-2xl overflow-hidden aspect-[3/4] border border-gray-800 cursor-pointer"
+               animate={{ scale: hovered ? 1.03 : 1 }}
+               transition={{ duration: 0.3, ease: "easeOut" }}
+               onHoverStart={() => setHovered(true)}
+               onHoverEnd={() => setHovered(false)}
+          >
+               <Image
+                    placeholder="blur"
+                    src={image}
+                    alt="wedding trend"
+                    width={560}
+                    height={740}
+                    className="w-full h-full object-cover"
+               />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+               {hovered && (
+                    <motion.div
+                         initial={{ opacity: 0, y: 8 }}
+                         animate={{ opacity: 1, y: 0 }}
+                         className="absolute bottom-4 left-0 right-0 flex justify-center"
+                    >
+                         <span className="text-xs text-white bg-blue-600/80 backdrop-blur-sm px-3 py-1.5 rounded-full font-medium">
+                              View Vendors
+                         </span>
+                    </motion.div>
+               )}
+          </motion.div>
+     );
+
+     if (user) return <Link href="/posts">{content}</Link>;
+     return <div onClick={setAuth}>{content}</div>;
+};

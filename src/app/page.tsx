@@ -1,5 +1,5 @@
 import ClientPage from "@/components/layout/ClientPage";
-import { HeroSection, HowItWorksSection, OurProfessionalSection, ReasonsToJoinSection, TrendingSection } from "@/components/sections/HomeSections";
+import { HeroSection, HowItWorksSection, OurProfessionalSection, ReasonsToJoinSection, SocialPlatformsSection, TrendingSection } from "@/components/sections/HomeSections";
 
 export default  function Home() {
   return (
@@ -7,6 +7,7 @@ export default  function Home() {
       <HeroSection />
       <TrendingSection />
       {/* <HotCategoriesSection /> */}
+      <SocialPlatformsSection />
       <OurProfessionalSection />
       <ReasonsToJoinSection />
       <HowItWorksSection />
