@@ -33,7 +33,7 @@ export default function AboutPage () {
                          </p>
                     </div>
                     <div className="relative rounded-2xl overflow-hidden border border-gray-800 aspect-[4/3]">
-                         <Image src={AboutImage1} placeholder="blur" alt="WeddConnect journey" fill className="object-cover object-bottom" />
+                         <Image src={AboutImage1} placeholder="blur" alt="WeddConnect journey" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-bottom" />
                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
                </section>
@@ -41,7 +41,7 @@ export default function AboutPage () {
                {/* Mission & Vision */}
                <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 py-20 px-[5%] bg-black items-center">
                     <div className="relative rounded-2xl overflow-hidden border border-gray-800 aspect-[4/3]">
-                         <Image src={AboutImage2} placeholder="blur" alt="WeddConnect mission" fill className="object-cover" />
+                         <Image src={AboutImage2} placeholder="blur" alt="WeddConnect mission" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
                     <div className="flex flex-col gap-8">
