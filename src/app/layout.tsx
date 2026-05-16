@@ -10,6 +10,7 @@ import { SSubscription } from "@/common/Entities";
 import { SubscriptionsProvider } from "@/context/SubscriptionContext";
 import { Toaster } from "sonner";
 import QueryProvider from "@/components/context/QueryProvider";
+import SmoothScrollProvider from "@/components/context/SmoothScrollProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -85,6 +86,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen overflow-x-hidden relative bg-black`}
       >
         <QueryProvider>
+          <SmoothScrollProvider>
           <AuthProvider authUser={user}>
           <SubscriptionsProvider subs={subscriptions}>
           {children}
@@ -111,6 +113,7 @@ export default async function RootLayout({
               }}
             />
         </AuthProvider>
+          </SmoothScrollProvider>
         </QueryProvider>
         
       </body>

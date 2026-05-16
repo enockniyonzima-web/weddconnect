@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 import Header from "./Header"
 import Footer from "./Footer"
 import QuickAuth from "../auth/QuickAuth"
+import { SupportButton } from "../buttons/SupportButton"
 
 const ClientPage = ({children}:{children: ReactNode}) => {
 
@@ -13,6 +14,7 @@ const ClientPage = ({children}:{children: ReactNode}) => {
                </main> 
                <Footer />
                <QuickAuth />
+               <SupportButton />
           </>
      )
 }

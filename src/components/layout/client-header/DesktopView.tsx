@@ -3,29 +3,56 @@
 import { HeaderLink, HeaderLogo } from "./header-components"
 import ClientProfileLinks from "./ClientProfileLinks"
 import { useAuthContext } from "@/components/context/AuthContext";
+import { motion } from "motion/react";
 
-export default function DesktopView ({scrolled} :{scrolled:boolean}){
-     const {user, setAuth} = useAuthContext();
+const NAV_LINKS = [
+     { name: "Home", dest: "/" },
+     { name: "Wedding Venues", dest: "/posts?category=1" },
+     { name: "Wedding Vendors", dest: "/posts" },
+     { name: "Services", dest: "/services" },
+     { name: "About Us", dest: "/about" },
+];
+
+export default function DesktopView({ scrolled }: { scrolled: boolean }) {
+     const { user, setAuth } = useAuthContext();
      return (
-          <header className={`w-full  top-0 z-30 ml-[50%] -translate-x-[50%]  hidden md:flex items-center justify-between px-[2%] py-[5px] max-w-[1512px] ${scrolled ? "sticky bg-black shadow-sm shadow-gray-800" : "absolute bg-gradient-to-b from-black/50 to-transparent"} `}>
-               <HeaderLogo/>
-               <div className='w-auto flex items-center justify-between gap-[40px]'>
-                    <HeaderLink link={{name: "Home", dest: '/'}} />
-                    <HeaderLink  link={{name: "Wedding Venues", dest: '/posts?category=1'}} />
-                    <HeaderLink  link={{name: "Wedding Vendors", dest: '/posts'}} />
-                    <HeaderLink  link={{name: "Services", dest: '/services'}} />
-                    <HeaderLink  link={{name: "About Us", dest: '/about'}} />
+          <motion.header
+               initial={{ y: -20, opacity: 0 }}
+               animate={{ y: 0, opacity: 1 }}
+               transition={{ duration: 0.5, ease: "easeOut" }}
+               className={`w-full top-0 z-30 ml-0 -translate-x-[50%] hidden md:flex items-center justify-between px-[2%] py-[5px] max-w-[1512px] ${scrolled ? "sticky bg-black/95 backdrop-blur-md shadow-sm shadow-gray-900" : "absolute bg-gradient-to-b from-black/60 to-transparent"}`}
+          >
+               <HeaderLogo />
+               <div className="w-auto flex items-center justify-between gap-[40px]">
+                    {NAV_LINKS.map((link, i) => (
+                         <motion.div
+                              key={link.name}
+                              initial={{ opacity: 0, y: -8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.4, delay: 0.1 + i * 0.07, ease: "easeOut" }}
+                         >
+                              <HeaderLink link={link} />
+                         </motion.div>
+                    ))}
                </div>
-               <div className='w-auto flex items-center justify-center gap-[20px]'>
-                    {
-                         user ?
-                         <ClientProfileLinks user={user} /> :
-                         <>
-                              <button type="button" className='text-[1rem] px-[15px] rounded-[10px] py-[7.5px] bg-gradient-to-br from-blue-600 to-blue-800 text-white hover:text-red-100 transition-all duration-300'  onClick={setAuth}>Login</button>
-                         </>
-                    }
-                    
-               </div>
-          </header>
-     )
+               <motion.div
+                    className="w-auto flex items-center justify-center gap-[20px]"
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+               >
+                    {user ? (
+                         <ClientProfileLinks user={user} />
+                    ) : (
+                         <button
+                              type="button"
+                              className="text-sm px-5 rounded-xl py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors duration-200"
+                              onClick={setAuth}
+                         >
+                              Login
+                         </button>
+                    )}
+               </motion.div>
+          </motion.header>
+     );
 }
