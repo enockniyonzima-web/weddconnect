@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { IconType } from 'react-icons'
 import { BsPeopleFill } from 'react-icons/bs'
-import { FaCalendarCheck, FaFacebook, FaInstagram, FaSquareXTwitter } from 'react-icons/fa6'
+import { FaCalendarCheck, FaInstagram, FaTiktok, FaWhatsapp, FaYoutube } from 'react-icons/fa6'
 import { MdCall, MdEmail, MdMonochromePhotos } from 'react-icons/md'
 const Logo = "/logo/white-logo.png";
 import { FaQuestionCircle, FaWhatsappSquare } from 'react-icons/fa'
@@ -52,8 +52,9 @@ const Footer = () => {
                          <div className="flex items-center gap-4">
                               {[
                                    { href: 'https://www.instagram.com/weddconnect_rw', Icon: FaInstagram },
-                                   { href: '/', Icon: FaFacebook },
-                                   { href: '/', Icon: FaSquareXTwitter },
+                                   { href: 'https://www.tiktok.com/@weddconnect?_r=1&_t=ZS-96PqoAvLRQq', Icon: FaTiktok },
+                                   { href: 'https://www.youtube.com/@weddconnect', Icon: FaYoutube },
+                                   { href: 'https://wa.me/250790860446', Icon: FaWhatsapp },
                               ].map(({ href, Icon }, i) => (
                                    <motion.div key={i} whileHover={{ scale: 1.15 }} transition={{ duration: 0.2 }}>
                                         <Link href={href} target="_blank" className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-800 bg-gray-900 text-gray-400 hover:text-blue-400 hover:border-blue-600/40 transition-colors duration-200">
