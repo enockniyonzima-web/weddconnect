@@ -32,7 +32,7 @@ export default function MobileView ({scrolled} :{scrolled:boolean}) {
                                                        <HeaderLink link={{name: "Home", dest: '/'}} />
                                                        <HeaderLink link={{name: "Wedding Venues", dest: '/posts?category=1'}} />
                                                        <HeaderLink link={{name: "Wedding Vendors", dest: '/posts'}} />
-                                                       <HeaderLink link={{name: "Services", dest: '/services'}} />
+                                                       <HeaderLink link={{name: "Wedding Planning", dest: '/posts?category=17'}} />
                                                        <HeaderLink link={{name: "About Us", dest: '/about'}} />
                                                   </div>
                                              </DialogPanel>

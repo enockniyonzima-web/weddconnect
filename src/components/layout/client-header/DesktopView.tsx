@@ -9,7 +9,7 @@ const NAV_LINKS = [
      { name: "Home", dest: "/" },
      { name: "Wedding Venues", dest: "/posts?category=1" },
      { name: "Wedding Vendors", dest: "/posts" },
-     { name: "Services", dest: "/services" },
+     { name: "Wedding Planning", dest: "/posts?category=17" },
      { name: "About Us", dest: "/about" },
 ];
 
