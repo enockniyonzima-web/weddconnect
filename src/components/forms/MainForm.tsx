@@ -27,11 +27,14 @@ export const MainForm = ({children, submitData, btnTitle, btnIcon, showSubmitBtn
               } catch (error) {
                 console.error("Error submitting form:", error);
                 throw new Error("Application Error");
+              }finally {
+                setLoading(false);
               }
             })(),
             {
               loading: "Submitting...",
               success: (data: {message?: string}) => data.message || "Submitted successfully",
+              error: (error) => error instanceof Error ? error.message : "Application Error",
             }
           ) 
      }
