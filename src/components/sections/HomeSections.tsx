@@ -165,7 +165,7 @@ export function OurProfessionalSection () {
                     viewport={{ once: true }} transition={{ duration: 0.7, ease: "easeOut" }}
                >
                     <Image
-                         src="/home/prof-lindah.png"
+                         src="/home/prof-lindah-2.jpg"
                          alt="WeddConnect professionals"
                          width={800}
                          height={600}

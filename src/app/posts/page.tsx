@@ -3,9 +3,12 @@
 import { useState } from "react";
 import CategoryContainer from "./[components]/CategoryContainer";
 import CategoryPostContainer from "./[components]/CategoryPostContainer";
+import { useSearchParams } from "next/navigation";
 
 export default function PostsPage() {
-     const [selectedCategory, setSelectedCategory] = useState<number>(0);
+     const searchParams = useSearchParams();
+     const initialCategory = searchParams.get("category");
+     const [selectedCategory, setSelectedCategory] = useState<number>(initialCategory ? parseInt(initialCategory) : 0);
 
      if (selectedCategory) {
           return (
