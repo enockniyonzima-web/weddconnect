@@ -43,7 +43,7 @@ export const AdminPostsContainer = () => {
      };
 
      const categories = categoriesData ?? [];
-     const posts = postData ?? [];
+     const posts = postData ? postData : [];
 
      return (
           <div className="flex flex-col gap-6 w-full">
@@ -79,7 +79,7 @@ export const AdminPostsContainer = () => {
                                    )}
                               >
                                    {cat.name}
-                                   <span className="text-[10px] text-gray-600">{cat._count.posts ?? 0}</span>
+                                   <span className="text-[10px] text-gray-600">{cat._count?.posts ?? 0}</span>
                               </button>
                          ))}
                     </div>

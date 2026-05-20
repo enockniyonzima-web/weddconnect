@@ -83,7 +83,7 @@ function CategoryCard({ category }: { category: TCategory }) {
                <div className="p-4 flex flex-col gap-3">
                     <div className="flex items-start justify-between gap-2">
                          <div className="flex-1 min-w-0">
-                              <h3 className="text-base font-semibold text-gray-100 truncate">{category.name}</h3>
+                              <h3 className="text-base font-semibold text-gray-100 truncate">{category.name}{category.id}</h3>
                               <p className="text-xs text-gray-500 line-clamp-2 mt-1">{category.description}</p>
                          </div>
                          <span className={`shrink-0 flex items-center gap-1 text-xs px-2 py-1 rounded-full ${category.status ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
