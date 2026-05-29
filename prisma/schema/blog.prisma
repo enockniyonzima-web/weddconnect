@@ -1,0 +1,90 @@
+model BlogCategory {
+     id String @id @default(uuid())
+     name String
+     slug String @unique
+     description String?
+
+     createdAt DateTime @default(now())
+     updatedAt DateTime @updatedAt
+
+     posts BlogPost[]
+}
+
+model BlogTag {
+     id String @id @default(uuid())
+     name String
+     slug String @unique
+
+     createdAt DateTime @default(now())
+     updatedAt DateTime @updatedAt
+
+     posts BlogPost[] @relation("PostTags")
+}
+
+enum EBlogPostStatus {
+     DRAFT
+     PUBLISHED
+     ARCHIVED
+}
+
+model BlogPost {
+     id String @id @default(uuid())
+     title String
+     slug String @unique
+     summary String
+     content String
+     status EBlogPostStatus @default(DRAFT)
+     featuredImageUrl String?
+     featuredVideoUrl String?
+     images String[] @default([])
+     videos String[] @default([])
+
+     createdAt DateTime @default(now())
+     updatedAt DateTime @updatedAt
+     publishedAt DateTime?
+
+     readingTime Int?
+     viewsCount Int @default(0)
+     commentsCount Int @default(0)
+
+     categoryId String?
+     category BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+     tags BlogTag[] @relation("PostTags")
+
+     allowComments Boolean @default(true)
+
+     authorId Int?
+     author Admin? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+     views BlogView[]
+     comments BlogComment[]
+}
+
+model BlogComment {
+     id String @id @default(uuid())
+     content String
+     createdAt DateTime @default(now())
+     updatedAt DateTime @updatedAt
+
+     postId String
+     post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+     parentCommentId String?
+     parentComment BlogComment? @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+     replies BlogComment[] @relation("CommentReplies")
+
+     commenterId String? @db.Uuid
+     commenter User? @relation(fields: [commenterId], references: [id], onDelete: SetNull)
+}
+
+model BlogView {
+     id String @id @default(uuid())
+     viewerIp String
+     viewerUserAgent String
+     createdAt DateTime @default(now())
+
+     postId String
+     post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+     @@unique([viewerIp, postId])
+}

@@ -18,15 +18,16 @@ import { useAuthContext } from '@/components/context/AuthContext';
 import { LogoutButton } from '@/components/forms/LogoutForm';
 import { LogOut } from 'lucide-react';
 import { TSessionUser } from '@/common/Entities';
+import { FcAdvertising } from 'react-icons/fc';
 
 const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
      {name: "Overview", dest: '', icon: LuLayoutDashboard},
      {name: "Categories", dest:'categories', icon: TbCategoryPlus},
      {name: "Posts", dest: "posts", icon: MdOutlineLibraryBooks},
      {name: "Clients", dest:"clients", icon: BsPeople},
-     // {name: "Services", dest: "services", icon: FaGear},
+     {name: "Blogs", dest: "blog", icon: FcAdvertising},
      {name: "User Management", dest: "users", icon: FaUsersCog},
-     {name: "Transactions", dest: 'transactions', icon: FaRegCreditCard}
+     // {name: "Transactions", dest: 'transactions', icon: FaRegCreditCard}
 ]
 
 const AdminHeader = () => {

@@ -49,7 +49,7 @@ const ClientProfileLinks = ({user}:{user:TSessionUser}) => {
                     {/* Client/profile link */}
                     {user.client && (
                          <Link
-                              href="/dashboard/client"
+                              href="/profile"
                               className='flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-300 hover:bg-gray-900 hover:text-blue-400 transition-colors'
                          >
                               <User size={14} />

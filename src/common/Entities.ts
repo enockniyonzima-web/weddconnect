@@ -74,7 +74,8 @@ export type TVendor = Prisma.VendorGetPayload<{include:{user:{select: TUserSelec
 
 export type TClient = Prisma.ClientGetPayload<{include: {user: {select:TUserSelectFields}, subscription:{include:{subscription:true}}}}>
 export const SSubscription = {
-     id:true, name:true, price:true, description:true,
+     id:true, name:true, price:true, currency:true, description:true,
+     duration:true, durationUnit:true, isActive:true,
      _count:{select:{clientSubscriptions:true}}
 } satisfies Prisma.SubscriptionSelect;
 export type TSubscription = Prisma.SubscriptionGetPayload<{select: typeof SSubscription}>;

@@ -7,9 +7,9 @@ import { motion } from "motion/react";
 
 const NAV_LINKS = [
      { name: "Home", dest: "/" },
-     { name: "Wedding Venues", dest: "/posts?category=1" },
+     { name: "Wedding Venues", dest: "/posts/venues" },
      { name: "Wedding Vendors", dest: "/posts" },
-     { name: "Wedding Planning", dest: "/posts?category=17" },
+     { name: "Wedding Planning", dest: "/posts/wedding-planning" },
      { name: "About Us", dest: "/about" },
 ];
 

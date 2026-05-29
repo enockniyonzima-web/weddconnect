@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { ComponentProps, ChangeEvent, useState } from "react";
 import {
   User, Mail, Lock, Phone, Hash, Search, Calendar, Link2,
-  Eye, EyeOff, Type, FileDigit,
+  Eye, EyeOff,  FileDigit,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

@@ -180,5 +180,8 @@ export const RevalidatePages = {
      },
      clientSubscription: () => {
           revalidatePath('/');
+     },
+     default: () => {
+          revalidatePath('/');
      }
 }

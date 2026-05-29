@@ -30,9 +30,9 @@ export default function MobileView ({scrolled} :{scrolled:boolean}) {
                                              <DialogPanel className="w-full px-[5%]">
                                                   <div className="w-full bg-black/90 rounded-[10px] p-[10px] shadow-sm shadow-gray-600 flex flex-col items-center justify-start gap-[10px] ease-in-out">
                                                        <HeaderLink link={{name: "Home", dest: '/'}} />
-                                                       <HeaderLink link={{name: "Wedding Venues", dest: '/posts?category=1'}} />
+                                                       <HeaderLink link={{name: "Wedding Venues", dest: '/posts/venues'}} />
+                                                       <HeaderLink link={{name: "Wedding Planning", dest: '/posts/wedding-planning'}} />
                                                        <HeaderLink link={{name: "Wedding Vendors", dest: '/posts'}} />
-                                                       <HeaderLink link={{name: "Wedding Planning", dest: '/posts?category=17'}} />
                                                        <HeaderLink link={{name: "About Us", dest: '/about'}} />
                                                   </div>
                                              </DialogPanel>

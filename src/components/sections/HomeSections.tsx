@@ -77,7 +77,7 @@ export function HeroSection () {
 
                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-100 to-gray-200">
                               Rwanda&apos;s Largest Collection of <br />
-                              Wedding Venues & Verified Vendors.
+                              Verified Vendors & Wedding Venues Public Directory
                          </span>
                     </motion.h1>
 
@@ -85,7 +85,7 @@ export function HeroSection () {
                          variants={fadeUp} initial="hidden" animate="show" custom={2}
                          className="text-gray-300 text-base md:text-lg max-w-xl leading-relaxed"
                     >
-                         From Only <span className="text-white font-semibold">$7</span> — Access all wedding venues &amp; top verified vendors across Rwanda.
+                         From Only <span className="text-white font-semibold">$7</span> - Access all wedding venues &amp; top verified vendors across Rwanda.
                     </motion.p>
 
                     <motion.div variants={fadeUp} initial="hidden" animate="show" custom={3}>

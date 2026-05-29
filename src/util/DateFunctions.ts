@@ -1,3 +1,5 @@
+import { TDurationUnit } from "@/types/common";
+
 export const getDate = (dateStr:Date) => {
      const date = new Date(dateStr);
      const day = date.getDate().toString().padStart(2, '0');
@@ -15,6 +17,21 @@ export function isDateLaterThanToday(date: string | Date): boolean {
      givenDate.setHours(0, 0, 0, 0);
 
      return givenDate > today;
+}
+
+export function getDaysCount(duration:number, unit: TDurationUnit) {
+     switch (unit) {
+          case "day":
+               return duration;
+          case "week":
+               return duration * 7;
+          case "month":
+               return duration * 30; // Approximation
+          case "year":
+               return duration * 365; // Approximation
+          default:
+               return duration;
+     }
 }
 
 export function getFutureDate(days: number): Date {

@@ -1,0 +1,102 @@
+model Category {
+  id          Int               @id @default(autoincrement())
+  name        String            @unique
+  description String
+  status      Boolean @default(true)
+  icon        String            @default("")
+  posts       Post[]
+  features    CategoryFeature[] @relation("CategoryFeatures")
+  rank        Int              @default(0)
+}
+
+model CategoryFeature {
+  id           Int           @id @default(autoincrement())
+  name         String
+  type         String
+  required     Boolean
+  icon         String
+  values       String
+  onCard       Boolean
+  rank         Int
+  inFilter     Boolean
+  postFeatures PostFeature[]
+  categories   Category[]    @relation("CategoryFeatures")
+}
+
+model Post {
+  id          Int           @id @default(autoincrement())
+  title       String
+  description String
+  createdAt   DateTime
+  status      String
+  categoryId  Int
+  vendorId    Int
+  location    String        @default("Kigali")
+  category    Category      @relation(fields: [categoryId], references: [id])
+  vendor      Vendor        @relation(fields: [vendorId], references: [id])
+  features    PostFeature[]
+  images      PostImage[]
+  likes       PostLike[]
+  packages    PostPackage[]
+  price       PostPrice?
+  reviews     PostReview[]
+  sortOrder   Int @default(100)
+}
+
+model PostFeature {
+  id                Int             @id @default(autoincrement())
+  value             String
+  categoryFeatureId Int
+  postId            Int
+  categoryFeature   CategoryFeature @relation(fields: [categoryFeatureId], references: [id], onDelete: Cascade)
+  post              Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostImage {
+  id     Int    @id @default(autoincrement())
+  url    String
+  name   String
+  sortOrder   Int  @default(0)
+  postId Int
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostPrice {
+  id       Int    @id @default(autoincrement())
+  min      Float
+  max      Float
+  currency String
+  postId   Int    @unique
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostPackage {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  sortOrder   Int  @default(0)
+  postId      Int
+  post        Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostReview {
+  id        Int      @id @default(autoincrement())
+  content   String
+  type      String
+  rating    Int @default(0)
+  createdAt DateTime
+  postId    Int
+  clientId  Int?
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime
+  postId    Int
+  clientId  Int?
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
