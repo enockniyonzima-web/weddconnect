@@ -8,9 +8,12 @@ import { useState } from "react";
 import Image from "../ui/Image";
 import { X, Eye, Trash2, CheckCircle, XCircle, Plus, Calendar } from "lucide-react";
 import { createClientSubscription, updateClientSubscription } from "@/server-actions/client-subscription.actions";
-import { getFutureDate } from "@/util/DateFunctions";
+import { getDaysCount, getFutureDate } from "@/util/DateFunctions";
 import { useSubscriptions } from "@/context/SubscriptionContext";
 import { TSubscription } from "@/common/Entities";
+import { toast } from "sonner";
+import { TDurationUnit } from "@/types/common";
+import queryClient from "@/lib/queryClient";
 
 export const ClientsContainer = ({clients}:{clients: TAdminClientSelect[]}) => {
      if(clients.length === 0) return (
@@ -40,10 +43,10 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
      const deleteAction = async (id:number) => {
           const res = await deleteClient(id);
           if(res) {
-               showMainNotification("Deletion successful", ENotificationType.PASS);
+               toast.success("Deletion successful");
                onDelete(id);
           } else {
-               showMainNotification("Deletion failed", ENotificationType.FAIL);
+               toast.error("Deletion failed");
           }
           setDeleting(prev => {
                const newSet = new Set(prev);
@@ -70,7 +73,9 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           setIsProcessing(true);
           const amount = selectedSub.price * USDRate;
           try {
-               const expiryAt  = getFutureDate(selectedSub.name === "Member" ? 365 : 90);
+               const subscriptionDuration = getDaysCount(selectedSub.duration ?? 0, selectedSub.durationUnit as TDurationUnit ?? "day");
+               const expiryAt  = getFutureDate(subscriptionDuration);
+
                const res = await createClientSubscription({
                     client: {connect: {id: client.id}},
                     subscription: {connect: {id: selectedSub.id}},
@@ -86,13 +91,14 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                          }
                     }
                });
-               if(!res) return showMainNotification("Subscription creation failed", ENotificationType.FAIL);
-               showMainNotification("Subscription created successfully", ENotificationType.PASS);
+               if(!res) return toast.error("Subscription creation failed");
+               toast.success("Subscription created successfully");
                setShowDialog(false);
                setSelectedSub(null);
+               queryClient.invalidateQueries();
                window.location.reload();
           } catch {
-               showMainNotification("An error occurred", ENotificationType.FAIL);
+               toast.error("An error occurred");
           } finally {
                setIsProcessing(false);
           }
@@ -102,8 +108,8 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           if (!window.confirm(`Are you sure you want to renew ${client.name}'s subscription?`)) return;
           
           setIsProcessing(true);
-          const sub = client.subscription?.subscription.name;
-          const expiryAt  = getFutureDate(sub && sub === "Member" ? 365 : 90);
+          const subscriptionDuration = getDaysCount(client.subscription?.subscription.duration ?? 0, client.subscription?.subscription.durationUnit as TDurationUnit ?? "day");
+          const expiryAt  = getFutureDate(subscriptionDuration);
           const amount = client.subscription?.transactions[0]?.amount || 0;
           
           try {
@@ -120,8 +126,9 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                          }
                     }
                })
-               if(!res) return showMainNotification("Subscription renewal failed", ENotificationType.FAIL);
-               showMainNotification("Subscription renewed successfully", ENotificationType.PASS);
+               if(!res) return toast.error("Subscription renewal failed");
+               toast.success("Subscription renewed successfully");
+               queryClient.invalidateQueries();
                window.location.reload();
           } finally {
                setIsProcessing(false);
@@ -132,8 +139,8 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           if (!window.confirm(`Approve ${client.name}'s subscription request? This will activate their subscription immediately.`)) return;
           
           setIsProcessing(true);
-          const sub = client.subscription?.subscription.name;
-          const expiryAt  = getFutureDate(sub && sub === "Member" ? 365 : 90);
+          const subscriptionDuration = getDaysCount(client.subscription?.subscription.duration ?? 0, client.subscription?.subscription.durationUnit as TDurationUnit ?? "day");
+          const expiryAt  = getFutureDate(subscriptionDuration);
           try {
                const res = await updateClientSubscription(client.subscription?.id ?? -1, {
                     expiryAt, 
@@ -141,8 +148,9 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                          update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Approved"}}
                     }
                })
-               if(!res) return showMainNotification("Subscription approval failed", ENotificationType.FAIL);
-               showMainNotification("Subscription approved successfully", ENotificationType.PASS);
+               if(!res) return toast.error("Subscription approval failed");
+               toast.success("Subscription approved successfully");
+               queryClient.invalidateQueries();
                window.location.reload();
           } finally {
                setIsProcessing(false);
@@ -160,8 +168,9 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                          update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Rejected"}}
                     }
                })
-               if(!res) return showMainNotification("Subscription rejection failed", ENotificationType.FAIL);
-               showMainNotification("Subscription request rejected", ENotificationType.PASS);
+               if(!res) return toast.error("Subscription rejection failed");
+               toast.success("Subscription request rejected");
+               queryClient.invalidateQueries();
                window.location.reload();
           } finally {
                setIsProcessing(false);
@@ -179,8 +188,9 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                          update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Cancelled"}}
                     }
                })
-               if(!res) return showMainNotification("Subscription cancellation failed", ENotificationType.FAIL);
-               showMainNotification("Subscription cancelled successfully", ENotificationType.PASS);
+               if(!res) return toast.error("Subscription cancellation failed");
+               toast.success("Subscription cancelled successfully");
+               queryClient.invalidateQueries();
                window.location.reload();
           } finally {
                setIsProcessing(false);

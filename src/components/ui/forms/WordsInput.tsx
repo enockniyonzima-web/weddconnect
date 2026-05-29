@@ -34,6 +34,22 @@ export const WordsInput = ({ words, onChange, type, options, label, icon, name }
           }
      };
 
+     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+          const pasted = e.clipboardData.getData("text");
+          // Split by commas, newlines, semicolons, or tabs
+          const items = pasted.split(/[,;\n\t]+/).map(s => s.trim()).filter(Boolean);
+          if (items.length > 1) {
+               e.preventDefault();
+               const unique = items.filter(item => !values.includes(item));
+               if (unique.length > 0) {
+                    const newValues = [...values, ...unique];
+                    setValues(newValues);
+                    onChange(newValues);
+               }
+               setInputValue("");
+          }
+     };
+
      const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           const selected = e.target.value;
           if (selected && !values.includes(selected)) {
@@ -55,10 +71,10 @@ export const WordsInput = ({ words, onChange, type, options, label, icon, name }
                <span className="text-sm font-semibold text-slate-700">{label}</span>
                <div className="w-full flex flex-wrap gap-2">
                     {
-                         values.length === 0 ? <p className="text-sm text-gray-500">No {name} added</p> :
+                         values.length === 0 ? <p className="text-sm text-gray-400">No {name} added</p> :
                          values.map((word, index) => 
-                              <div key={index} className="flex items-center gap-1 py-1 px-2 rounded-lg bg-gray-100">
-                                   <span className="text-gray-600 font-medium text-xs">{word}</span>
+                              <div key={index} className="flex items-center gap-1 py-1 px-2 rounded-lg bg-gray-950">
+                                   <span className="text-gray-300 font-medium text-xs">{word}</span>
                                    <button aria-label="remove" className="text-red-400 cursor-pointer" type="button" onClick={() => handleRemoveWord(word)}><X className="w-4 h-4" /></button>
                               </div>
                          )
@@ -78,8 +94,9 @@ export const WordsInput = ({ words, onChange, type, options, label, icon, name }
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         onKeyPress={handleKeyPress}
+                                        onPaste={handlePaste}
                                         placeholder={`Add ${name}`}
-                                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${icon ? 'pl-10' : ''}`}
+                                        className={`w-full px-4 py-2 bg-gray-900 text-gray-200 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${icon ? 'pl-10' : ''}`}
                                    />
                               </div>
                               <button
@@ -94,7 +111,7 @@ export const WordsInput = ({ words, onChange, type, options, label, icon, name }
                          <select
                               onChange={handleSelectChange}
                               aria-label={label}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-4 py-2 border border-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                          >
                               <option value="">Select {name}</option>
                               {options?.map((option, index) => (

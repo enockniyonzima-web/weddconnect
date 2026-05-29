@@ -9,7 +9,7 @@ export const AdminClientSelect= {
                transactions: {select: {proof:true,amount:true, createdAt:true, id:true, payNumber:true, transactionMethod:true}, where: {status: "pending"},take:1, orderBy:{createdAt:"desc"}},
                expiryAt:true,
                updatedAt:true,
-               subscription :{select:{name:true}}
+               subscription :{select:{name:true, id:true, price:true, duration:true, durationUnit:true}}
           },
      }
 } satisfies Prisma.ClientSelect;

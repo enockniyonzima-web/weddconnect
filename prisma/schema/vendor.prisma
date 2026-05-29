@@ -1,0 +1,26 @@
+model Vendor {
+     id       Int             @id @default(autoincrement())
+     name     String
+     status   Boolean
+     userId   String          @unique @db.Uuid
+     posts    Post[]
+     user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+     contacts VendorContact[]
+}
+
+model ContactType {
+     id          Int             @id @default(autoincrement())
+     name        String
+     type        String
+     description String
+     contacts    VendorContact[]
+}
+
+model VendorContact {
+     id            Int         @id @default(autoincrement())
+     value         String
+     vendorId      Int
+     contactTypeId Int
+     contactType   ContactType @relation(fields: [contactTypeId], references: [id], onDelete: Cascade)
+     vendor        Vendor      @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}

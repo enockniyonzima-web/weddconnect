@@ -1,0 +1,53 @@
+model Client {
+     id           Int                 @id @default(autoincrement())
+     phone        String
+     userId       String              @unique @db.Uuid
+     name         String
+     user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+     subscription ClientSubscription?
+     likedPosts   PostLike[]
+     reviews      PostReview[]
+}
+
+model Subscription {
+     id                  Int                  @id @default(autoincrement())
+     name                String               @unique
+     price               Int
+     currency            String @default("USD")
+     duration            Int @default(0)
+     durationUnit        String @default("month")
+     benefits            String[] @default([])
+     isActive            Boolean              @default(true)
+     description         String
+     clientSubscriptions ClientSubscription[]
+}
+
+model ClientSubscription {
+     id             Int           @id @default(autoincrement())
+     createdAt      DateTime @default(now())
+     updatedAt      DateTime @updatedAt
+     expiryAt       DateTime?
+     clientId       Int           @unique
+     subscriptionId Int
+     client         Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+     subscription   Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+     transactions   Transaction[]
+}
+
+model Transaction {
+     id                   Int                @id @default(autoincrement())
+     price                Int
+     quantity             Int
+     amount               Int
+     proof                String             @default("")
+     createdAt            DateTime       @default(now())
+     updatedAt            DateTime      @updatedAt
+     status               String
+     verificationCode     Int @default(0)
+     clientSubscriptionId Int
+     payNumber            String
+     transactionMethod    String
+     clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id], onDelete: Cascade)
+}
+
+

@@ -1,0 +1,15 @@
+model User {
+     id        String    @id @default(uuid()) @db.Uuid
+     email     String    @unique
+     password  String
+     image     String
+     status    Boolean   @default(true)
+     createdAt DateTime @default(now())
+     type      String
+     accounts  Account[]
+     admin     Admin?
+     client    Client?
+     vendor    Vendor?
+
+     blogComments BlogComment[]
+}
