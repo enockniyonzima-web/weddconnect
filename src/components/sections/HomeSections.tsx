@@ -72,7 +72,7 @@ export function HeroSection () {
 
                     <motion.h1
                          variants={fadeUp} initial="hidden" animate="show" custom={1}
-                         className="text-2xl md:text-6xl lg:text-4xl font-extrabold text-white leading-[1.6] tracking-tight"
+                         className="text-2xl md:text-6xl lg:text-4xl font-extrabold text-white tracking-normal"
                     >    
 
                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-100 to-gray-200">
@@ -83,9 +83,9 @@ export function HeroSection () {
 
                     <motion.p
                          variants={fadeUp} initial="hidden" animate="show" custom={2}
-                         className="text-gray-300 text-base md:text-lg max-w-xl leading-relaxed"
+                         className="text-white/80 text-base md:text-lg font-semibold max-w-xl leading-relaxed text-center"
                     >
-                         From Only <span className="text-white font-semibold">$7</span> - Access all wedding venues &amp; top verified vendors across Rwanda.
+                         From only <span className="text-yellow-400 font-black text-2xl md:text-3xl mx-1">$10</span> — discover Rwanda&apos;s most trusted wedding venues &amp; vendors.
                     </motion.p>
 
                     <motion.div variants={fadeUp} initial="hidden" animate="show" custom={3}>
