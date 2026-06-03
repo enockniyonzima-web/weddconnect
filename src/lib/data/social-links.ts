@@ -37,7 +37,7 @@ export const SocialLinks: ISocialLink[] = [
     handle: "Weddconnect",
     description: "Get more information about how we can help you plan your wedding.",
     icon: FaWhatsapp,
-    href: "https://wa.me/250790860446",
+    href: "https://wa.me/+250788399021?text=👋%20Hi%20WeddConnect!%20I'd%20like%20to%20learn%20more%20about%20your%20services.%20Could%20you%20help%20me%20with%20pricing%20and%20vendor%20options?",
     color: "hover:border-gray-400/60 hover:bg-gray-400/5",
     iconColor: "text-gray-300",
   },

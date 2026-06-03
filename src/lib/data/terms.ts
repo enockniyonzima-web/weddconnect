@@ -2,7 +2,7 @@ export const TermsAndConditions = {
      lastUpdated: "May 12, 2026",
      contact: {
           email: "info@weddconnect.com",
-          phone: "+250 790 860 446",
+          phone: "+250788399021",
      },
      sections: [
           {
@@ -173,7 +173,7 @@ export const TermsAndConditions = {
                intro: "If you have questions about these Terms and Conditions, please contact us:",
                paragraphs: [
                     "Email: info@weddconnect.com",
-                    "Phone: +250 790 860 446",
+                    "Phone: +250788399021",
                     "We aim to respond to all enquiries within 3 business days.",
                ],
                type: "list",

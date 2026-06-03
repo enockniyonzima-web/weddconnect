@@ -2,7 +2,7 @@ export const PrivacyPolicyData = {
      lastUpdated: "May 12, 2026",
      contact: {
           email: "info@weddconnect.com",
-          phone: "+250 790 860 446",
+          phone: "+250788399021",
      },
      sections: [
           {
@@ -131,7 +131,7 @@ export const PrivacyPolicyData = {
                intro: "For any questions, concerns, or requests related to this Privacy Policy or your personal data, please contact our Data Protection team:",
                paragraphs: [
                     "Email: info@weddconnect.com",
-                    "Phone: +250 790 860 446",
+                    "Phone: +250788399021",
                     "We aim to respond to all privacy-related inquiries within 5 business days.",
                ],
                type: "list",

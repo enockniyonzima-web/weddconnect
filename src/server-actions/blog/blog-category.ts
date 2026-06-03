@@ -68,7 +68,7 @@ export const countBlogCategorys = cache(async (search?: Prisma.BlogCategoryWhere
           const res = await prisma.blogCategory.count({where: search});
           return res;
      } catch (error) {
-          console.log("Error counting BlogCategorys: ", error);
+          console.log("Error counting Blog Categories: ", error);
           return 0;
      }
 });
