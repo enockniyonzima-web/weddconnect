@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
      title: "Login",
-     description: "Login to your Tiracar account to enjoy the best of it that Tiracar provides.",
+     description: "Login to your Weddconnect account to enjoy the best of it.",
 };
 
 export default  async function LoginLayout({
