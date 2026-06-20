@@ -201,7 +201,7 @@ export const PostForm = ({
           setTitle(post.title ?? "");
           setDescription(post.description ?? "");
           setLocation(post.location ?? "Kigali");
-          setSortOrder(post.sortOrder ?? 100);
+          setSortOrder(post.sortOrder);
           setPriceMin(post.price?.min?.toString() ?? "0");
           setPriceMax(post.price?.max?.toString() ?? "0");
           setPriceCurrency(post.price?.currency ?? "RWF");
@@ -428,7 +428,7 @@ export const PostForm = ({
 
                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                               <TextInput name="location" label="Location" placeholder="Kigali" defaultValue={location} action={(v) => setLocation(String(v))} />
-                              <NumberInput name="sortOrder" label="Sort Order" placeholder="100" defaultValue={post?.sortOrder ?? sortOrder} action={(v) => setSortOrder(Number(v))} />
+                              <NumberInput name="sortOrder" label="Sort Order" placeholder="100" defaultValue={sortOrder} action={(v) => setSortOrder(Number(v))} />
                          </div>
                          <div className="flex justify-end pt-1">
                               <button

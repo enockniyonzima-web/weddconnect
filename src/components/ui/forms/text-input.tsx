@@ -305,6 +305,7 @@ export const NumberInput = ({
   required,
   action,
   className,
+  defaultValue,
   ...props
 }: {
   label?: string;
@@ -323,6 +324,7 @@ export const NumberInput = ({
         inputSize={size}
         required={required}
         hasLeftIcon
+        defaultValue={defaultValue}
         className={cn("[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none", className)}
         onChange={(e: ChangeEvent<HTMLInputElement>) => action?.(e.target.value)}
         {...props}
