@@ -10,9 +10,9 @@ import { TogglePostStatusBtn } from "@/components/buttons/admin/TogglePostStatus
 import { PostFormBtn } from "@/components/forms/PostForm";
 
 const STATUS_STYLE: Record<string, string> = {
-     published:   "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-     pending:     "bg-gray-500/60 text-amber-400 border-amber-500/20",
-     unpublished: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+     published:   "bg-emerald-200/60 text-emerald-800 border-emerald-500/20",
+     pending:     "bg-gray-500/80 text-amber-800 border-amber-500/20",
+     unpublished: "bg-gray-200/60 text-gray-800 border-gray-500/20",
 };
 
 export const AdminPostCard = ({ post }: { post: TAdminPostCard }) => {
@@ -31,13 +31,18 @@ export const AdminPostCard = ({ post }: { post: TAdminPostCard }) => {
                {/* Image slider */}
                <div className="relative w-full">
                     <ImageSlider images={post.images} />
-                    {/* Status badge */}
-                    <span className={cn(
-                         "absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border",
-                         STATUS_STYLE[status] ?? STATUS_STYLE.pending
-                    )}>
-                         {status}
-                    </span>
+                    <div className="absolute top-2 left-2 z-10 flex items-center gap-2">
+                         {/* Rank Order */}
+                         <span className="text-orange-800 bg-orange-300/80 text-sm p-1 px-2 font-semibold rounded-full border border-orange-500">{post.sortOrder}</span>
+                         {/* Status badge */}
+                         <span className={cn(
+                              "px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border",
+                              STATUS_STYLE[status] ?? STATUS_STYLE.pending
+                         )}>
+                              {status}
+                         </span>
+                    </div>
+                    
                </div>
 
                {/* Body */}

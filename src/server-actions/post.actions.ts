@@ -48,7 +48,7 @@ export async function deletePostFeatures (postId: number) {
 
 export const fetchPosts = cache(async <T extends Prisma.PostSelect>(
           selectType: T, search?: Prisma.PostWhereInput, take:number = 20, skip:number = 0,
-          orderBy: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]  = { createdAt: 'desc' }
+          orderBy: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]  = { sortOrder: 'asc' }
      ):Promise<Prisma.PostGetPayload<{select: T}>[]> => {
      try {
           const res = await prisma.post.findMany({where: search, take, skip, select: selectType, orderBy});
