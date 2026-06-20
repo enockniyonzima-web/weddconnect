@@ -153,7 +153,7 @@ export const PostForm = ({
      const [title, setTitle] = useState("");
      const [description, setDescription] = useState("");
      const [location, setLocation] = useState("Kigali");
-     const [sortOrder, setSortOrder] = useState("100");
+     const [sortOrder, setSortOrder] = useState(100);
      const [priceMin, setPriceMin] = useState("0");
      const [priceMax, setPriceMax] = useState("0");
      const [priceCurrency, setPriceCurrency] = useState("RWF");
@@ -166,19 +166,19 @@ export const PostForm = ({
 
      // queries
      const { data: post, isLoading: fetchingPost } = useQuery({
-          queryKey: ["post-form", postId],
+          queryKey: ["post-form-data", postId],
           queryFn: () => (postId ? fetchPostById(postId, SPostEdit) : null),
      });
 
      const { data: categories, isLoading: fetchingCategories } = useQuery({
           queryKey: ["post-form-categories"],
-          queryFn: () => fetchCategories({ id: true, name: true }, { status: true }, 50, 0, { name: "asc" }),
+          queryFn: () => fetchCategories({ id: true, name: true }, { status: true }, 100, 0, { name: "asc" }),
           enabled: !propCategoryId,
      });
 
      const { data: vendors, isLoading: fetchingVendors } = useQuery({
-          queryKey: ["post-form-vendors"],
-          queryFn: () => fetchVendors({ id: true, name: true }, { status: true }, 100, 0, { name: "asc" }),
+          queryKey: ["post-form-vendors-list"],
+          queryFn: () => fetchVendors({ id: true, name: true }, { status: true }, 500, 0, { name: "asc" }),
      });
 
      const activeCategoryId = selectedCategoryId;
@@ -187,9 +187,9 @@ export const PostForm = ({
           queryFn: () =>
                activeCategoryId
                     ? fetchCategoryFeatures(
-                           { ...SCategoryFeature, values: true } as unknown as typeof SCategoryFeature,
-                           { categories: { some: { id: activeCategoryId } } },
-                           50
+                         { ...SCategoryFeature, values: true } as unknown as typeof SCategoryFeature,
+                         { categories: { some: { id: activeCategoryId } } },
+                         50
                       )
                     : [],
           enabled: !!activeCategoryId,
@@ -201,7 +201,7 @@ export const PostForm = ({
           setTitle(post.title ?? "");
           setDescription(post.description ?? "");
           setLocation(post.location ?? "Kigali");
-          setSortOrder(post.sortOrder?.toString() ?? "100");
+          setSortOrder(post.sortOrder ?? 100);
           setPriceMin(post.price?.min?.toString() ?? "0");
           setPriceMax(post.price?.max?.toString() ?? "0");
           setPriceCurrency(post.price?.currency ?? "RWF");
@@ -345,7 +345,7 @@ export const PostForm = ({
                     }
 
                     onComplete();
-                    await queryClient.invalidateQueries();
+                    queryClient.invalidateQueries();
                     return { message: post ? "Post updated successfully" : "Post created successfully" };
                })(),
                {
@@ -428,7 +428,7 @@ export const PostForm = ({
 
                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                               <TextInput name="location" label="Location" placeholder="Kigali" defaultValue={location} action={(v) => setLocation(String(v))} />
-                              <NumberInput name="sortOrder" label="Sort Order" placeholder="100" defaultValue={sortOrder} action={(v) => setSortOrder(String(v))} />
+                              <NumberInput name="sortOrder" label="Sort Order" placeholder="100" defaultValue={post?.sortOrder ?? sortOrder} action={(v) => setSortOrder(Number(v))} />
                          </div>
                          <div className="flex justify-end pt-1">
                               <button

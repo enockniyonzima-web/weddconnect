@@ -10,7 +10,7 @@ import PostsContainer from "./PostsContainer";
 import { ArrowLeft, LayoutGrid } from "lucide-react";
 import { useState, useMemo } from "react";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 24;
 
 export default function CategoryPostContainer({
      categoryId,
@@ -36,7 +36,7 @@ export default function CategoryPostContainer({
      }), [categoryId, filters]);
 
      const { data: posts, isLoading } = useQuery({
-          queryKey: ["posts", categoryId, filters, page],
+          queryKey: ["posts", categoryId, filters, page, PAGE_SIZE],
           queryFn: () => fetchPosts(SPost, where, PAGE_SIZE, page * PAGE_SIZE),
      });
 

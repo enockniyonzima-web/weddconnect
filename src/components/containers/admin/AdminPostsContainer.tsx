@@ -22,7 +22,7 @@ export const AdminPostsContainer = () => {
      const [categoryId, setCategoryId] = useState<number | null>(null);
      const [page, setPage] = useState(1);
      const [search, setSearch] = useState("");
-     const perPage = 20;
+     const perPage = 24;
 
      const selectedCategory = categoriesData?.find((c) => c.id === categoryId) ?? null;
 
@@ -31,7 +31,7 @@ export const AdminPostsContainer = () => {
           : undefined;
 
      const { data: postData, isLoading: fetchingPosts } = useQuery({
-          queryKey: ["posts", categoryId, page, search],
+          queryKey: ["posts", categoryId, page, perPage, search],
           queryFn: () => categoryId ? fetchPosts(SAdminPostCard, where, perPage, (page - 1) * perPage) : undefined,
           enabled: !!categoryId,
      });
@@ -133,7 +133,7 @@ export const AdminPostsContainer = () => {
                               <EmptyPosts />
                          ) : (
                               <>
-                                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
                                         {posts.map((post) => (
                                              <AdminPostCard key={post.id} post={post} />
                                         ))}
