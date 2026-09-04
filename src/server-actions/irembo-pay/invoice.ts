@@ -31,6 +31,7 @@ export async function createSubscriptionInvoice(subscriptionId: number, phone?: 
                paymentAccountIdentifier: IPAY_PAYMENT_ACCOUNT_IDENTIFIER,
                paymentItems: [{ code: plan.iremboProductCode, quantity: 1, unitAmount: rwfAmount }],
                description: `${plan.name} subscription`,
+               expiryAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
                language: "EN",
                customer: { email: user.email, name: client.name, phoneNumber: client.phone },
           });
