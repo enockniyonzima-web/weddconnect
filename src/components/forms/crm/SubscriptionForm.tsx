@@ -35,6 +35,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
           const description = data.get("description")?.toString().trim() || "";
           const duration = parseInt(data.get("duration")?.toString() || "0");
           const durationUnit = data.get("durationUnit")?.toString().trim() as TDurationUnit;
+          const iremboProductCode = data.get("iremboProductCode")?.toString().trim() || undefined;
 
           if(name && name.length < 2) return {message: "Name must be at least 2 characters"};
           if(price && price <= 0) return {message: "Price must be greater than 0"};
@@ -42,7 +43,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
           if(duration && duration <= 0) return {message: "Duration must be greater than 0"};
           if(!subscription) {
                const newSub  = await createSubscription({
-                    name, price, currency, description, benefits, duration, durationUnit, isActive
+                    name, price, currency, description, benefits, duration, durationUnit, isActive, iremboProductCode
                })
                if(!newSub) throw new Error("Failed to create subscription");
                onComplete();
@@ -57,7 +58,8 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
                benefits,
                ...(duration && {duration}),
                ...(durationUnit && {durationUnit}),
-               isActive
+               isActive,
+               iremboProductCode
           })
           if(!updates) throw new Error("Failed to update subscription");
           onComplete();
@@ -102,6 +104,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
                          <SelectInput name="durationUnit" label="Duration Unit" defaultValue={subscription?.durationUnit} placeholder="Select duration unit" required={subscription ? false : true} values={DurationUnits.map(v => ({ label: v, value: v }))}  />
                     </div>
                     <TextAreaInput name="description" label="Description" defaultValue={subscription?.description} placeholder="Enter subscription description" required={subscription ? false : true}  />
+                    <TextInput name="iremboProductCode" label="IremboPay Product Code" defaultValue={subscription?.iremboProductCode ?? undefined} placeholder="Product code from the IremboPay portal" />
                     <WordsInput name="benefits" label="Benefits" words={benefits} onChange={setBenefits} type="text" />
                     <CheckInputGroup name="isActive" label="Is Active" checked={isActive} onChange={setIsActive} required={false}/>
                </MainForm>

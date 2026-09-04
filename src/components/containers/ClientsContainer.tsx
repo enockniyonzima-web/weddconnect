@@ -14,6 +14,7 @@ import { TSubscription } from "@/common/Entities";
 import { toast } from "sonner";
 import { TDurationUnit } from "@/types/common";
 import queryClient from "@/lib/queryClient";
+import { checkInvoiceStatus } from "@/server-actions/irembo-pay/invoice";
 
 export const ClientsContainer = ({clients}:{clients: TAdminClientSelect[]}) => {
      if(clients.length === 0) return (
@@ -157,6 +158,22 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           }
      }
 
+     const handleVerifyPayment = async (invoiceNumber: string) => {
+          setIsProcessing(true);
+          try {
+               const invoice = await checkInvoiceStatus(invoiceNumber);
+               if (invoice?.paymentStatus === "PAID") {
+                    toast.success("Payment verified with IremboPay — subscription activated");
+                    queryClient.invalidateQueries();
+                    window.location.reload();
+               } else {
+                    toast.error(`IremboPay status: ${invoice?.paymentStatus ?? "not found"}`);
+               }
+          } finally {
+               setIsProcessing(false);
+          }
+     }
+
      const handleRejectSubscription = async () => {
           if (!window.confirm(`Reject ${client.name}'s subscription request? This action cannot be undone.`)) return;
           
@@ -184,9 +201,6 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           try {
                const res = await updateClientSubscription(client.subscription?.id ?? -1, {
                     expiryAt: null,
-                    transactions: {
-                         update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Cancelled"}}
-                    }
                })
                if(!res) return toast.error("Subscription cancellation failed");
                toast.success("Subscription cancelled successfully");
@@ -537,10 +551,27 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                                             <div key={transaction.id} className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
                                                                  <div className="flex items-start justify-between mb-3">
                                                                       <span className="font-semibold text-white">Transaction #{transaction.id}</span>
-                                                                      <span className="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-xs font-semibold">
-                                                                           Pending
-                                                                      </span>
+                                                                      <div className="flex items-center gap-2">
+                                                                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${transaction.provider === "IREMBO_PAY" ? "bg-blue-500/10 text-blue-400" : "bg-gray-500/10 text-gray-400"}`}>
+                                                                                {transaction.provider === "IREMBO_PAY" ? "IremboPay" : "Manual"}
+                                                                           </span>
+                                                                           <span className="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-xs font-semibold">
+                                                                                Pending
+                                                                           </span>
+                                                                      </div>
                                                                  </div>
+                                                                 {transaction.provider === "IREMBO_PAY" && transaction.invoiceNumber && (
+                                                                      <div className="mb-3 flex items-center justify-between gap-2 text-xs">
+                                                                           <span className="text-gray-400">Invoice: <span className="text-white font-medium">{transaction.invoiceNumber}</span></span>
+                                                                           <button
+                                                                                onClick={() => handleVerifyPayment(transaction.invoiceNumber!)}
+                                                                                disabled={isProcessing}
+                                                                                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                           >
+                                                                                Verify with IremboPay
+                                                                           </button>
+                                                                      </div>
+                                                                 )}
                                                                  <div className="grid grid-cols-2 gap-3 text-sm">
                                                                       <div>
                                                                            <p className="text-gray-400">Amount</p>

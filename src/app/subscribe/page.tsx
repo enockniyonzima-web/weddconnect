@@ -3,7 +3,7 @@ import { fetchSubscriptions } from "@/server-actions/subscription.actions";
 import { getSessionUser } from "@/server-actions/user.actions";
 import { SSubscriptionCard } from "@/select-types/subscription";
 import { isDateLaterThanToday } from "@/util/DateFunctions";
-import { CheckCircle, Phone, Sparkles } from "lucide-react";
+import { Phone, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ClientSubscriptionViewBtn } from "@/components/views/crm/ClientSubscriptionView";
@@ -23,14 +23,6 @@ export default async function SubscribePage() {
      // Already verified active — redirect to posts
      if (isActive) return redirect("/posts");
 
-     // Pending transaction today
-     const hasPendingToday = (() => {
-          if (!clientSub?.transactions?.[0]) return false;
-          const tx = new Date(clientSub.transactions[0].createdAt);
-          const now = new Date();
-          return tx.getDate() === now.getDate() && tx.getMonth() === now.getMonth() && tx.getFullYear() === now.getFullYear();
-     })();
-
      return (
           <ClientPage>
                <div className="min-h-screen bg-black px-4 py-20 md:py-28">
@@ -44,45 +36,18 @@ export default async function SubscribePage() {
                               <p className="text-gray-400 text-base max-w-md mx-auto">Subscribe to connect with Rwanda&apos;s best wedding photographers, venues, planners and more.</p>
                          </div>
 
-                         {/* Pending notice */}
-                         {hasPendingToday && (
-                              <div className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-5 flex flex-col gap-3">
-                                   <div className="flex items-center gap-2.5">
-                                        <CheckCircle size={20} className="text-blue-400 shrink-0" />
-                                        <div>
-                                             <h3 className="text-sm font-semibold text-white">Payment Under Review</h3>
-                                             <p className="text-xs text-gray-400 mt-0.5">Your payment has been recorded and is being verified. This usually takes 5–30 minutes.</p>
-                                        </div>
-                                   </div>
-                                   <div className="grid grid-cols-2 gap-2 mt-1">
-                                        <Link href={`tel:${ContactInfo[0].phone}`} className="flex items-center justify-center gap-1.5 py-2.5 rounded-full bg-blue-600/80 text-white text-sm font-medium hover:bg-blue-600 transition-colors">
-                                             <Phone size={14} /> Call Us
-                                        </Link>
-                                        <Link href={`https://wa.me/${ContactInfo[0].phone}`} target="_blank" className="flex items-center justify-center gap-1.5 py-2.5 rounded-full bg-green-600/80 text-white text-sm font-medium hover:bg-green-600 transition-colors">
-                                             WhatsApp
-                                        </Link>
-                                   </div>
-                              </div>
-                         )}
-
                          {/* Plans grid */}
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                               {subscriptions.sort((a, b) => a.price - b.price).map((plan, i) => {
-                                   const isCurrentPlan = clientSub?.subscription?.id === plan.id;
+                                   const isExpiredPlan = clientSub?.subscription?.id === plan.id;
                                    const isPopular = i === 1;
-                                   const cta = isCurrentPlan ? (
-                                        <div className="w-full py-2.5 text-center rounded-full text-sm font-medium text-gray-500 bg-white/5 border border-white/10 cursor-not-allowed">Current Plan</div>
-                                   ) : hasPendingToday ? (
-                                        <div className="w-full py-2.5 text-center rounded-full text-sm font-medium text-gray-500 bg-white/5 border border-white/10 cursor-not-allowed">Pending Verification</div>
-                                   ) : (
-                                        <ClientSubscriptionViewBtn subscription={plan} showBtnName btnSize="md" />
-                                   );
+                                   const cta = <ClientSubscriptionViewBtn subscription={plan} showBtnName btnSize="md" btnTitle={isExpiredPlan ? "Renew Plan" : "Choose Plan"} />;
                                    return (
                                         <SubscriptionPlanCard
                                              key={plan.id}
                                              plan={plan}
                                              isPopular={isPopular}
-                                             isCurrent={isCurrentPlan}
+                                             isExpired={isExpiredPlan}
                                              showRwf
                                              cta={cta}
                                         />

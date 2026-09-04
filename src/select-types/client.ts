@@ -12,7 +12,7 @@ export const SClientProfile = {
                expiryAt: true,
                subscription: { select: { id: true, name: true, price: true, description: true, currency:true } },
                transactions: {
-                    select: { id: true, amount: true, status: true, createdAt: true, transactionMethod: true },
+                    select: { id: true, amount: true, status: true, createdAt: true, transactionMethod: true, provider: true, invoiceNumber: true, transactionStatus: true },
                     orderBy: { createdAt: "desc" as const },
                     take: 5,
                },

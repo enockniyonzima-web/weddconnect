@@ -1,10 +1,10 @@
 "use client";
 
 import { TSessionUser } from '@/common/Entities';
-import Image from '@/components/ui/Image';
 import { LogoutButton } from '@/components/forms/LogoutForm';
 import Link from 'next/link';
 import { LayoutDashboard, User } from 'lucide-react';
+import Image from 'next/image';
 
 const defaultIcon = "https://weddconnect-s3.s3.eu-north-1.amazonaws.com/production/account.png";
 

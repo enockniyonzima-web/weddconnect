@@ -24,6 +24,7 @@ export const SSubscriptionEdit = {
      duration: true,
      durationUnit: true,
      isActive: true,
+     iremboProductCode: true,
 } satisfies Prisma.SubscriptionSelect;
 export type TSubscriptionEdit = Prisma.SubscriptionGetPayload<{ select: typeof SSubscriptionEdit }>;
 

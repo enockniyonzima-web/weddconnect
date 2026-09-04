@@ -6,7 +6,7 @@ export const AdminClientSelect= {
      subscription:{
           select:{
                id:true,
-               transactions: {select: {proof:true,amount:true, createdAt:true, id:true, payNumber:true, transactionMethod:true}, where: {status: "pending"},take:1, orderBy:{createdAt:"desc"}},
+               transactions: {select: {proof:true,amount:true, createdAt:true, id:true, payNumber:true, transactionMethod:true, provider:true, invoiceNumber:true}, where: {status: "pending"},take:1, orderBy:{createdAt:"desc"}},
                expiryAt:true,
                updatedAt:true,
                subscription :{select:{name:true, id:true, price:true, duration:true, durationUnit:true}}
