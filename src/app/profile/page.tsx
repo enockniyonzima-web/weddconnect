@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   User, Phone, Mail, Crown, Calendar, Clock, TrendingUp, ArrowRight, ShieldCheck, AlertCircle,
 } from "lucide-react";
+import { RetryPaymentBtn } from "@/components/views/crm/RetryPaymentBtn";
 
 export default async function ProfilePage() {
   const { user } = await getSessionUser();
@@ -78,7 +79,11 @@ export default async function ProfilePage() {
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-white flex items-center gap-2"><Crown size={14} className="text-blue-400" /> Current Plan</h3>
-            <Link href="/profile/subscription" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">Manage <ArrowRight size={11} /></Link>
+            {expired ? (
+              <Link href="/profile/subscription" className="text-xs px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold flex items-center gap-1">Renew Plan <ArrowRight size={11} /></Link>
+            ) : (
+              <Link href="/profile/subscription" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">Manage <ArrowRight size={11} /></Link>
+            )}
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex flex-col gap-1">
@@ -142,6 +147,9 @@ export default async function ProfilePage() {
                     {tx.status}
                   </span>
                   <span className="text-sm font-semibold text-white">Rwf {tx.amount.toLocaleString()}</span>
+                  {tx.provider === "IREMBO_PAY" && tx.transactionStatus === "PENDING" && tx.invoiceNumber && (
+                    <RetryPaymentBtn invoiceNumber={tx.invoiceNumber} />
+                  )}
                 </div>
               </div>
             ))}

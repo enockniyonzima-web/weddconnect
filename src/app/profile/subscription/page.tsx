@@ -91,14 +91,16 @@ export default async function ProfileSubscriptionPage() {
         <h2 className="text-base font-bold text-white">Available Plans</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {allPlans.map((plan, i) => {
-            const isCurrent = plan.id === activePlanId;
+            const isSamePlan = plan.id === activePlanId;
+            const isCurrent = isSamePlan && !expired;
+            const isExpiredPlan = isSamePlan && expired;
             const isPopular = i === 1;
             const cta = (
               <Link
                 href={`/subscribe?plan=${plan.id}`}
                 className="w-full flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors"
               >
-                {sub ? "Switch plan" : "Get started"}
+                {isExpiredPlan ? "Renew plan" : sub ? "Switch plan" : "Get started"}
               </Link>
             );
             return (
@@ -107,6 +109,7 @@ export default async function ProfileSubscriptionPage() {
                 plan={plan}
                 isPopular={isPopular}
                 isCurrent={isCurrent}
+                isExpired={isExpiredPlan}
                 cta={cta}
               />
             );

@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  allowedDevOrigins: ['educator-degrease-rocket.ngrok-free.dev'],
   experimental: {
     serverActions: {
       bodySizeLimit: '100mb',

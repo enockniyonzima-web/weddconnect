@@ -1,30 +1,34 @@
 import { TSubscriptionCard } from "@/select-types/subscription";
 import { formatPrice } from "@/util/stringFuncs";
-import { Check, CheckCircle, ShieldCheck, Zap } from "lucide-react";
+import { AlertCircle, Check, CheckCircle, ShieldCheck, Zap } from "lucide-react";
 import { ReactNode } from "react";
 
 interface SubscriptionPlanCardProps {
      plan: TSubscriptionCard;
      isPopular?: boolean;
      isCurrent?: boolean;
+     /** Same plan as the client's subscription, but it has expired — shows a renew CTA instead of blocking it */
+     isExpired?: boolean;
      /** Slot for the CTA — button, link, or disabled state element */
      cta?: ReactNode;
      /** Show price in RWF equivalent below USD */
      showRwf?: boolean;
 }
 
-export function SubscriptionPlanCard({ plan, isPopular, isCurrent, cta, showRwf }: SubscriptionPlanCardProps) {
+export function SubscriptionPlanCard({ plan, isPopular, isCurrent, isExpired, cta, showRwf }: SubscriptionPlanCardProps) {
      return (
           <div
                className={`relative rounded-2xl border p-6 flex flex-col gap-4 transition-all ${
                     isCurrent
                          ? "bg-blue-950/30 border-blue-600/50 ring-1 ring-blue-600/30"
+                         : isExpired
+                         ? "bg-red-950/20 border-red-800/40"
                          : isPopular
                          ? "bg-gray-900 border-gray-700 hover:border-blue-600/40"
                          : "bg-gray-900 border-gray-800 hover:border-gray-700"
                }`}
           >
-               {isPopular && !isCurrent && (
+               {isPopular && !isCurrent && !isExpired && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white flex items-center gap-1">
                          <Zap size={10} /> Popular
                     </span>
@@ -32,6 +36,11 @@ export function SubscriptionPlanCard({ plan, isPopular, isCurrent, cta, showRwf 
                {isCurrent && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full bg-green-600 text-white flex items-center gap-1">
                          <Check size={10} /> Current
+                    </span>
+               )}
+               {isExpired && (
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full bg-red-600 text-white flex items-center gap-1">
+                         <AlertCircle size={10} /> Expired
                     </span>
                )}
 
@@ -46,9 +55,9 @@ export function SubscriptionPlanCard({ plan, isPopular, isCurrent, cta, showRwf 
 
                {/* Price */}
                <div>
-                    <p className="text-2xl font-bold text-white">${formatPrice(plan.price)}</p>
+                    <p className="text-2xl font-bold text-white">{plan.currency}{formatPrice(plan.price)}</p>
                     {showRwf && (
-                         <p className="text-xs text-gray-500">~Rwf {formatPrice(plan.price * 1450)}</p>
+                         <p className="text-xs text-gray-500">~USD {formatPrice(plan.price / 1500)}</p>
                     )}
                </div>
 
@@ -70,7 +79,10 @@ export function SubscriptionPlanCard({ plan, isPopular, isCurrent, cta, showRwf 
                          <ShieldCheck size={13} /> Your current plan
                     </div>
                ) : (
-                    cta ?? null
+                    <>
+                         {isExpired && <p className="text-xs text-red-400">Your subscription to this plan has expired.</p>}
+                         {cta ?? null}
+                    </>
                )}
           </div>
      );

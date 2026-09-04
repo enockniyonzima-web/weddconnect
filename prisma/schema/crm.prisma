@@ -19,6 +19,7 @@ model Subscription {
      benefits            String[] @default([])
      isActive            Boolean              @default(true)
      description         String
+     iremboProductCode     String?
      clientSubscriptions ClientSubscription[]
 }
 
@@ -34,6 +35,20 @@ model ClientSubscription {
      transactions   Transaction[]
 }
 
+enum ETransactionProvider {
+     MANUAL
+     IREMBO_PAY
+}
+
+enum ETransactionStatus {
+     NONE
+     PENDING
+     PAID
+     PARTIALLY_PAID
+     FAILED
+     EXPIRED
+}
+
 model Transaction {
      id                   Int                @id @default(autoincrement())
      price                Int
@@ -47,6 +62,13 @@ model Transaction {
      clientSubscriptionId Int
      payNumber            String
      transactionMethod    String
+
+     // for irembo internal transaction id
+     invoiceNumber         String? @unique
+     paymentMethod         String?
+     provider            ETransactionProvider @default(MANUAL)
+     transactionStatus     ETransactionStatus @default(NONE)
+
      clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id], onDelete: Cascade)
 }
 
