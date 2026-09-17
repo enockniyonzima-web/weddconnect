@@ -12,12 +12,11 @@ declare global {
      }
 }
 
-const IPAY_WIDGET_SRC = process.env.NEXT_PUBLIC_IPAY_ENVIRONMENT === "production"
-     ? "https://dashboard.irembopay.com/assets/payment/inline.js"
-     : "https://dashboard.sandbox.irembopay.com/assets/payment/inline.js";
+const IPAY_WIDGET_SRC = process.env.NEXT_PUBLIC_IPAY_WIDGET_SRC || "";
 
 export function loadIremboScript(): Promise<void> {
      return new Promise((resolve, reject) => {
+          if (!IPAY_WIDGET_SRC) return reject(new Error("NEXT_PUBLIC_IPAY_WIDGET_SRC is not configured"));
           if (window.IremboPay) return resolve();
           const existing = document.getElementById("irembopay-inline-script");
           if (existing) {
