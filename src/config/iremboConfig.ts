@@ -20,17 +20,22 @@ function parseSignatureHeader(header: string): { t?: string; s?: string } {
 
 // Docs: HMAC_SHA256(secretKey, "<timestamp>#<rawBody>"), header is "t=<timestamp>, s=<signature>"
 export function verifyIremboSignature(rawBody: string, signatureHeader: string | null): boolean {
-     if (!signatureHeader) return false;
-     const { t: timestamp, s: signature } = parseSignatureHeader(signatureHeader);
-     if (!timestamp || !signature) return false;
+     try {
+          if (!signatureHeader) return false;
+          const { t: timestamp, s: signature } = parseSignatureHeader(signatureHeader);
+          if (!timestamp || !signature) return false;
 
-     const expected = crypto
-          .createHmac("sha256", process.env.IPAY_SECRET_KEY || "")
-          .update(`${timestamp}#${rawBody}`)
-          .digest("hex");
+          const expected = crypto
+               .createHmac("sha256", process.env.IPAY_SECRET_KEY || "")
+               .update(`${timestamp}#${rawBody}`)
+               .digest("hex");
 
-     const expectedBuf = Buffer.from(expected);
-     const signatureBuf = Buffer.from(signature);
-     if (expectedBuf.length !== signatureBuf.length) return false;
-     return crypto.timingSafeEqual(expectedBuf, signatureBuf);
+          const expectedBuf = Buffer.from(expected);
+          const signatureBuf = Buffer.from(signature);
+          if (expectedBuf.length !== signatureBuf.length) return false;
+          return crypto.timingSafeEqual(expectedBuf, signatureBuf);
+     } catch (error) {
+          console.error("IremboPay signature verification error:", error);
+          return false;
+     }
 }

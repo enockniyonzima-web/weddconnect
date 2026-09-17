@@ -4,15 +4,18 @@ import { reconcileInvoicePayment } from "@/server-actions/irembo-pay/invoice";
 import { IIremboPayWebhookPayload } from "@/types/irembo-pay";
 
 export async function POST(req: NextRequest) {
-     const rawBody = await req.text();
-     const signature = req.headers.get("irembopay-signature");
-
-     if (!verifyIremboSignature(rawBody, signature)) {
-          console.warn("IremboPay webhook: invalid signature");
-          return NextResponse.json({ message: "invalid signature" }, { status: 401 });
-     }
-
+     // Everything is inside this single try/catch — including signature verification — so any
+     // unexpected failure gets our own diagnostic log and a controlled response, instead of an
+     // opaque 500 that neither we nor IremboPay can act on.
      try {
+          const rawBody = await req.text();
+          const signature = req.headers.get("irembopay-signature");
+
+          if (!verifyIremboSignature(rawBody, signature)) {
+               console.warn("IremboPay webhook: invalid signature");
+               return NextResponse.json({ message: "invalid signature" }, { status: 401 });
+          }
+
           const payload: IIremboPayWebhookPayload = JSON.parse(rawBody);
           const { invoiceNumber, paymentStatus, paymentMethod } = payload.data;
 
