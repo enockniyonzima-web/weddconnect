@@ -4,11 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Headset, ChevronRight } from "lucide-react";
 import { ContactInfo } from "@/lib/data/contact-info";
-
-const buildWhatsAppUrl = (phone: string, message: string) => {
-  const clean = phone.replace(/\D/g, "");
-  return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
-};
+import { buildWhatsAppUrl } from "@/util/whatsapp";
 
 export const SupportButton = () => {
   const [open, setOpen] = useState(false);
