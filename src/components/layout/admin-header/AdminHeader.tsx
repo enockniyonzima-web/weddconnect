@@ -27,7 +27,7 @@ const DesktopViewLinks:{name:string, dest: string, icon: IconType}[]  = [
      {name: "Clients", dest:"clients", icon: BsPeople},
      {name: "Blogs", dest: "blog", icon: FcAdvertising},
      {name: "User Management", dest: "users", icon: FaUsersCog},
-     // {name: "Transactions", dest: 'transactions', icon: FaRegCreditCard}
+     {name: "Finance", dest: 'finance', icon: FaRegCreditCard}
 ]
 
 const AdminHeader = () => {

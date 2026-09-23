@@ -4,7 +4,7 @@
 import { getDate, getFutureDate } from "@/util/DateFunctions";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import { ENotificationType } from "@/common/CommonTypes";
-import { updateClientSubscription } from "@/server-actions/client-subscription.actions";
+import { approveManualTransaction } from "@/server-actions/client-subscription.actions";
 import { formatPrice } from "@/util/stringFuncs";
 import { useState } from "react";
 import { TAdminClientSelect } from "../select-types";
@@ -12,9 +12,10 @@ import Image from "@/components/ui/Image";
 
 const ClientsTable = ({clients}:{clients:TAdminClientSelect[]}) => {
      const [active, setActive] = useState(0)
-     const approvePayment = async (id:number, subscription:string) => {
+     const approvePayment = async (clientSubscriptionId:number, transactionId:number, subscription:string) => {
           try {
-               const res = await updateClientSubscription(id, {updatedAt: new Date(),expiryAt: subscription.toLowerCase() === "member" ? getFutureDate(1000): getFutureDate(90)});
+               const expiryAt = subscription.toLowerCase() === "member" ? getFutureDate(1000): getFutureDate(90);
+               const res = await approveManualTransaction(clientSubscriptionId, transactionId, expiryAt);
                if(res) return showMainNotification("Successfully Approve client payment", ENotificationType.PASS);
                else return showMainNotification("Error updating client subscription", ENotificationType.FAIL);
           } catch (error) {
@@ -61,7 +62,7 @@ const ClientsTable = ({clients}:{clients:TAdminClientSelect[]}) => {
                                    <td className="p-3">
                                         {
                                              c.subscription && c.subscription.transactions.length > 0 ?
-                                             <button type="button" onClick={async() => await approvePayment(c.subscription?.id || 0, c.subscription?.subscription.name || "")} className="text-white bg-green-600 hover:bg-green-500 p-2.5 rounded-lg transition-colors">Approve</button>:
+                                             <button type="button" onClick={async() => await approvePayment(c.subscription?.id || 0, c.subscription?.transactions[0]?.id || 0, c.subscription?.subscription.name || "")} className="text-white bg-green-600 hover:bg-green-500 p-2.5 rounded-lg transition-colors">Approve</button>:
                                              <button type="button" disabled className="text-white bg-gray-700 p-2.5 rounded-lg disabled:cursor-not-allowed">Approve</button>
                                         }
                                    </td>

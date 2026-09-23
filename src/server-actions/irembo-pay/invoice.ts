@@ -9,6 +9,7 @@ import { RevalidatePages } from "@/services/Server";
 import { getDaysCount } from "@/util/DateFunctions";
 import { TDurationUnit } from "@/types/common";
 import { ETransactionStatus } from "@prisma/client";
+import { revalidateFinanceStats } from "@/server-actions/admin-finance";
 
 export async function createSubscriptionInvoice(subscriptionId: number, phone?: string): Promise<{ error?: string; invoiceNumber?: string; paymentLinkUrl?: string }> {
      const { user } = await getSessionUser();
@@ -97,6 +98,7 @@ export async function reconcileInvoicePayment(invoiceNumber: string, paymentStat
 
      RevalidatePages.clientSubscription();
      RevalidatePages.transaction();
+     await revalidateFinanceStats();
      return { ok: true };
 }
 

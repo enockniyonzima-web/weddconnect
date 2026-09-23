@@ -205,3 +205,55 @@ export interface IClientStats {
           subscriptionName: string;
      }>;
 }
+
+export interface IFinanceStats {
+     // Revenue totals (all computed from transactionStatus, never the free-text status field)
+     totalRevenue: number;
+     totalPaidTransactions: number;
+     averageTransactionValue: number;
+
+     pendingAmount: number;
+     pendingCount: number;
+     partiallyPaidAmount: number;
+     partiallyPaidCount: number;
+     failedOrExpiredCount: number;
+
+     // Time-bucketed revenue
+     revenueThisWeek: number;
+     revenueLastWeek: number;
+     weekOverWeekGrowth: number; // percentage
+
+     revenueThisMonth: number;
+     revenueLastMonth: number;
+     monthOverMonthGrowth: number; // percentage
+
+     revenueThisYear: number;
+
+     monthlyRecurringRevenue: number;
+
+     revenueByProvider: Array<{
+          provider: string;
+          amount: number;
+          count: number;
+     }>;
+
+     revenueByPlan: Array<{
+          subscriptionName: string;
+          amount: number;
+          count: number;
+     }>;
+
+     // Last 12 months
+     monthlyRevenueTrend: Array<{
+          month: string;
+          amount: number;
+     }>;
+
+     topPayingClients: Array<{
+          clientId: number;
+          name: string;
+          phone: string;
+          amount: number;
+          subscriptionName: string;
+     }>;
+}
