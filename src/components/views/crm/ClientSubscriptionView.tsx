@@ -20,7 +20,12 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
      const { user } = useAuthContext();
      const [step, setStep] = useState<Step>(1);
      const [loading, setLoading] = useState(false);
+     const [phone, setPhone] = useState(user?.client?.phone || "");
      const cancelPoll = useRef<(() => void) | null>(null);
+
+     // Google sign-ups get a Client row with phone:"" auto-created on first login — they've
+     // never actually given us a phone number, so (unlike returning clients) we still need to ask.
+     const needsPhone = !user?.client?.phone;
 
      const usdAmount = subscription.price / USD_TO_RWF_RATE;
 
@@ -42,9 +47,10 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
      }
 
      const handlePay = async () => {
+          if (needsPhone && !phone.trim()) return showMainNotification("Enter your phone number", ENotificationType.WARNING);
           setLoading(true);
           try {
-               const res = await createSubscriptionInvoice(subscription.id, user?.client?.phone);
+               const res = await createSubscriptionInvoice(subscription.id, needsPhone ? phone.trim() : user?.client?.phone);
                if (res.error || !res.invoiceNumber) {
                     showMainNotification(res.error || "Could not start payment", ENotificationType.FAIL);
                     return;
@@ -100,7 +106,20 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
                               <span>Equivalent in USD</span>
                               <span className="text-white font-medium">USD {formatPrice(usdAmount)}</span>
                          </div>
-                         <button type="button" disabled={loading} onClick={handlePay} className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold text-sm hover:bg-blue-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]">
+                         {needsPhone && (
+                              <label className="flex flex-col gap-1.5">
+                                   <span className="text-xs text-gray-400 font-medium">Phone Number <span className="text-red-400">*</span></span>
+                                   <input
+                                        type="text"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        placeholder="e.g. 0788000000"
+                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-colors"
+                                   />
+                                   <span className="text-[11px] text-gray-500">We need this once to set up your account — you won&apos;t be asked again.</span>
+                              </label>
+                         )}
+                         <button type="button" disabled={loading || (needsPhone && !phone.trim())} onClick={handlePay} className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold text-sm hover:bg-blue-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]">
                               {loading ? "Starting payment..." : "Pay with IremboPay →"}
                          </button>
                     </div>

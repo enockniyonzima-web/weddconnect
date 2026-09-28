@@ -11,6 +11,7 @@ declare module "next-auth" {
      interface Session extends DefaultSession {
           user: {
                type?: string | null;
+               name?: string | null;
           } & DefaultSession["user"];
      }
 }
@@ -98,8 +99,8 @@ export const authOptions: NextAuthOptions = {
                                    password: "",
                                    createdAt: new Date(),
                                    status: true,
-                                   type: "unkown",
-                                   
+                                   type: "unknown",
+
                               },
                          });
                     }
@@ -133,11 +134,15 @@ export const authOptions: NextAuthOptions = {
           },
           async jwt({token, user}) {
                if (user) {
-                    const myUser = user as unknown as TUser;
-                    token.type = myUser.type || "unkown";
+                    const myUser = user as unknown as TUser & { name?: string | null };
+                    token.type = myUser.type || "unknown";
                     token.id = myUser.id;
                     token.email = myUser.email;
                     token.picture = myUser.image
+                    // Google's profile() callback puts the real display name on `user.name` — it
+                    // never gets persisted on the User model (no `name` column there by design),
+                    // so this is the only place to carry it forward to where a Client gets created.
+                    token.name = myUser.name || token.name;
                     token.iat = Math.floor(Date.now() / 1000); // Issue time
                     token.exp = (token.iat as number) + 2 * 60 * 60;
                }
@@ -153,7 +158,8 @@ export const authOptions: NextAuthOptions = {
                          ...session.user,
                          email: token.email,
                          type: token.type || "unknown",
-                         image: token.picture || null
+                         image: token.picture || null,
+                         name: (token.name as string | undefined) || null
                     };
                }else {
                     console.error("Token is undefined in session callback.");
