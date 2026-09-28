@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { iPay, IPAY_PAYMENT_ACCOUNT_IDENTIFIER } from "@/config/iremboConfig";
 import { getSessionUser } from "@/server-actions/user.actions";
-import { createClient } from "@/server-actions/client.actions";
+import { createClient, updateClient } from "@/server-actions/client.actions";
 import { USD_TO_RWF_RATE } from "@/common/CommonTypes";
 import { RevalidatePages } from "@/services/Server";
 import { getDaysCount } from "@/util/DateFunctions";
@@ -19,7 +19,16 @@ export async function createSubscriptionInvoice(subscriptionId: number, phone?: 
      if (!plan || !plan.isActive) return { error: "Subscription plan not found" };
      if (!plan.iremboProductCode) return { error: "This plan is not yet configured for payment" };
 
-     const client = user.client ?? (phone ? await createClient({ name: user.email, phone, user: { connect: { id: user.id } } }) : null);
+     // Google sign-ups get a Client row auto-created with phone:"" (see auth/login/layout.tsx) —
+     // so `user.client` alone isn't proof of a usable phone. Persist a freshly-given phone onto
+     // that existing client rather than silently discarding it because `user.client` was truthy.
+     let client: { id: number; name: string; phone: string } | null = user.client;
+     if (!client || !client.phone) {
+          if (!phone) return { error: "A phone number is required to subscribe" };
+          client = client
+               ? await updateClient(client.id, { phone })
+               : await createClient({ name: user.email, phone, user: { connect: { id: user.id } } });
+     }
      if (!client) return { error: "A phone number is required to subscribe" };
 
      const rwfAmount = plan.currency === "RWF" ? plan.price : Math.round(plan.price * USD_TO_RWF_RATE);

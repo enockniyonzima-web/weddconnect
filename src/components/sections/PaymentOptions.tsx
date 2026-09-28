@@ -17,7 +17,7 @@ import { createClientSubscription, updateClientSubscription } from "@/server-act
 import { getFutureDate } from "@/util/DateFunctions";
 import { createTransaction } from "@/server-actions/transaction.action";
 import { FaCheck } from "react-icons/fa6";
-import { createClient } from "@/server-actions/client.actions";
+import { createClient, updateClient } from "@/server-actions/client.actions";
 import { IoCopy } from "react-icons/io5";
 import { TextInputGroup } from "../forms/DataFormsInputs";
 
@@ -131,8 +131,17 @@ const MtnDirectPayment = ({user, subscription, action}:{user:TSessionUser, subsc
           try {
                setLoading(true);
 
-               if(phone === "") return showMainNotification("Invalid phone number. User the international format: +XXXX...", ENotificationType.WARNING); 
-               const clientAcc  = user.client ? user.client : await createClient({name: user.email, phone: phone, user: {connect: {id: user.id}}});
+               if(phone === "") return showMainNotification("Invalid phone number. User the international format: +XXXX...", ENotificationType.WARNING);
+               // Google sign-ups already have a Client row (created with phone:"" on first login) —
+               // `user.client ? user.client : ...` would otherwise keep that empty phone forever and
+               // silently discard the number just typed here. Persist it onto the existing client.
+               let clientAcc: { id: number; name: string; phone: string } | null = user.client;
+               if (!clientAcc || !clientAcc.phone) {
+                    clientAcc = clientAcc
+                         ? await updateClient(clientAcc.id, { phone })
+                         : await createClient({name: user.email, phone: phone, user: {connect: {id: user.id}}});
+               }
+               if (!clientAcc) return showMainNotification("Could not save your account details. Try again later", ENotificationType.FAIL);
                const clientSubscription = user.client?.subscription;
 
                if(clientSubscription){

@@ -16,7 +16,7 @@ export default  async function LoginLayout({
      children: React.ReactNode;
      }>) {
 
-          const {user}  = await getSessionUser();
+          const {user, session}  = await getSessionUser();
           const  redirectUserByType = (type:string) =>{
                switch(type){
                     case "admin":
@@ -34,7 +34,12 @@ export default  async function LoginLayout({
 
                if(userType === "unknown") {
                     const userId  = user.id;
-                    const newClient = await createClient({name: user.email, phone: "", user:{connect:{id:userId}}});
+                    // Google sign-ins carry the real display name through the session (see
+                    // authOptions.ts jwt/session callbacks) — prefer that over the email so the
+                    // Client record (used everywhere: admin tables, contact buttons, etc.) shows
+                    // an actual name instead of the raw email address.
+                    const displayName = session?.user?.name || user.email;
+                    const newClient = await createClient({name: displayName, phone: "", user:{connect:{id:userId}}});
                     if(newClient) {
                          await updateUser(userId,{type:"client"});
                     }
