@@ -1,15 +1,14 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
 import { iPay, IPAY_PAYMENT_ACCOUNT_IDENTIFIER } from "@/config/iremboConfig";
 import { getSessionUser } from "@/server-actions/user.actions";
-import { createClient, updateClient } from "@/server-actions/client.actions";
+import { createClientRecord, updateClientPhone } from "@/lib/server/accounts";
+import { reconcileInvoicePayment } from "@/lib/server/payments";
+import { getAuthContext } from "@/lib/auth-guard";
 import { USD_TO_RWF_RATE } from "@/common/CommonTypes";
 import { RevalidatePages } from "@/services/Server";
-import { getDaysCount } from "@/util/DateFunctions";
-import { TDurationUnit } from "@/types/common";
-import { ETransactionStatus } from "@prisma/client";
-import { revalidateFinanceStats } from "@/server-actions/admin-finance";
 
 export async function createSubscriptionInvoice(subscriptionId: number, phone?: string): Promise<{ error?: string; invoiceNumber?: string; paymentLinkUrl?: string }> {
      const { user } = await getSessionUser();
@@ -25,9 +24,15 @@ export async function createSubscriptionInvoice(subscriptionId: number, phone?: 
      let client: { id: number; name: string; phone: string } | null = user.client;
      if (!client || !client.phone) {
           if (!phone) return { error: "A phone number is required to subscribe" };
-          client = client
-               ? await updateClient(client.id, { phone })
-               : await createClient({ name: user.email, phone, user: { connect: { id: user.id } } });
+          try {
+               client = client
+                    ? await updateClientPhone(client.id, phone)
+                    : await createClientRecord({ name: user.email, phone, userId: user.id });
+          } catch (error) {
+               unstable_rethrow(error);
+               console.log("Error saving client phone:", error);
+               client = null;
+          }
      }
      if (!client) return { error: "A phone number is required to subscribe" };
 
@@ -46,6 +51,7 @@ export async function createSubscriptionInvoice(subscriptionId: number, phone?: 
                customer: { email: user.email, name: client.name, phoneNumber: client.phone },
           });
      } catch (error) {
+          unstable_rethrow(error);
           console.log("IremboPay createInvoice error:", error);
           return { error: "Failed to create invoice" };
      }
@@ -80,40 +86,19 @@ export async function createSubscriptionInvoice(subscriptionId: number, phone?: 
      return { invoiceNumber, paymentLinkUrl };
 }
 
-// Single source of truth for turning a confirmed IremboPay payment into an active subscription.
-// Called from the webhook (authoritative) and from the client-side status poll (reconciliation
-// fallback if a webhook is delayed or lost) — both re-verify against IremboPay, never the browser.
-export async function reconcileInvoicePayment(invoiceNumber: string, paymentStatus: "PAID" | "PARTIALLY_PAID" | "FAILED", paymentMethod?: string) {
-     const tx = await prisma.transaction.findUnique({
-          where: { invoiceNumber },
-          include: { clientSubscription: { include: { subscription: true } } },
-     });
-     if (!tx) return { error: "Transaction not found for invoice" };
-     if (tx.transactionStatus === ETransactionStatus.PAID) return { ok: true }; // already processed
-
-     await prisma.transaction.update({
-          where: { id: tx.id },
-          data: { transactionStatus: paymentStatus, status: paymentStatus.toLowerCase(), paymentMethod },
-     });
-
-     if (paymentStatus === "PAID") {
-          const plan = tx.clientSubscription.subscription;
-          const days = getDaysCount(plan.duration, plan.durationUnit as TDurationUnit);
-          const currentExpiry = tx.clientSubscription.expiryAt;
-          const base = currentExpiry && currentExpiry > new Date() ? currentExpiry : new Date();
-          const expiryAt = new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
-          await prisma.clientSubscription.update({ where: { id: tx.clientSubscriptionId }, data: { expiryAt, updatedAt: new Date() } });
-     }
-
-     RevalidatePages.clientSubscription();
-     RevalidatePages.transaction();
-     await revalidateFinanceStats();
-     return { ok: true };
-}
-
 // Client-facing status check: always re-verifies with IremboPay directly (never trusts the
 // widget's in-browser callback), and reconciles our DB if a webhook hasn't landed yet.
+// Only the client who owns the invoice (or an admin) may check it.
 export async function checkInvoiceStatus(invoiceNumber: string) {
+     const authUser = await getAuthContext();
+     if (!authUser) return null;
+     const tx = await prisma.transaction.findUnique({
+          where: { invoiceNumber },
+          select: { clientSubscription: { select: { clientId: true } } },
+     });
+     if (!tx) return null;
+     if (!authUser.admin && authUser.client?.id !== tx.clientSubscription.clientId) return null;
+
      const res = await iPay.invoice.getInvoice(invoiceNumber);
      const invoice = res?.data;
      if (!invoice) return null;

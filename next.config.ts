@@ -11,24 +11,14 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-      {
+        // Google profile pictures (Google sign-in)
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
         port: "",
         pathname: "/**"
       },
       {
-        protocol: "https",
-        hostname: "tiracar-bucket.s3.eu-north-1.amazonaws.com",
-        port: "",
-        pathname: "/**"
-      },
-      {
+        // Platform media bucket (Desc Hosting S3)
         protocol: "https",
         hostname: "weddconnect-s3.s3.eu-north-1.amazonaws.com",
         port: "",
@@ -36,7 +26,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  allowedDevOrigins: ['educator-degrease-rocket.ngrok-free.dev'],
   experimental: {
     serverActions: {
       bodySizeLimit: '100mb',

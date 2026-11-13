@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIremboSignature } from "@/config/iremboConfig";
-import { reconcileInvoicePayment } from "@/server-actions/irembo-pay/invoice";
+import { reconcileInvoicePayment } from "@/lib/server/payments";
 import { IIremboPayWebhookPayload } from "@/types/irembo-pay";
 
 export async function POST(req: NextRequest) {

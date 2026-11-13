@@ -1,11 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
+import { requireSubscriberOrAdmin } from "@/lib/auth-guard";
 import { NextRequest, NextResponse as res } from "next/server";
 
 const TUserSelectFields = {
-     id:true,email: true, image: true, status:true, type: true, createdAt:true
+     id:true, image: true
 }
 export async function GET(requet: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+     try {
+          await requireSubscriberOrAdmin();
+     } catch (error) {
+          unstable_rethrow(error);
+          return res.json({ error: "Unauthorized" }, { status: 401 });
+     }
      try {
           const {id} =await params;
 

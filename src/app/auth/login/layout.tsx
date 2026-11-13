@@ -1,7 +1,6 @@
 
-import { createClient } from '@/server-actions/client.actions';
-
-import { getSessionUser, updateUser } from '@/server-actions/user.actions';
+import { createClientRecord, setUserType } from '@/lib/server/accounts';
+import { getSessionUser } from '@/server-actions/user.actions';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
@@ -39,9 +38,11 @@ export default  async function LoginLayout({
                     // Client record (used everywhere: admin tables, contact buttons, etc.) shows
                     // an actual name instead of the raw email address.
                     const displayName = session?.user?.name || user.email;
-                    const newClient = await createClient({name: displayName, phone: "", user:{connect:{id:userId}}});
-                    if(newClient) {
-                         await updateUser(userId,{type:"client"});
+                    try {
+                         await createClientRecord({ name: displayName, phone: "", userId });
+                         await setUserType(userId, "client");
+                    } catch (error) {
+                         console.log("Error creating client for new Google user:", error);
                     }
                }
                

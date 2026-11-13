@@ -1,16 +1,30 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
+import { requireAdmin, requireUser, scopePublicQuery } from "@/lib/auth-guard";
 import { RevalidatePages } from "@/services/Server";
 import { Prisma } from "@prisma/client";
 import { cache } from "react";
 
+// Signed-in users only. The comment is always attributed to the caller.
 export async function createBlogComment (data: Prisma.BlogCommentCreateInput) {
      try {     
-          const res = await prisma.blogComment.create({data});
+          const user = await requireUser();
+          const postId = data.post?.connect?.id;
+          const content = typeof data.content === "string" ? data.content.trim() : "";
+          if (!postId || !content) return null;
+          const parentId = data.parentComment?.connect?.id;
+          const res = await prisma.blogComment.create({data: {
+               content,
+               post: { connect: { id: postId } },
+               commenter: { connect: { id: user.id } },
+               ...(parentId ? { parentComment: { connect: { id: parentId } } } : {}),
+          }});
           if(res) RevalidatePages.default();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating BlogComment: ", error);
           return null
      }
@@ -19,10 +33,12 @@ export async function createBlogComment (data: Prisma.BlogCommentCreateInput) {
 
 export async function updateBlogComment (id:string,data: Prisma.BlogCommentUpdateInput) {
      try {
+          await requireAdmin();
           const res = await prisma.blogComment.update({where: {id},data});
           if(res) RevalidatePages.default();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating BlogComment : ", error);
           return null
      }
@@ -31,10 +47,12 @@ export async function updateBlogComment (id:string,data: Prisma.BlogCommentUpdat
 
 export async function deleteBlogComment (id:string) {
      try {
+          await requireAdmin();
           const res = await prisma.blogComment.delete({where: {id}});
           if(res) RevalidatePages.default();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating BlogComment: ", error);
           return null
      }
@@ -45,9 +63,11 @@ export const fetchBlogComments = cache(async <T extends Prisma.BlogCommentSelect
           orderBy: Prisma.BlogCommentOrderByWithRelationInput | Prisma.BlogCommentOrderByWithRelationInput[]  = { createdAt: 'asc' }
      ):Promise<Prisma.BlogCommentGetPayload<{select: T}>[]> => {
      try {
-          const res = await prisma.blogComment.findMany({where: search, take, skip, select: selectType, orderBy});
-          return res;
+          const q = await scopePublicQuery({ select: selectType, where: search, orderBy, take });
+          const res = await prisma.blogComment.findMany({ where: q.where, take: q.take, skip, select: q.select, orderBy: q.orderBy });
+          return q.mask(res);
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error fetching BlogComments: ", error);
           return [];
      }
@@ -55,9 +75,11 @@ export const fetchBlogComments = cache(async <T extends Prisma.BlogCommentSelect
 
 export const fetchBlogCommentById = cache(async <T extends Prisma.BlogCommentSelect>(id:string, selectType: T): Promise<Prisma.BlogCommentGetPayload<{select:T}> | null> => {
      try {
-          const res= await prisma.blogComment.findUnique({where:{id},select: selectType});
-          return res;
+          const q = await scopePublicQuery({ select: selectType });
+          const res = await prisma.blogComment.findUnique({ where: { id }, select: q.select });
+          return q.mask(res);
      } catch (error) {
+          unstable_rethrow(error);
           console.log(`Error fetching BlogComment data for id: ${id}`, error);
           return null;
      }
@@ -65,9 +87,11 @@ export const fetchBlogCommentById = cache(async <T extends Prisma.BlogCommentSel
 
 export const countBlogComments = cache(async (search?: Prisma.BlogCommentWhereInput): Promise<number> => {
      try {
-          const res = await prisma.blogComment.count({where: search});
+          const q = await scopePublicQuery({ select: {}, where: search });
+          const res = await prisma.blogComment.count({ where: q.where });
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error counting BlogComments: ", error);
           return 0;
      }
