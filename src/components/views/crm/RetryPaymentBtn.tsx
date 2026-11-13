@@ -25,6 +25,11 @@ export const RetryPaymentBtn = ({ invoiceNumber }: { invoiceNumber: string }) =>
                     window.location.reload();
                     return;
                }
+               if (invoice.cancelled) {
+                    showMainNotification("This invoice has expired. Please choose your plan again to get a new one", ENotificationType.WARNING);
+                    window.location.reload();
+                    return;
+               }
 
                await loadIremboScript();
                payInvoice(invoiceNumber, () => {

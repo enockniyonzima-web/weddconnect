@@ -3,8 +3,9 @@ import { STransactionAdmin } from "@/select-types/transaction";
 import { Prisma, ETransactionStatus, ETransactionProvider } from "@prisma/client";
 import Link from "next/link";
 import { TransactionsTable } from "./TransactionsTable";
+import { ReconcilePendingButton } from "./ReconcilePendingButton";
 
-const STATUS_FILTERS: ETransactionStatus[] = ["PAID", "PENDING", "PARTIALLY_PAID", "FAILED", "EXPIRED"];
+const STATUS_FILTERS: ETransactionStatus[] = ["PAID", "PENDING", "PARTIALLY_PAID", "FAILED", "EXPIRED", "CANCELLED"];
 const PROVIDER_FILTERS: ETransactionProvider[] = ["IREMBO_PAY", "MANUAL"];
 
 export default async function TransactionsContainer({ search }: { search: Record<string, string | undefined> }) {
@@ -46,6 +47,7 @@ export default async function TransactionsContainer({ search }: { search: Record
                     {PROVIDER_FILTERS.map((p) => (
                          <FilterChip key={p} label={p === "IREMBO_PAY" ? "IremboPay" : "Manual"} href={buildFilterHref("provider", search.provider === p ? undefined : p)} active={search.provider === p} />
                     ))}
+                    <div className="ml-auto"><ReconcilePendingButton /></div>
                </div>
 
                <TransactionsTable transactions={transactions} />

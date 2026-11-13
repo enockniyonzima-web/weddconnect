@@ -28,6 +28,8 @@ declare module "@irembo/irembopay-node-sdk" {
           invoice: {
                createInvoice(data: IIremboPayCreateInvoiceInput): Promise<IIremboPayResponse<IIremboPayInvoice>>;
                getInvoice(invoiceReference: string): Promise<IIremboPayResponse<IIremboPayInvoice>>;
+               // IremboPay has no cancel endpoint — moving expiryAt to "now" is how an invoice is closed.
+               updateInvoice(invoiceReference: string, data: { expiryAt?: string; paymentItems?: { code: string; quantity: number; unitAmount: number }[] }): Promise<IIremboPayResponse<IIremboPayInvoice>>;
           };
           payment: {
                mobileMoney: {
