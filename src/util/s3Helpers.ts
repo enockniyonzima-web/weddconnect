@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/auth-guard";
 import { s3Client, BUCKET_NAME, AWS_REGION } from '@/config/awsConfig';
 import {
      PutObjectCommand,
@@ -8,6 +9,7 @@ import {
 } from '@aws-sdk/client-s3';
 
 export const uploadSingleImage = async (file: File, folder:string = "production"): Promise<string> => {
+     await requireAdmin();
      const arrayBuffer = await file.arrayBuffer();
      const buffer = Buffer.from(arrayBuffer);
 
@@ -33,11 +35,13 @@ export const uploadSingleImage = async (file: File, folder:string = "production"
 };
 
 export const uploadMultipleImages = async (files: File[], folder: string = "production"): Promise<string[]> => {
+     await requireAdmin();
      const uploadPromises = files.map((file) => uploadSingleImage(file, folder));
      return Promise.all(uploadPromises);
 };
 
 export const uploadImagesFromFormData = async (formData: FormData, folder: string = "production"): Promise<string[]> => {
+     await requireAdmin();
      const files = formData.getAll("images") as File[];
      return Promise.all(files.map((file) => uploadSingleImage(file, folder)));
 };
@@ -50,6 +54,7 @@ export const uploadImagesFromFormData = async (formData: FormData, folder: strin
 // };
 
 export const deleteSingleImage = async (imageUrl: string): Promise<void> => {
+     await requireAdmin();
      try {
        // Extract the key from the image URL
        if(!imageUrl) return;
@@ -77,6 +82,7 @@ export const deleteSingleImage = async (imageUrl: string): Promise<void> => {
 };
 
 export const deleteMultipleImages = async (keys: string[]): Promise<void> => {
+     await requireAdmin();
      if (!keys || keys.length === 0) return;
 
 

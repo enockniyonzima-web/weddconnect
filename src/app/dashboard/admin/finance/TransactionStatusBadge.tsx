@@ -7,6 +7,7 @@ const STATUS_CONFIG: Record<ETransactionStatus, { label: string; className: stri
      PARTIALLY_PAID: { label: "Partially Paid", className: "bg-orange-950/50 text-orange-400", icon: AlertCircle },
      FAILED: { label: "Failed", className: "bg-red-950/50 text-red-400", icon: XCircle },
      EXPIRED: { label: "Expired", className: "bg-red-950/50 text-red-400", icon: XCircle },
+     CANCELLED: { label: "Cancelled", className: "bg-gray-800 text-gray-400", icon: XCircle },
      NONE: { label: "None", className: "bg-gray-800 text-gray-500", icon: MinusCircle },
 };
 

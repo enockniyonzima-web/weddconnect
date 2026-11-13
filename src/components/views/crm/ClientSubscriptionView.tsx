@@ -5,7 +5,7 @@ import { InputSize } from "@/components/ui/forms/text-input";
 import { cn } from "@/lib/utils";
 import { TSubscriptionCard } from "@/select-types/subscription";
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { CheckCircle, Loader2, Phone, Wallet, X, XCircle } from "lucide-react";
+import { CheckCircle, Loader2, Phone, ShieldCheck, Wallet, X, XCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createSubscriptionInvoice } from "@/server-actions/irembo-pay/invoice";
 import { loadIremboScript, payInvoice, pollInvoiceStatus } from "@/util/iremboWidget";
@@ -22,6 +22,8 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
      const [loading, setLoading] = useState(false);
      const [phone, setPhone] = useState(user?.client?.phone || "");
      const cancelPoll = useRef<(() => void) | null>(null);
+     // Shown on the "confirming" step so the client always knows exactly which invoice they're paying.
+     const [invoiceInfo, setInvoiceInfo] = useState<{ number: string; amount?: number; resumedFrom?: Date; closedPrevious: number } | null>(null);
 
      // Google sign-ups get a Client row with phone:"" auto-created on first login — they've
      // never actually given us a phone number, so (unlike returning clients) we still need to ask.
@@ -51,11 +53,22 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
           setLoading(true);
           try {
                const res = await createSubscriptionInvoice(subscription.id, needsPhone ? phone.trim() : user?.client?.phone);
+               // A previous invoice turned out to be paid already — it has just been activated.
+               if (res.alreadyPaid) {
+                    setStep(3);
+                    return;
+               }
+               // Another request is mid-flight — not a failure, just ask them to wait.
+               if (res.busy) {
+                    showMainNotification(res.busy, ENotificationType.WARNING);
+                    return;
+               }
                if (res.error || !res.invoiceNumber) {
                     showMainNotification(res.error || "Could not start payment", ENotificationType.FAIL);
                     return;
                }
                const invoiceNumber = res.invoiceNumber;
+               setInvoiceInfo({ number: invoiceNumber, amount: res.amount, resumedFrom: res.resumedFrom, closedPrevious: res.closedPrevious ?? 0 });
                await loadIremboScript();
                setStep(2);
                payInvoice(invoiceNumber, () => {
@@ -133,6 +146,7 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
                               <h3 className="text-lg font-bold text-white">Confirming your payment...</h3>
                               <p className="text-sm text-gray-400 mt-2 max-w-xs">Complete the payment in the IremboPay window. This updates automatically once it&apos;s confirmed.</p>
                          </div>
+                         {invoiceInfo && <InvoiceNotice info={invoiceInfo} />}
                     </div>
                )}
 
@@ -158,7 +172,7 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
                          </div>
                          <div>
                               <h3 className="text-xl font-bold text-white">Payment Not Confirmed</h3>
-                              <p className="text-sm text-gray-400 mt-2 max-w-xs">We couldn&apos;t confirm your payment yet. If you completed it, contact us — otherwise try again.</p>
+                              <p className="text-sm text-gray-400 mt-2 max-w-xs">We couldn&apos;t confirm your payment yet. If you completed it, contact us — otherwise try again. Trying again reopens the same invoice, so you won&apos;t be charged twice.</p>
                          </div>
                          <div className="grid grid-cols-2 gap-2 w-full">
                               <button type="button" onClick={handlePay} className="py-2.5 rounded-full border border-white/10 text-sm text-gray-300 hover:bg-white/5 transition-colors">Try Again</button>
@@ -169,6 +183,32 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
           </div>
      );
 };
+
+// Reassures the client about exactly what they're paying: the invoice number to match against
+// IremboPay / their mobile-money prompt, and — when relevant — that an earlier invoice was reused
+// or closed, so they can never be charged twice for the same subscription.
+const InvoiceNotice = ({ info }: { info: { number: string; amount?: number; resumedFrom?: Date; closedPrevious: number } }) => (
+     <div className="w-full flex flex-col gap-3 text-left">
+          <div className="flex items-center justify-between rounded-lg bg-white/5 border border-white/10 px-4 py-2.5 text-xs">
+               <span className="text-gray-400">Invoice No. <span className="text-white font-mono font-medium">{info.number}</span></span>
+               {info.amount !== undefined && <span className="text-white font-medium">Rwf {formatPrice(info.amount)}</span>}
+          </div>
+          {(info.resumedFrom || info.closedPrevious > 0) && (
+               <div className="flex gap-2.5 rounded-lg border border-blue-600/30 bg-blue-600/10 px-4 py-3">
+                    <ShieldCheck size={16} className="text-blue-400 shrink-0 mt-0.5" />
+                    <div className="flex flex-col gap-1 text-xs text-gray-300">
+                         {info.resumedFrom && (
+                              <p>You already started a payment for this plan on {new Date(info.resumedFrom).toLocaleString()}. We&apos;ve reopened that same invoice instead of creating a new one, so <span className="text-white font-medium">you will only be charged once</span>.</p>
+                         )}
+                         {info.closedPrevious > 0 && (
+                              <p>{info.closedPrevious === 1 ? "Your earlier unpaid invoice has" : `Your ${info.closedPrevious} earlier unpaid invoices have`} been cancelled and can no longer be paid, so there&apos;s no risk of paying twice.</p>
+                         )}
+                    </div>
+               </div>
+          )}
+          <p className="text-[11px] text-gray-500 text-center">Payments are processed securely by IremboPay. Make sure the invoice number above matches the one shown in the IremboPay window.</p>
+     </div>
+);
 
 export const ClientSubscriptionViewBtn = ({ subscription, showBtnName = true, showBtnIcon, btnSize = "md", btnTitle = "Choose Plan", onComplete }: { subscription: TSubscriptionCard; showBtnName?: boolean; showBtnIcon?: boolean; btnSize?: InputSize; btnTitle?: string; onComplete?: () => void }) => {
      const Icon = Wallet;

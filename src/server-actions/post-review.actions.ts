@@ -1,16 +1,31 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
+import { requireAdmin, requireUser, scopePublicQuery } from "@/lib/auth-guard";
 import { RevalidatePages } from "@/services/Server";
 import { Prisma } from "@prisma/client";
 import { cache } from "react";
 
+// Signed-in clients only. The review is always attributed to the caller's own client record.
 export async function createPostReview (data: Prisma.PostReviewCreateInput) {
      try {     
-          const res = await prisma.postReview.create({data});
+          const user = await requireUser();
+          if (!user.client) return null;
+          const postId = data.post?.connect?.id;
+          if (!postId) return null;
+          const res = await prisma.postReview.create({data: {
+               content: String(data.content ?? ""),
+               rating: Math.min(5, Math.max(1, Math.round(Number(data.rating) || 1))),
+               type: data.type,
+               createdAt: new Date(),
+               post: { connect: { id: postId } },
+               client: { connect: { id: user.client.id } },
+          }});
           if(res) RevalidatePages.postReview();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating PostReview: ", error);
           return null
      }
@@ -19,10 +34,12 @@ export async function createPostReview (data: Prisma.PostReviewCreateInput) {
 
 export async function updatePostReview (id:number,data: Prisma.PostReviewUpdateInput) {
      try {     
+          await requireAdmin();
           const res = await prisma.postReview.update({where: {id},data});
           if(res) RevalidatePages.postReview();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating PostReview : ", error);
           return null
      }
@@ -31,10 +48,12 @@ export async function updatePostReview (id:number,data: Prisma.PostReviewUpdateI
 
 export async function deletePostReview (id:number) {
      try {     
+          await requireAdmin();
           const res = await prisma.postReview.delete({where: {id}});
           if(res) RevalidatePages.postReview();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating PostReview: ", error);
           return null
      }
@@ -46,9 +65,11 @@ export const fetchPostReviews = cache(async <T extends Prisma.PostReviewSelect>(
           orderBy: Prisma.PostReviewOrderByWithRelationInput | Prisma.PostReviewOrderByWithRelationInput[]  = { createdAt: 'desc' }
      ):Promise<Prisma.PostReviewGetPayload<{select: T}>[]> => {
      try {
-          const res = await prisma.postReview.findMany({where: search, take, skip, select: selectType, orderBy});
-          return res;
+          const q = await scopePublicQuery({ select: selectType, where: search, orderBy, take });
+          const res = await prisma.postReview.findMany({ where: q.where, take: q.take, skip, select: q.select, orderBy: q.orderBy });
+          return q.mask(res);
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error fetching PostReviews: ", error);
           return [];
      }
@@ -56,9 +77,11 @@ export const fetchPostReviews = cache(async <T extends Prisma.PostReviewSelect>(
 
 export const fetchPostReviewById = cache(async <T extends Prisma.PostReviewSelect>(id:number, selectType: T): Promise<Prisma.PostReviewGetPayload<{select:T}> | null> => {
      try {
-          const res= await prisma.postReview.findUnique({where:{id},select: selectType});
-          return res;
+          const q = await scopePublicQuery({ select: selectType });
+          const res = await prisma.postReview.findUnique({ where: { id }, select: q.select });
+          return q.mask(res);
      } catch (error) {
+          unstable_rethrow(error);
           console.log(`Error fetching PostReview data for id: ${id}`, error);
           return null;
      }

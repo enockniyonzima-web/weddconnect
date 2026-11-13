@@ -26,6 +26,7 @@ export const STransactionAdmin = {
      verificationCode: true,
      createdAt: true,
      updatedAt: true,
+     subscription: { select: { id: true, name: true, price: true, currency: true } },
      clientSubscription: {
           select: {
                id: true,

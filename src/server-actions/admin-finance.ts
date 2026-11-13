@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { IFinanceStats } from "@/common/interfaces";
 import prisma from "@/lib/prisma";

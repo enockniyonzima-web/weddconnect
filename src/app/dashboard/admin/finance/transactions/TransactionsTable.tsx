@@ -45,7 +45,7 @@ export const TransactionsTable = ({ transactions }: { transactions: TTransaction
                                    <tr key={tx.id} className="border-b border-gray-800 hover:bg-gray-800/50">
                                         <td className="p-3 text-gray-400 text-sm text-nowrap">{getDate(tx.createdAt)}</td>
                                         <td className="p-3 text-gray-300 text-sm text-nowrap">{tx.clientSubscription.client.name}</td>
-                                        <td className="p-3 text-gray-400 text-sm text-nowrap">{tx.clientSubscription.subscription.name}</td>
+                                        <td className="p-3 text-gray-400 text-sm text-nowrap">{(tx.subscription ?? tx.clientSubscription.subscription).name}</td>
                                         <td className="p-3 text-white text-sm font-semibold text-nowrap">Rwf {formatPrice(tx.amount)}</td>
                                         <td className="p-3"><TransactionProviderBadge provider={tx.provider} /></td>
                                         <td className="p-3"><TransactionStatusBadge status={tx.transactionStatus} /></td>

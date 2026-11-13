@@ -11,7 +11,8 @@ export interface IIremboPayInvoice {
      invoiceNumber: string;
      transactionId: string;
      paymentAccountIdentifier: string;
-     paymentStatus: "NEW" | "PAID" | "PARTIALLY_PAID";
+     // Documented values are NEW / PAID / PARTIALLY_PAID; anything else is treated as unpaid.
+     paymentStatus: "NEW" | "PAID" | "PARTIALLY_PAID" | (string & {});
      amount: number;
      currency: string;
      paymentLinkUrl: string;

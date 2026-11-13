@@ -1,16 +1,20 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
+import { requireAdmin } from "@/lib/auth-guard";
 import { RevalidatePages } from "@/services/Server";
 import { Prisma } from "@prisma/client";
 import { cache } from "react";
 
 export async function createVendor (data: Prisma.VendorCreateInput) {
      try {     
+          await requireAdmin();
           const res = await prisma.vendor.create({data});
           if(res) RevalidatePages.vendor();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error creating Vendor: ", error);
           return null
      }
@@ -19,10 +23,12 @@ export async function createVendor (data: Prisma.VendorCreateInput) {
 
 export async function updateVendor (id:number,data: Prisma.VendorUpdateInput) {
      try {     
+          await requireAdmin();
           const res = await prisma.vendor.update({where: {id},data});
           if(res) RevalidatePages.vendor();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error updating Vendor : ", error);
           return null
      }
@@ -31,6 +37,7 @@ export async function updateVendor (id:number,data: Prisma.VendorUpdateInput) {
 
 export async function deleteVendor (id:number) {
      try {
+          await requireAdmin();
           const res = await prisma.$transaction(
                async(tx) => {
                     const vendor = await tx.vendor.findUnique({where: {id}, select:{userId:true}});
@@ -42,6 +49,7 @@ export async function deleteVendor (id:number) {
           );
           return res
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error deleting Vendor: ", error);
           return null
      }
@@ -50,10 +58,12 @@ export async function deleteVendor (id:number) {
 
 export async function deleteVendorContact (vendorId:number, contactId:number) {
      try {
+          await requireAdmin();
           const res  = await prisma.vendorContact.delete({where: {id: contactId, vendorId}});
           if(res) RevalidatePages.vendor();
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error deleting contact: ", error);
           return null
      }
@@ -64,9 +74,11 @@ export const fetchVendors = cache(async <T extends Prisma.VendorSelect>(
           orderBy: Prisma.VendorOrderByWithRelationInput | Prisma.VendorOrderByWithRelationInput[]  = { id: 'desc' }
      ):Promise<Prisma.VendorGetPayload<{select: T}>[]> => {
      try {
+          await requireAdmin();
           const res = await prisma.vendor.findMany({where: search, take, skip, select: selectType, orderBy});
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error fetching Vendors: ", error);
           return [];
      }
@@ -74,9 +86,11 @@ export const fetchVendors = cache(async <T extends Prisma.VendorSelect>(
 
 export const fetchVendorById = cache(async <T extends Prisma.VendorSelect>(id:number, selectType: T): Promise<Prisma.VendorGetPayload<{select:T}> | null> => {
      try {
+          await requireAdmin();
           const res= await prisma.vendor.findUnique({where:{id},select: selectType});
           return res;
      } catch (error) {
+          unstable_rethrow(error);
           console.log(`Error fetching Vendor data for id: ${id}`, error);
           return null;
      }
@@ -84,9 +98,11 @@ export const fetchVendorById = cache(async <T extends Prisma.VendorSelect>(id:nu
 
 export const countVendors = cache(async (search?: Prisma.VendorWhereInput): Promise<number> => {
      try {
+          await requireAdmin();
           const count = await prisma.vendor.count({where: search});
           return count;
      } catch (error) {
+          unstable_rethrow(error);
           console.log("Error counting Vendors: ", error);
           return 0;
      }

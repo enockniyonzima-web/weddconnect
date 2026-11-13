@@ -1,9 +1,17 @@
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
+import { requireAdmin } from "@/lib/auth-guard";
 import { stringToBoolean } from "@/util/stringFuncs";
 
 import { NextResponse as res } from "next/server";
 
 export async function GET(req: Request) {
+     try {
+          await requireAdmin();
+     } catch (error) {
+          unstable_rethrow(error);
+          return res.json({ error: "Unauthorized" }, { status: 401 });
+     }
      try{
           const {searchParams:params} = new URL(req.url);
 

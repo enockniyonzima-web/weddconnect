@@ -1,11 +1,19 @@
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
+import { requireSubscriberOrAdmin } from "@/lib/auth-guard";
 
 import { NextResponse as res } from "next/server";
 
 const TUserSelectFields = {
-     id:true,email: true, image: true, status:true, type: true, createdAt:true
+     id:true, image: true
 }
 export async function GET(req: Request) {
+     try {
+          await requireSubscriberOrAdmin();
+     } catch (error) {
+          unstable_rethrow(error);
+          return res.json({ error: "Unauthorized" }, { status: 401 });
+     }
      try{
           const {searchParams:params} = new URL(req.url);
           const page:{skip:number, take:number} = {skip:0, take: 20};

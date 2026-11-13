@@ -21,6 +21,7 @@ model Subscription {
      description         String
      iremboProductCode     String?
      clientSubscriptions ClientSubscription[]
+     transactions        Transaction[]
 }
 
 model ClientSubscription {
@@ -47,6 +48,7 @@ enum ETransactionStatus {
      PARTIALLY_PAID
      FAILED
      EXPIRED
+     CANCELLED
 }
 
 model Transaction {
@@ -68,6 +70,16 @@ model Transaction {
      paymentMethod         String?
      provider            ETransactionProvider @default(MANUAL)
      transactionStatus     ETransactionStatus @default(NONE)
+
+     // The plan this payment is for. ClientSubscription.subscriptionId is only switched to it
+     // once the payment is confirmed (a client can be on plan A while paying for plan B).
+     subscriptionId        Int?
+     subscription          Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+     // Concurrency guard: holds clientSubscriptionId while this transaction is the client's open
+     // (PENDING) IremboPay payment, NULL otherwise. The unique index makes it impossible for a
+     // client to hold two open invoices at once, even under concurrent requests.
+     pendingKey            Int? @unique
 
      clientSubscription   ClientSubscription @relation(fields: [clientSubscriptionId], references: [id], onDelete: Cascade)
 }

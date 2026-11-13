@@ -3,13 +3,44 @@
 import { TTransactionAdmin } from "@/select-types/transaction";
 import { formatPrice } from "@/util/stringFuncs";
 import { getDate } from "@/util/DateFunctions";
-import { X, Receipt, User as UserIcon, FileText } from "lucide-react";
+import { X, Receipt, User as UserIcon, FileText, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ETransactionStatus } from "@prisma/client";
+import { syncTransactionStatus } from "@/server-actions/irembo-pay/admin";
 import { ContactClientButtons } from "@/components/buttons/ContactClientButtons";
 import { TransactionStatusBadge } from "../TransactionStatusBadge";
 import { TransactionProviderBadge } from "../TransactionProviderBadge";
 
 export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction: TTransactionAdmin; onClose: () => void }) => {
      const { clientSubscription } = transaction;
+     const plan = transaction.subscription ?? clientSubscription.subscription;
+     const router = useRouter();
+     const [status, setStatus] = useState<ETransactionStatus>(transaction.transactionStatus);
+     const [expiryAt, setExpiryAt] = useState<Date | null>(clientSubscription.expiryAt);
+     const [syncing, setSyncing] = useState(false);
+
+     // Pending IremboPay transactions are re-checked with IremboPay as soon as they're viewed, so
+     // a payment whose webhook never landed gets activated (and a stale one cancelled) right here.
+     const shouldSync = transaction.provider === "IREMBO_PAY" && transaction.transactionStatus === "PENDING" && !!transaction.invoiceNumber;
+     useEffect(() => {
+          if (!shouldSync) return;
+          let active = true;
+          setSyncing(true);
+          syncTransactionStatus(transaction.id)
+               .then((res) => {
+                    if (!active) return;
+                    if (res.error) return void toast.error(res.error);
+                    if (res.transactionStatus) setStatus(res.transactionStatus);
+                    if (res.expiryAt !== undefined) setExpiryAt(res.expiryAt);
+                    if (res.state === "PAID") toast.success("IremboPay confirms this payment — subscription activated");
+                    else if (res.state === "CANCELLED") toast.info("Unpaid for over 24 hours — transaction cancelled");
+                    if (res.state !== "PENDING") router.refresh();
+               })
+               .finally(() => active && setSyncing(false));
+          return () => { active = false; };
+     }, [shouldSync, transaction.id, router]);
 
      return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
@@ -33,7 +64,12 @@ export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction
                               </button>
                          </div>
                          <div className="flex flex-wrap gap-2 mt-4">
-                              <TransactionStatusBadge status={transaction.transactionStatus} />
+                              <TransactionStatusBadge status={status} />
+                              {syncing && (
+                                   <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-blue-100">
+                                        <Loader2 size={12} className="animate-spin" /> Checking IremboPay...
+                                   </span>
+                              )}
                               <TransactionProviderBadge provider={transaction.provider} />
                          </div>
                     </div>
@@ -64,10 +100,10 @@ export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction
                               <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Plan</h4>
                               <div className="bg-gray-800/50 rounded-lg p-4 flex items-center justify-between">
                                    <div>
-                                        <p className="text-sm font-semibold text-white">{clientSubscription.subscription.name}</p>
-                                        <p className="text-xs text-gray-500">{clientSubscription.expiryAt ? `Expires ${getDate(clientSubscription.expiryAt)}` : "No active expiry"}</p>
+                                        <p className="text-sm font-semibold text-white">{plan.name}</p>
+                                        <p className="text-xs text-gray-500">{expiryAt ? `Expires ${getDate(expiryAt)}` : "No active expiry"}</p>
                                    </div>
-                                   <p className="text-sm font-bold text-white">{clientSubscription.subscription.currency} {clientSubscription.subscription.price.toLocaleString()}</p>
+                                   <p className="text-sm font-bold text-white">{plan.currency} {plan.price.toLocaleString()}</p>
                               </div>
                          </section>
 

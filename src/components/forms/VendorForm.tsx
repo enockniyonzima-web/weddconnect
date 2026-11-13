@@ -16,7 +16,6 @@ import { EditIcon, Trash, UserRound, X } from "lucide-react";
 import { encryptPassword } from "@/util/bcryptFuncs";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { cn } from "@/lib/utils";
-import { FaCropSimple } from "react-icons/fa6";
 
 const DEFAULT_VENDOR_PASSWORD = "vendor@weddconnect";
 

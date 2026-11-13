@@ -166,6 +166,9 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                     toast.success("Payment verified with IremboPay — subscription activated");
                     queryClient.invalidateQueries();
                     window.location.reload();
+               } else if (invoice?.cancelled) {
+                    toast.info("Unpaid for over 24 hours — transaction cancelled");
+                    queryClient.invalidateQueries();
                } else {
                     toast.error(`IremboPay status: ${invoice?.paymentStatus ?? "not found"}`);
                }
