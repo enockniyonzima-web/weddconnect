@@ -5,6 +5,7 @@ import { ContactTypeFormBtn } from "@/components/forms/ContactTypeInput";
 import { SContactType } from "@/select-types/contact-type";
 import { fetchContactTypes } from "@/server-actions/contact-type.actions";
 import { useQuery } from "@tanstack/react-query";
+import { Contact } from "lucide-react";
 
 export const AdminContactTypeContainer = () => {
      const {data: types, isLoading} = useQuery({
@@ -12,31 +13,27 @@ export const AdminContactTypeContainer = () => {
           queryFn: () => fetchContactTypes(SContactType)
      });
 
-     if(isLoading) return <div className="w-full flex items-center justify-center p-[20px]">
-          <p className="text-sm text-gray-500">Loading contact types...</p>
-     </div>
      return (
-          <div className="w-full flex flex-col gap-4">
-               <h2 className="text-lg font-bold text-gray-100">Vendor Contact Types</h2>
-               <div className=" w-full flex-wrap flex items-center justify-between">
-                    <p className="text-sm text-gray-400">These the contact types that a vendor can be contacted by the client. Click to add more types.</p>
+          <section className="w-full rounded-2xl border border-gray-800 bg-gray-900/80 p-5 md:p-6">
+               <header className="mb-5 flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-blue-300"><Contact size={18} /></span>
+                         <div>
+                              <h2 className="text-base font-semibold text-white">Contact types</h2>
+                              <p className="mt-0.5 max-w-xl text-xs text-gray-500">The kinds of contact details a vendor can have (for example phone, email, WhatsApp). Each type you add here appears as a field in the vendor form.</p>
+                         </div>
+                    </div>
                     <ContactTypeFormBtn showBtnName showBtnIcon />
-               </div>
-               {
-                    !types || types.length === 0  ?  (
-                         <div className="w-full flex items-center justify-center p-[20px]">
-                              <p className="text-sm text-gray-500">No contact types found!</p>
-                         </div>
-                    ) : (
-                         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {
-                                   types.map((type, index) => <AdminContactTypeCard type={type} key={`contact-type-${index}`} />)
-                              }
-                         </div>
-                    )
-               }
-               
-          </div>
-          
+               </header>
+               {isLoading ? (
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((i) => <div key={i} className="h-28 animate-pulse rounded-xl border border-gray-800 bg-gray-900" />)}</div>
+               ) : !types || types.length === 0 ? (
+                    <p className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-sm text-gray-500">No contact types yet. Add one so vendors can be given contact details.</p>
+               ) : (
+                    <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                         {types.map((type, index) => <AdminContactTypeCard type={type} key={`contact-type-${index}`} />)}
+                    </div>
+               )}
+          </section>
      )
 }

@@ -26,7 +26,8 @@ export const MainForm = ({children, submitData, btnTitle, btnIcon, showSubmitBtn
                 return {message: res.message || "Submitted successfully"};
               } catch (error) {
                 console.error("Error submitting form:", error);
-                throw new Error("Application Error");
+                // Show the form's own explanation (e.g. "email already in use") instead of a generic error.
+                throw error instanceof Error && error.message ? error : new Error("Application Error");
               }finally {
                 setLoading(false);
               }

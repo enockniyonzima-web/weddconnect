@@ -9,8 +9,8 @@
 | **Developed by** | Desc Softlab Ltd — <info@descsoftlab.com> |
 | **Project Manager** | Dushime Brother (Desc Softlab Ltd) |
 | **Document version** | 1.0 |
-| **Handover date** | ____________________ |
-| **Classification** | Confidential — Client and appointed development team only |
+| **Handover date** |  |
+| **Classification** | Confidential - Client and appointed development team only |
 
 ---
 
@@ -62,18 +62,16 @@ Vendors are managed by admins. There is no self-service vendor portal at this ti
 |---|---|
 | Framework | Next.js 16 (App Router, React Server Components, Server Actions), React 19 |
 | Language | TypeScript 5 |
-| Database | PostgreSQL, accessed through Prisma ORM 7 (`@prisma/adapter-pg` driver adapter) |
+| Database | PostgreSQL, accessed through Prisma ORM 7  |
 | Authentication | NextAuth v4: Google OAuth and email/password, JWT sessions (2-hour lifetime) |
-| Payments | IremboPay: `@irembo/irembopay-node-sdk` on the server, IremboPay widget in the browser |
-| File storage | S3-compatible object storage (`@aws-sdk/client-s3`) |
-| UI | Tailwind CSS 3, Radix UI, Headless UI, Lucide and MUI icons, Motion, Tiptap (rich text editor) |
-| Client data fetching | TanStack Query |
+| Payments | IremboPay |
+| File storage | S3-compatible object storage |
+| UI | Tailwind CSS 3, Radix UI, Headless UI, Lucide and MUI icons, Motion, Tiptap (rich text editor)|
 | Validation | Zod |
-| Hosting | Vercel (application), Desc Managed PostgreSQL (database), Desc Hosting (object storage) |
+| Hosting | Vercel (application),  Desc Hosting (object storage & Managed PostgreSQL Database) |
 
-> **Note for developers:** Next.js 16 has breaking changes compared to earlier versions. Before changing framework-level code, read the documentation bundled with the installed version in `node_modules/next/dist/docs/` (see `AGENTS.md` in the repository).
 
----
+
 
 ## 4. Architecture
 
@@ -86,15 +84,15 @@ Vendors are managed by admins. There is no self-service vendor portal at this ti
 ┌──────────────────────── Vercel ────────────────────────┐
 │  Next.js 16 application                                 │
 │   • Server Components (pages, layouts)                  │
-│   • Server Actions  (src/server-actions/*)  ── all DB   │
+│   • Server Actions  (src/server-actions/*)  - all DB   │
 │   • Route Handlers  (src/app/api/*)            access   │
 │   • NextAuth        (/api/auth/*)                       │
 └───────┬───────────────────┬───────────────────┬────────┘
         │ Prisma (TCP/SSL)  │ S3 API            │ HTTPS
         ▼                   ▼                   ▼
- Desc Managed          Desc Hosting         IremboPay
- PostgreSQL            Object Storage       (invoices, widget,
-                       (images)              webhook → /api/irembo-pay/callback)
+  Desc Hosting          Desc Hosting         IremboPay
+ Managed PostgreSQL      Object Storage       (invoices, widget,
+      (Database)         (images)           webhook → /api/irembo-pay/callback)
 
  Google OAuth ◄── sign-in with Google
 ```
@@ -102,10 +100,10 @@ Vendors are managed by admins. There is no self-service vendor portal at this ti
 ### 4.2 How the code is organised
 
 - **Pages and layouts** (`src/app`) are mostly Server Components. They load data on the server and pass it to interactive Client Components.
-- **Server Actions** (`src/server-actions`) handle all database reads and writes, with one file per entity (for example `post.actions.ts`, `client.actions.ts`, `blog/blog-post.ts`). Client Components call them directly. Every action checks the caller's permissions (see Section 7).
+- **Server Actions** (`src/server-actions`) handle all database reads and writes, with one file per entity. Client Components call them directly. Every action checks the caller's permissions (see Section 7).
 - **Route Handlers** (`src/app/api`) are a small set of read endpoints, plus the NextAuth handler and the IremboPay webhook.
 - **Server-only internals** (`src/lib/server`) contain operations that must never be callable from the browser: account creation at sign-up and payment reconciliation.
-- **Select types** (`src/select-types`, `src/common/Entities.ts`) are reusable Prisma `select` shapes that define exactly which fields each screen loads.
+- **Select types** are reusable Prisma `select` shapes that define exactly which fields each screen loads.
 
 ### 4.3 Repository layout
 
@@ -182,13 +180,13 @@ The admin dashboard (`/dashboard/admin`) provides:
 - admin users, roles and permissions.
 
 ### 6.5 Media
-Images are uploaded **through the server** to the object storage bucket (`src/util/s3Helpers.ts`), and only admins can upload or delete them. The allowed image hosts for Next.js image optimisation are set in `next.config.ts`.
+Images are uploaded **through the server** to the object storage bucket (`src/util/s3Helpers.ts`), and only admins can upload or delete them.
 
 ---
 
 ## 7. Security model
 
-Every exported function in a `"use server"` file is reachable over HTTP, whether or not the UI calls it. For that reason, **every server action checks its caller** using `src/lib/auth-guard.ts`:
+Every exported function in a `"use server"` file is reachable over HTTP. **Every server action checks its caller** is guarded:
 
 | Helper | Used for |
 |---|---|

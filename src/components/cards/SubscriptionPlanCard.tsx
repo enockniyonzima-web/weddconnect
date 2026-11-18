@@ -11,11 +11,11 @@ interface SubscriptionPlanCardProps {
      isExpired?: boolean;
      /** Slot for the CTA — button, link, or disabled state element */
      cta?: ReactNode;
-     /** Show price in RWF equivalent below USD */
+     /** @deprecated Prices are shown in Rwf only; kept so existing callers still compile. */
      showRwf?: boolean;
 }
 
-export function SubscriptionPlanCard({ plan, isPopular, isCurrent, isExpired, cta, showRwf }: SubscriptionPlanCardProps) {
+export function SubscriptionPlanCard({ plan, isPopular, isCurrent, isExpired, cta }: SubscriptionPlanCardProps) {
      return (
           <div
                className={`relative rounded-2xl border p-6 flex flex-col gap-4 transition-all ${
@@ -55,10 +55,7 @@ export function SubscriptionPlanCard({ plan, isPopular, isCurrent, isExpired, ct
 
                {/* Price */}
                <div>
-                    <p className="text-2xl font-bold text-white">{plan.currency}{formatPrice(plan.price)}</p>
-                    {showRwf && (
-                         <p className="text-xs text-gray-500">~USD {formatPrice(plan.price / 1500)}</p>
-                    )}
+                    <p className="text-2xl font-bold text-white">Rwf {formatPrice(plan.price)}</p>
                </div>
 
                {/* Benefits */}

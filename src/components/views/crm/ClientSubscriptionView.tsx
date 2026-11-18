@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { createSubscriptionInvoice } from "@/server-actions/irembo-pay/invoice";
 import { loadIremboScript, payInvoice, pollInvoiceStatus } from "@/util/iremboWidget";
 import { showMainNotification } from "@/util/NotificationFuncs";
-import { ENotificationType, USD_TO_RWF_RATE } from "@/common/CommonTypes";
+import { ENotificationType } from "@/common/CommonTypes";
 import { formatPrice } from "@/util/stringFuncs";
 import Link from "next/link";
 
@@ -28,8 +28,6 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
      // Google sign-ups get a Client row with phone:"" auto-created on first login — they've
      // never actually given us a phone number, so (unlike returning clients) we still need to ask.
      const needsPhone = !user?.client?.phone;
-
-     const usdAmount = subscription.price / USD_TO_RWF_RATE;
 
      useEffect(() => () => cancelPoll.current?.(), []);
 
@@ -114,10 +112,6 @@ export const ClientSubscriptionView = ({ subscription, onComplete }: { subscript
                               {subscription.description && (
                                    <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-white/10">{subscription.description}</p>
                               )}
-                         </div>
-                         <div className="flex items-center justify-between text-xs text-gray-500 bg-white/5 rounded-lg px-4 py-2.5">
-                              <span>Equivalent in USD</span>
-                              <span className="text-white font-medium">USD {formatPrice(usdAmount)}</span>
                          </div>
                          {needsPhone && (
                               <label className="flex flex-col gap-1.5">
@@ -236,7 +230,7 @@ export const ClientSubscriptionViewBtn = ({ subscription, showBtnName = true, sh
                                         <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-600 text-white shadow-md shadow-blue-600/25"><Wallet size={16} strokeWidth={2} /></div>
                                         <div>
                                              <h3 className="text-sm font-semibold text-white">Subscribe to {subscription.name}</h3>
-                                             <p className="text-xs text-gray-400">${formatPrice(subscription.price)} / {subscription.durationUnit}</p>
+                                             <p className="text-xs text-gray-400">Rwf {formatPrice(subscription.price)} / {subscription.durationUnit}</p>
                                         </div>
                                    </div>
                                    <button type="button" onClick={() => setOpen(false)} title="Close" className="flex items-center justify-center h-8 w-8 rounded-lg border border-white/10 bg-white/5 text-gray-400 cursor-pointer transition-all hover:bg-white/10 hover:text-white hover:border-white/20"><X size={15} strokeWidth={2} /></button>
