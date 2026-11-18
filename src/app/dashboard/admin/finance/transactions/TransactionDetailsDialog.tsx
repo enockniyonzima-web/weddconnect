@@ -1,7 +1,7 @@
 "use client";
 
 import { TTransactionAdmin } from "@/select-types/transaction";
-import { formatPrice } from "@/util/stringFuncs";
+import { formatRwf } from "@/lib/admin/format";
 import { getDate } from "@/util/DateFunctions";
 import { X, Receipt, User as UserIcon, FileText, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { ETransactionStatus } from "@prisma/client";
 import { syncTransactionStatus } from "@/server-actions/irembo-pay/admin";
 import { ContactClientButtons } from "@/components/buttons/ContactClientButtons";
-import { TransactionStatusBadge } from "../TransactionStatusBadge";
+import { ResultBadge } from "./TransactionsTable";
 import { TransactionProviderBadge } from "../TransactionProviderBadge";
 
 export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction: TTransactionAdmin; onClose: () => void }) => {
@@ -64,7 +64,7 @@ export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction
                               </button>
                          </div>
                          <div className="flex flex-wrap gap-2 mt-4">
-                              <TransactionStatusBadge status={status} />
+                              <ResultBadge tx={{ transactionStatus: status, status: transaction.status }} />
                               {syncing && (
                                    <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-blue-100">
                                         <Loader2 size={12} className="animate-spin" /> Checking IremboPay...
@@ -79,8 +79,8 @@ export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction
                          <section className="flex flex-col gap-3">
                               <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Payment Summary</h4>
                               <div className="grid grid-cols-2 gap-3">
-                                   <DetailItem label="Amount" value={`Rwf ${formatPrice(transaction.amount)}`} emphasize />
-                                   <DetailItem label="Unit Price × Qty" value={`Rwf ${formatPrice(transaction.price)} × ${transaction.quantity}`} />
+                                   <DetailItem label="Amount" value={formatRwf(transaction.amount)} emphasize />
+                                   <DetailItem label="Unit Price × Qty" value={`${formatRwf(transaction.price)} × ${transaction.quantity}`} />
                                    <DetailItem label="Method" value={transaction.paymentMethod || transaction.transactionMethod || "—"} />
                                    <DetailItem label="Pay Number" value={transaction.payNumber || "—"} />
                                    <DetailItem label="Created" value={getDate(transaction.createdAt)} />
@@ -103,7 +103,7 @@ export const TransactionDetailsDialog = ({ transaction, onClose }: { transaction
                                         <p className="text-sm font-semibold text-white">{plan.name}</p>
                                         <p className="text-xs text-gray-500">{expiryAt ? `Expires ${getDate(expiryAt)}` : "No active expiry"}</p>
                                    </div>
-                                   <p className="text-sm font-bold text-white">{plan.currency} {plan.price.toLocaleString()}</p>
+                                   <p className="text-sm font-bold text-white">{formatRwf(plan.price)}</p>
                               </div>
                          </section>
 

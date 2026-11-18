@@ -1,12 +1,12 @@
 "use client";
 
 import { TTransactionAdmin } from "@/select-types/transaction";
-import { formatPrice } from "@/util/stringFuncs";
+import { formatRwf } from "@/lib/admin/format";
 import { getDate } from "@/util/DateFunctions";
 import { X, ShieldCheck, AlertCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { ContactClientButtons } from "@/components/buttons/ContactClientButtons";
-import { TransactionStatusBadge } from "../TransactionStatusBadge";
+import { ResultBadge } from "./TransactionsTable";
 
 export const ClientDetailsDialog = ({
      transaction,
@@ -65,7 +65,7 @@ export const ClientDetailsDialog = ({
                                              {clientSubscription.expiryAt ? (expired ? `Expired ${getDate(clientSubscription.expiryAt)}` : `Active · expires ${getDate(clientSubscription.expiryAt)}`) : "No active expiry"}
                                         </p>
                                    </div>
-                                   <p className="text-sm font-bold text-white">{clientSubscription.subscription.currency} {clientSubscription.subscription.price.toLocaleString()}</p>
+                                   <p className="text-sm font-bold text-white">{formatRwf(clientSubscription.subscription.price)}</p>
                               </div>
                          </section>
 
@@ -80,10 +80,10 @@ export const ClientDetailsDialog = ({
                                    {recentTransactions.map((tx) => (
                                         <div key={tx.id} className="flex items-center justify-between py-2.5 gap-3">
                                              <div className="flex flex-col gap-0.5 min-w-0">
-                                                  <span className="text-sm text-gray-300">Rwf {formatPrice(tx.amount)}</span>
+                                                  <span className="text-sm text-gray-300">{formatRwf(tx.amount)}</span>
                                                   <span className="text-xs text-gray-600">{getDate(tx.createdAt)}</span>
                                              </div>
-                                             <TransactionStatusBadge status={tx.transactionStatus} />
+                                             <ResultBadge tx={tx} />
                                         </div>
                                    ))}
                               </div>

@@ -1,234 +1,211 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchSubscriptions } from "@/server-actions/subscription.actions";
-import { SAdminSubscriptionCard, TAdminSubscriptionCard } from "@/select-types/subscription";
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
+import { Layers, Users, Clock, BadgeCheck, BadgeX, X, CheckCircle, Search, Wallet, ArrowRight, Phone } from "lucide-react";
+import type { TPlanStats } from "@/lib/admin/clients-report";
+import { formatRwf, formatCount, formatDate, relativeDays } from "@/lib/admin/format";
 import { SubscriptionFormBtn } from "@/components/forms/crm/SubscriptionForm";
-import {
-     Loader2, Wallet, Users, Clock, BadgeCheck, BadgeX, Zap,
-     Eye, X, TrendingUp, Calendar, CheckCircle,
-} from "lucide-react";
-import { format } from "date-fns";
+import { InfoTip } from "@/components/admin/insights/InfoTip";
+import { EmptyState } from "@/components/admin/insights/StatCard";
 
-function SubscriptionDrawer({ sub, onClose }: { sub: TAdminSubscriptionCard; onClose: () => void }) {
-     const clientCount = sub._count.clientSubscriptions;
-     const totalRevenue = sub.clientSubscriptions.reduce(
-          (acc, cs) => acc + cs.transactions.reduce((a, t) => a + t.amount, 0), 0
-     );
+const STATUS_FILTERS = [
+     { value: "all", label: "All plans" },
+     { value: "on", label: "For sale" },
+     { value: "off", label: "Switched off" },
+] as const;
+
+function PlanDrawer({ plan, rangeLabel, onClose }: { plan: TPlanStats; rangeLabel: string; onClose: () => void }) {
+     const [q, setQ] = useState("");
+     const now = Date.now();
+     const members = plan.members.filter((m) => !q || m.name.toLowerCase().includes(q.toLowerCase()) || m.phone?.includes(q));
 
      return (
           <div className="fixed inset-0 z-50 flex justify-end">
-               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-               <div className="relative w-full max-w-md h-full bg-gray-950 border-l border-gray-800 flex flex-col overflow-y-auto shadow-2xl">
-                    {/* Header */}
-                    <div className="sticky top-0 z-10 bg-gray-950/95 backdrop-blur border-b border-gray-800 px-5 py-4 flex items-center justify-between gap-3">
+               <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+               <motion.aside
+                    initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                    className="relative flex h-full w-full max-w-md flex-col overflow-y-auto border-l border-gray-800 bg-gray-950 shadow-2xl"
+               >
+                    <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-gray-800 bg-gray-950/95 px-5 py-4 backdrop-blur">
                          <div className="flex items-center gap-3">
-                              <div className="size-9 rounded-xl bg-blue-600/15 border border-blue-600/20 flex items-center justify-center shrink-0">
-                                   <Wallet size={16} className="text-blue-400" />
-                              </div>
+                              <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/15 text-blue-300"><Layers size={18} /></div>
                               <div>
-                                   <h2 className="text-sm font-bold text-white">{sub.name}</h2>
-                                   <p className="text-xs text-gray-500">{sub.duration} {sub.durationUnit}</p>
+                                   <h2 className="text-base font-bold text-white">{plan.name}</h2>
+                                   <p className="text-xs text-gray-500">{formatRwf(plan.priceRwf)} · {plan.duration} {plan.durationUnit}{plan.duration === 1 ? "" : "s"}</p>
                               </div>
                          </div>
-                         <button onClick={onClose} className="size-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-500 hover:text-white transition-colors">
-                              <X size={15} />
-                         </button>
+                         <button onClick={onClose} aria-label="Close" className="flex size-8 items-center justify-center rounded-lg border border-gray-800 bg-gray-900 text-gray-500 hover:text-white"><X size={15} /></button>
                     </div>
 
                     <div className="flex flex-col gap-5 p-5">
-                         {/* Stats */}
                          <div className="grid grid-cols-2 gap-3">
                               {[
-                                   { label: "Subscribers", value: clientCount, icon: Users, color: "text-blue-400" },
-                                   { label: "Revenue (GHS)", value: totalRevenue.toLocaleString(), icon: TrendingUp, color: "text-green-400" },
-                                   { label: "Price", value: `${sub.price.toLocaleString()} ${sub.currency}`, icon: Wallet, color: "text-purple-400" },
-                                   { label: "Duration", value: `${sub.duration} ${sub.durationUnit}`, icon: Clock, color: "text-orange-400" },
-                              ].map(({ label, value, icon: Icon, color }) => (
-                                   <div key={label} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex flex-col gap-1.5">
-                                        <div className="flex items-center gap-1.5 text-xs text-gray-500"><Icon size={11} className={color} />{label}</div>
-                                        <p className="text-sm font-bold text-white">{value}</p>
-                                   </div>
+                                   { label: "Active now", value: formatCount(plan.active), cls: "text-emerald-300", href: `/dashboard/admin/clients/active?plan=${plan.id}` },
+                                   { label: "Expired", value: formatCount(plan.expired), cls: "text-rose-300", href: `/dashboard/admin/clients/expired?plan=${plan.id}` },
+                                   { label: `Earned · ${rangeLabel}`, value: formatRwf(plan.revenue), cls: "text-white", href: `/dashboard/admin/finance/transactions?group=paid&plan=${plan.id}` },
+                                   { label: "Payments", value: formatCount(plan.payments), cls: "text-white", href: `/dashboard/admin/finance/transactions?group=paid&plan=${plan.id}` },
+                              ].map((s) => (
+                                   <Link key={s.label} href={s.href} className="group rounded-2xl border border-gray-800 bg-gray-900 p-4 transition-colors hover:border-gray-700">
+                                        <p className="text-xs text-gray-500">{s.label}</p>
+                                        <p className={`mt-1 text-lg font-bold tabular-nums ${s.cls}`}>{s.value}</p>
+                                        <span className="mt-1 inline-flex items-center gap-1 text-[11px] text-gray-500 group-hover:text-gray-300">Open <ArrowRight size={10} /></span>
+                                   </Link>
                               ))}
                          </div>
 
-                         {/* Status & active */}
-                         <div className="flex items-center gap-2">
-                              <span className={`flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full border ${sub.isActive ? "bg-green-950/50 text-green-400 border-green-800/40" : "bg-gray-800 text-gray-500 border-gray-700"}`}>
-                                   {sub.isActive ? <BadgeCheck size={11} /> : <BadgeX size={11} />}
-                                   {sub.isActive ? "Active" : "Inactive"}
-                              </span>
-                         </div>
+                         {plan.description && (
+                              <div>
+                                   <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Description</p>
+                                   <p className="text-sm leading-relaxed text-gray-300">{plan.description}</p>
+                              </div>
+                         )}
 
-                         {/* Description */}
-                         <div className="flex flex-col gap-1.5">
-                              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Description</p>
-                              <p className="text-sm text-gray-300 leading-relaxed">{sub.description}</p>
-                         </div>
-
-                         {/* Benefits */}
-                         {sub.benefits.length > 0 && (
-                              <div className="flex flex-col gap-2">
-                                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Benefits</p>
+                         {plan.benefits.length > 0 && (
+                              <div>
+                                   <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">What clients get</p>
                                    <ul className="flex flex-col gap-1.5">
-                                        {sub.benefits.map((b, i) => (
-                                             <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                                                  <CheckCircle size={12} className="text-blue-500 shrink-0" />{b}
-                                             </li>
-                                        ))}
+                                        {plan.benefits.map((b, i) => <li key={i} className="flex items-center gap-2 text-sm text-gray-300"><CheckCircle size={13} className="shrink-0 text-blue-400" />{b}</li>)}
                                    </ul>
                               </div>
                          )}
 
-                         {/* Clients */}
-                         <div className="flex flex-col gap-2">
-                              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Subscribers ({clientCount})</p>
-                              {sub.clientSubscriptions.length === 0 ? (
-                                   <p className="text-xs text-gray-600 py-2">No subscribers yet</p>
+                         <div>
+                              <div className="mb-2 flex items-center justify-between">
+                                   <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Clients on this plan ({formatCount(plan.subscribers)})</p>
+                                   {plan.subscribers > 100 && <Link href={`/dashboard/admin/clients/all?plan=${plan.id}`} className="text-xs text-blue-300 hover:text-blue-200">See all</Link>}
+                              </div>
+                              {plan.members.length > 6 && (
+                                   <div className="relative mb-2">
+                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                                        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find a client" className="h-9 w-full rounded-lg border border-gray-800 bg-gray-900 pl-8 pr-3 text-sm text-gray-200 outline-none focus:border-blue-500" />
+                                   </div>
+                              )}
+                              {members.length === 0 ? (
+                                   <p className="py-3 text-xs text-gray-600">{plan.members.length ? "No match" : "No clients on this plan yet"}</p>
                               ) : (
-                                   <div className="flex flex-col divide-y divide-gray-800">
-                                        {sub.clientSubscriptions.map((cs) => {
-                                             const clientRevenue = cs.transactions.reduce((a, t) => a + t.amount, 0);
+                                   <ul className="flex flex-col divide-y divide-gray-800">
+                                        {members.map((m) => {
+                                             const active = m.expiryAt && new Date(m.expiryAt).getTime() > now;
                                              return (
-                                                  <div key={cs.id} className="flex items-center justify-between py-2.5 gap-3">
+                                                  <li key={m.id} className="flex items-center justify-between gap-3 py-2.5">
                                                        <div className="min-w-0">
-                                                            <p className="text-xs font-medium text-white truncate">{cs.client.name}</p>
-                                                            <div className="flex items-center gap-2 mt-0.5">
-                                                                 <span className="text-xs text-gray-600 flex items-center gap-0.5"><Calendar size={9} />{format(new Date(cs.createdAt), "MMM d, yyyy")}</span>
-                                                                 {cs.expiryAt && <span className="text-xs text-gray-600">· exp {format(new Date(cs.expiryAt), "MMM d")}</span>}
-                                                            </div>
+                                                            <Link href={`/dashboard/admin/clients/all?q=${encodeURIComponent(m.phone || m.name)}`} className="block truncate text-sm font-medium text-white hover:text-blue-200">{m.name}</Link>
+                                                            <p className="text-xs text-gray-500">Since {formatDate(m.since)}{m.expiryAt ? ` · ${active ? "ends" : "ended"} ${formatDate(m.expiryAt)}` : ""}</p>
                                                        </div>
-                                                       <span className="text-xs font-semibold text-green-400 shrink-0">GHS {clientRevenue.toLocaleString()}</span>
-                                                  </div>
+                                                       <div className="flex shrink-0 items-center gap-2">
+                                                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${active ? "bg-emerald-500/10 text-emerald-300" : m.expiryAt ? "bg-rose-500/10 text-rose-300" : "bg-gray-700/40 text-gray-400"}`}>
+                                                                 {active ? relativeDays(m.expiryAt!) : m.expiryAt ? "Expired" : "Not started"}
+                                                            </span>
+                                                            {m.phone && <a href={`tel:${m.phone}`} aria-label={`Call ${m.name}`} className="flex size-7 items-center justify-center rounded-lg bg-gray-800 text-gray-400 hover:text-white"><Phone size={12} /></a>}
+                                                       </div>
+                                                  </li>
                                              );
                                         })}
-                                   </div>
+                                   </ul>
                               )}
                          </div>
 
-                         {/* Edit button */}
-                         <div className="pt-2 border-t border-gray-800">
-                              <SubscriptionFormBtn categoryId={sub.id} showBtnName showBtnIcon btnSize="md" />
+                         <div className="border-t border-gray-800 pt-3">
+                              <SubscriptionFormBtn categoryId={plan.id} showBtnName showBtnIcon btnSize="md" />
                          </div>
                     </div>
-               </div>
+               </motion.aside>
           </div>
      );
 }
 
-export default function SubscriptionsContainer() {
-     const [viewing, setViewing] = useState<TAdminSubscriptionCard | null>(null);
+export default function PlansBoard({ plans, rangeLabel }: { plans: TPlanStats[]; rangeLabel: string }) {
+     const [viewingId, setViewingId] = useState<number | null>(null);
+     const [q, setQ] = useState("");
+     const [status, setStatus] = useState<(typeof STATUS_FILTERS)[number]["value"]>("all");
+     const viewing = plans.find((p) => p.id === viewingId) ?? null;
+     const maxActive = Math.max(1, ...plans.map((p) => p.active));
+     const topEarner = useMemo(() => plans.reduce<TPlanStats | null>((a, b) => (b.revenue > (a?.revenue ?? 0) ? b : a), null), [plans]);
 
-     const { data: subscriptions = [], isLoading } = useQuery({
-          queryKey: ["admin-subscriptions-container"],
-          queryFn: () => fetchSubscriptions(SAdminSubscriptionCard),
-     });
+     const shown = plans.filter((p) => (status === "all" || (status === "on" ? p.isActive : !p.isActive)) && (!q || p.name.toLowerCase().includes(q.toLowerCase())));
 
      return (
-          <div className="w-full flex flex-col gap-6 px-4 sm:px-6 py-4">
-               {/* Top bar */}
-               <div className="flex items-center justify-between gap-4">
-                    <p className="text-sm text-gray-400">{subscriptions.length} plan{subscriptions.length !== 1 ? "s" : ""} available</p>
-                    <SubscriptionFormBtn showBtnName showBtnIcon btnSize="md" />
+          <div className="flex flex-col gap-5">
+               <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-gray-800 bg-gray-900/80 p-4">
+                    <div className="relative min-w-[200px] flex-1">
+                         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search plans" className="h-10 w-full rounded-xl border border-gray-700 bg-gray-900 pl-9 pr-3 text-sm text-gray-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
+                    </div>
+                    <div className="flex gap-1.5">
+                         {STATUS_FILTERS.map((s) => (
+                              <button key={s.value} onClick={() => setStatus(s.value)} className={`relative rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${status === s.value ? "text-white" : "border border-gray-800 bg-gray-900 text-gray-400 hover:text-white"}`}>
+                                   {status === s.value && <motion.span layoutId="plan-filter" className="absolute inset-0 rounded-full bg-blue-600" transition={{ type: "spring", duration: 0.4 }} />}
+                                   <span className="relative">{s.label}</span>
+                              </button>
+                         ))}
+                    </div>
                </div>
 
-               {/* Grid */}
-               {isLoading ? (
-                    <div className="flex justify-center py-20">
-                         <Loader2 size={24} className="animate-spin text-blue-500" />
-                    </div>
-               ) : subscriptions.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-600">
-                         <Wallet size={36} strokeWidth={1} />
-                         <p className="text-sm">No subscription plans yet</p>
-                    </div>
+               {shown.length === 0 ? (
+                    <EmptyState icon={<Wallet size={20} />} title={plans.length ? "No plans match" : "No subscription plans yet"} text={plans.length ? "Try another search or filter." : "Create the first plan with the “Add” button above."} />
                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                         {subscriptions.map((sub, i) => {
-                              const clientCount = sub._count.clientSubscriptions;
-                              const revenue = sub.clientSubscriptions.reduce(
-                                   (acc, cs) => acc + cs.transactions.reduce((a, t) => a + t.amount, 0), 0
-                              );
-                              return (
-                                   <div key={sub.id} className="relative bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-col gap-4 hover:border-gray-700 transition-colors">
-                                        {i === 1 && (
-                                             <span className="absolute -top-3 left-5 flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white">
-                                                  <Zap size={10} /> Popular
-                                             </span>
-                                        )}
-
-                                        {/* Header */}
-                                        <div className="flex items-start justify-between gap-2">
-                                             <div className="size-10 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center shrink-0">
-                                                  <Wallet size={18} className="text-blue-400" />
-                                             </div>
-                                             <div className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${sub.isActive ? "bg-green-950/50 text-green-400 border border-green-800/40" : "bg-gray-800 text-gray-500 border border-gray-700"}`}>
-                                                  {sub.isActive ? <BadgeCheck size={11} /> : <BadgeX size={11} />}
-                                                  {sub.isActive ? "Active" : "Inactive"}
-                                             </div>
-                                        </div>
-
-                                        {/* Name & description */}
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                         {shown.map((p, i) => (
+                              <motion.div
+                                   key={p.id}
+                                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.05 }}
+                                   className="group relative flex flex-col gap-4 rounded-2xl border border-gray-800 bg-gray-900/80 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-700 hover:shadow-xl hover:shadow-black/30"
+                              >
+                                   {topEarner?.id === p.id && (
+                                        <span className="absolute -top-3 left-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-1 text-xs font-bold text-white shadow">Top earner</span>
+                                   )}
+                                   <div className="flex items-start justify-between gap-2">
                                         <div>
-                                             <h3 className="text-base font-bold text-white">{sub.name}</h3>
-                                             <p className="text-xs text-gray-500 mt-1 line-clamp-2">{sub.description}</p>
+                                             <h3 className="text-lg font-bold text-white">{p.name}</h3>
+                                             <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-500"><Clock size={11} /> {p.duration} {p.durationUnit}{p.duration === 1 ? "" : "s"}</p>
                                         </div>
+                                        <span className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold ${p.isActive ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300" : "border-gray-700 bg-gray-800 text-gray-400"}`}>
+                                             {p.isActive ? <BadgeCheck size={12} /> : <BadgeX size={12} />}{p.isActive ? "For sale" : "Switched off"}
+                                        </span>
+                                   </div>
 
-                                        {/* Price */}
-                                        <div className="flex items-baseline gap-1">
-                                             <span className="text-2xl font-bold text-white">{sub.price.toLocaleString()}</span>
-                                             <span className="text-xs text-gray-500">{sub.currency}</span>
-                                        </div>
-
-                                        {/* Stats */}
-                                        <div className="grid grid-cols-3 gap-2">
-                                             <div className="bg-gray-950 rounded-xl px-3 py-2 flex flex-col gap-0.5">
-                                                  <div className="flex items-center gap-1 text-xs text-gray-600"><Clock size={10} /> Duration</div>
-                                                  <p className="text-xs font-semibold text-gray-300">{sub.duration} {sub.durationUnit}</p>
-                                             </div>
-                                             <div className="bg-gray-950 rounded-xl px-3 py-2 flex flex-col gap-0.5">
-                                                  <div className="flex items-center gap-1 text-xs text-gray-600"><Users size={10} /> Clients</div>
-                                                  <p className="text-xs font-semibold text-gray-300">{clientCount}</p>
-                                             </div>
-                                             <div className="bg-gray-950 rounded-xl px-3 py-2 flex flex-col gap-0.5">
-                                                  <div className="flex items-center gap-1 text-xs text-gray-600"><TrendingUp size={10} /> Revenue</div>
-                                                  <p className="text-xs font-semibold text-green-400">{revenue.toLocaleString()}</p>
-                                             </div>
-                                        </div>
-
-                                        {/* Benefits preview */}
-                                        {sub.benefits && sub.benefits.length > 0 && (
-                                             <ul className="flex flex-col gap-1">
-                                                  {sub.benefits.slice(0, 3).map((b, j) => (
-                                                       <li key={j} className="flex items-center gap-1.5 text-xs text-gray-400">
-                                                            <span className="size-1 rounded-full bg-blue-500 shrink-0" />{b}
-                                                       </li>
-                                                  ))}
-                                                  {sub.benefits.length > 3 && (
-                                                       <li className="text-xs text-gray-600">+{sub.benefits.length - 3} more</li>
-                                                  )}
-                                             </ul>
+                                   <div className="flex items-baseline gap-1.5">
+                                        <span className="text-3xl font-bold tracking-tight text-white tabular-nums">{formatRwf(p.priceRwf)}</span>
+                                        {p.currency === "USD" && (
+                                             <InfoTip title="Price shown in Rwf" align="left">This plan is saved in USD ({p.price.toLocaleString()} USD). Clients are charged the Rwf amount shown, converted at the platform rate. Edit the plan and set its currency to RWF to remove the conversion.</InfoTip>
                                         )}
+                                   </div>
 
-                                        {/* Actions */}
-                                        <div className="pt-1 border-t border-gray-800 flex items-center gap-2">
-                                             <button
-                                                  onClick={() => setViewing(sub)}
-                                                  className="flex items-center gap-1.5 h-8 px-3 text-xs rounded-lg border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-colors"
-                                             >
-                                                  <Eye size={13} /> View
-                                             </button>
-                                             <SubscriptionFormBtn categoryId={sub.id} showBtnName showBtnIcon btnSize="sm" />
+                                   <div>
+                                        <div className="mb-1.5 flex items-center justify-between text-xs">
+                                             <span className="flex items-center gap-1 text-gray-400"><Users size={12} /> {formatCount(p.active)} active now</span>
+                                             <span className="text-gray-500">{formatCount(p.subscribers)} ever</span>
+                                        </div>
+                                        <div className="h-2 overflow-hidden rounded-full bg-gray-800">
+                                             <motion.div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" initial={{ width: 0 }} animate={{ width: `${(p.active / maxActive) * 100}%` }} transition={{ duration: 0.6, delay: 0.1 + i * 0.05 }} />
                                         </div>
                                    </div>
-                              );
-                         })}
+
+                                   <div className="grid grid-cols-2 gap-2">
+                                        <div className="rounded-xl bg-gray-950/60 px-3 py-2.5">
+                                             <p className="flex items-center gap-1 text-[11px] text-gray-500">Earned <InfoTip title="Earned">Successful payments for this plan · {rangeLabel}.</InfoTip></p>
+                                             <p className="text-sm font-semibold text-emerald-300 tabular-nums">{formatRwf(p.revenue)}</p>
+                                        </div>
+                                        <div className="rounded-xl bg-gray-950/60 px-3 py-2.5">
+                                             <p className="text-[11px] text-gray-500">Expired / not started</p>
+                                             <p className="text-sm font-semibold text-gray-200 tabular-nums">{formatCount(p.expired)} / {formatCount(p.notStarted)}</p>
+                                        </div>
+                                   </div>
+
+                                   <div className="mt-auto flex items-center gap-2 border-t border-gray-800 pt-3">
+                                        <button onClick={() => setViewingId(p.id)} className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-blue-500">
+                                             View clients & details <ArrowRight size={12} />
+                                        </button>
+                                        <SubscriptionFormBtn categoryId={p.id} showBtnName showBtnIcon btnSize="sm" />
+                                   </div>
+                              </motion.div>
+                         ))}
                     </div>
                )}
 
-               {/* Drawer */}
-               {viewing && <SubscriptionDrawer sub={viewing} onClose={() => setViewing(null)} />}
+               <AnimatePresence>{viewing && <PlanDrawer plan={viewing} rangeLabel={rangeLabel} onClose={() => setViewingId(null)} />}</AnimatePresence>
           </div>
      );
 }

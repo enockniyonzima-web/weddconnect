@@ -1,7 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { SVendorEdit } from "@/select-types/vendor";
-import { createVendor, deleteVendor, fetchVendorById, updateVendor } from "@/server-actions/vendor.actions";
+import { findAccountByEmail, createVendor, deleteVendor, fetchVendorById, updateVendor } from "@/server-actions/vendor.actions";
 import { useQuery } from "@tanstack/react-query";
 import { MainForm, MainFormLoader } from "./MainForm";
 import { EmailInput, InputSize, TextInput } from "../ui/forms/text-input";
@@ -19,7 +21,11 @@ import { cn } from "@/lib/utils";
 
 const DEFAULT_VENDOR_PASSWORD = "vendor@weddconnect";
 
+const emailTakenMessage = (email: string, acc: { type: string; name: string | null }) =>
+     `${email} is already used by ${acc.type === "admin" ? "an" : "a"} ${acc.type} account${acc.name ? ` (${acc.name})` : ""}. Each account needs its own email, so please use a different one.`;
+
 export const VendorForm = ({vendorId, onComplete}:{vendorId?: number, onComplete: () => void}) => {
+     const router = useRouter();
      const {data:vendor, isLoading:fetchingVendor} = useQuery({
           queryKey: ['vendor-form', vendorId],
           queryFn: () => vendorId ? fetchVendorById(vendorId, SVendorEdit) : null
@@ -36,6 +42,8 @@ export const VendorForm = ({vendorId, onComplete}:{vendorId?: number, onComplete
           const password = await encryptPassword(DEFAULT_VENDOR_PASSWORD);
           if(!vendor) {
                if(!name || !email) throw new Error("Name and email are required to create a vendor");
+               const existing = await findAccountByEmail(email);
+               if(existing) throw new Error(emailTakenMessage(email, existing));
                const newVendor = await createVendor({
                     name, status: true,
                     user: {create: {email, password, type: "vendor", image: ""}},
@@ -45,13 +53,21 @@ export const VendorForm = ({vendorId, onComplete}:{vendorId?: number, onComplete
                          }
                     }
                });
-               if(!newVendor) throw new Error("Failed to create vendor");
+               if(!newVendor) throw new Error("Could not create the vendor. Please check the details and try again.");
                onComplete();
                queryClient.invalidateQueries();
+               router.refresh();
                return {message: "Vendor created successfully"};
+          }
+          const newEmail = email?.trim();
+          if(newEmail && newEmail.toLowerCase() !== vendor.user.email.toLowerCase()) {
+               const existing = await findAccountByEmail(newEmail);
+               if(existing) throw new Error(emailTakenMessage(newEmail, existing));
           }
           const updatedVendor = await updateVendor(vendor.id, {
                ...(name && {name}),
+               // Email changes were previously ignored on edit.
+               ...(newEmail && newEmail !== vendor.user.email && {user: {update: {email: newEmail}}}),
                ...(contacts.length > 0 && {
                     contacts: {
                          deleteMany: {},
@@ -62,6 +78,7 @@ export const VendorForm = ({vendorId, onComplete}:{vendorId?: number, onComplete
           if(!updatedVendor) throw new Error("Failed to update vendor");
           onComplete();
           queryClient.invalidateQueries();
+               router.refresh();
           return {message: "Vendor updated successfully"};
      }
 
@@ -73,6 +90,7 @@ export const VendorForm = ({vendorId, onComplete}:{vendorId?: number, onComplete
                     if(!res) throw new Error("Failed to delete vendor. Please try again.");
                     onComplete();
                     queryClient.invalidateQueries();
+               router.refresh();
                })(),
                {
                     loading: "Deleting vendor...",
@@ -80,9 +98,6 @@ export const VendorForm = ({vendorId, onComplete}:{vendorId?: number, onComplete
                     error: error => error?.message || "Error deleting vendor"
                }
           )
-          if(!vendorId) return;
-          await deleteVendor(vendorId);
-          onComplete();
      }
 
      useEffect(() => {

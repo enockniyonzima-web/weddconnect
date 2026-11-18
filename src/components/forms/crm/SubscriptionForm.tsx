@@ -17,8 +17,10 @@ import { CheckInputGroup } from "@/components/ui/forms/check-input";
 import { EditIcon, PlusIcon, Wallet, X } from "lucide-react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () => void}) => {
+     const router = useRouter();
 
      const {data: subscription, isLoading} = useQuery({
           queryKey: ["subscription-form", id],
@@ -31,7 +33,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
      const submitData = async(data:FormData): Promise<{message?:string}> => {
           const name = data.get("name")?.toString().trim() || "";
           const price = parseInt(data.get("price")?.toString() || "0");
-          const currency = data.get("currency")?.toString().trim() || "USD";
+          const currency = data.get("currency")?.toString().trim() || "RWF";
           const description = data.get("description")?.toString().trim() || "";
           const duration = parseInt(data.get("duration")?.toString() || "0");
           const durationUnit = data.get("durationUnit")?.toString().trim() as TDurationUnit;
@@ -48,6 +50,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
                if(!newSub) throw new Error("Failed to create subscription");
                onComplete();
                queryClient.invalidateQueries();
+               router.refresh();
                return {message: "Subscription created successfully"};
           }
           const updates = await updateSubscription(subscription.id, {
@@ -64,6 +67,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
           if(!updates) throw new Error("Failed to update subscription");
           onComplete();
           queryClient.invalidateQueries();
+               router.refresh();
           return {message: "Subscription updated successfully"};
      }
      const handleDelete = async() => {
@@ -74,6 +78,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
                     if(!res) throw new Error("Failed to delete subscription");
                     onComplete();
                     queryClient.invalidateQueries();
+               router.refresh();
                })(),
                {
                     loading: "Deleting subscription...",
@@ -97,7 +102,7 @@ export const SubscriptionForm = ({id, onComplete}:{id?:number, onComplete: () =>
                     <TextInput name="name" label="Subscription Name" defaultValue={subscription?.name} placeholder="Enter subscription name" required={subscription ? false : true}  />
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3">
                          <NumberInput name="price" label="Price" inputMode="numeric" defaultValue={subscription?.price} placeholder="Enter subscription price" required={subscription ? false : true}  />
-                         <SelectInput name="currency" label="Currency" defaultValue={subscription?.currency} placeholder="Select currency" required={subscription ? false : true} values={["USD", "RWF"].map(v => ({ label: v, value: v }))}  />
+                         <SelectInput name="currency" label="Currency" defaultValue={subscription?.currency ?? "RWF"} placeholder="Select currency" required={subscription ? false : true} values={["RWF", "USD"].map(v => ({ label: v, value: v }))}  />
                     </div>
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3">
                          <NumberInput name="duration" label="Duration" inputMode="numeric" defaultValue={subscription?.duration} placeholder="Enter subscription duration" required={subscription ? false : true}  />

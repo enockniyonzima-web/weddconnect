@@ -21,6 +21,18 @@ export async function createVendor (data: Prisma.VendorCreateInput) {
 
 }
 
+/** Which kind of account (if any) already uses this email. Emails are unique across all accounts. */
+export async function findAccountByEmail(email: string): Promise<{ type: string; name: string | null } | null> {
+     await requireAdmin();
+     const user = await prisma.user.findFirst({
+          where: { email: { equals: email.trim(), mode: "insensitive" } },
+          select: { type: true, vendor: { select: { name: true } }, client: { select: { name: true } }, admin: { select: { name: true } } },
+     });
+     if (!user) return null;
+     const type = user.vendor ? "vendor" : user.client ? "client" : user.admin ? "admin" : user.type || "user";
+     return { type, name: user.vendor?.name ?? user.client?.name ?? user.admin?.name ?? null };
+}
+
 export async function updateVendor (id:number,data: Prisma.VendorUpdateInput) {
      try {     
           await requireAdmin();
@@ -47,6 +59,7 @@ export async function deleteVendor (id:number) {
                     return res;
                }
           );
+          RevalidatePages.vendor();
           return res
      } catch (error) {
           unstable_rethrow(error);

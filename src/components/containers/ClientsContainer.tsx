@@ -1,13 +1,18 @@
 "use client";
 
 import { TAdminClientSelect } from "@/app/dashboard/admin/clients/select-types";
-import { ENotificationType } from "@/common/CommonTypes";
+import { ENotificationType, USD_TO_RWF_RATE } from "@/common/CommonTypes";
 import { deleteClient } from "@/server-actions/client.actions";
 import { showMainNotification } from "@/util/NotificationFuncs";
 import { useState } from "react";
 import Image from "../ui/Image";
 import { X, Eye, Trash2, CheckCircle, XCircle, Plus, Calendar } from "lucide-react";
-import { createClientSubscription, updateClientSubscription } from "@/server-actions/client-subscription.actions";
+import { createClientSubscription, updateClientSubscription, approveManualTransaction } from "@/server-actions/client-subscription.actions";
+import { useRouter } from "next/navigation";
+import { classifyClient, CLIENT_STATUS_META } from "@/lib/admin/client-status";
+import { formatRwf, formatDate, relativeDays } from "@/lib/admin/format";
+import { TONES } from "@/components/admin/insights/StatCard";
+import { ChevronRight } from "lucide-react";
 import { getDaysCount, getFutureDate } from "@/util/DateFunctions";
 import { useSubscriptions } from "@/context/SubscriptionContext";
 import { TSubscription } from "@/common/Entities";
@@ -32,9 +37,14 @@ export const ClientsContainer = ({clients}:{clients: TAdminClientSelect[]}) => 
      )
 }
 
-const USDRate = 1450;
+// Same conversion IremboPay invoices use, so manual records and online payments agree in Rwf.
+const planPriceRwf = (p?: { price: number; currency?: string | null } | null) => (!p ? 0 : p.currency === "USD" ? Math.round(p.price * USD_TO_RWF_RATE) : p.price);
 
-export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDelete: (id:number) => void}) => {
+export type TClientPayments = { total: number; count: number; last: Date | null };
+
+export const ClientCard = ({client, onDelete, variant = "card", payments}:{client: TAdminClientSelect, onDelete: (id:number) => void, variant?: "card" | "row", payments?: TClientPayments}) => {
+     const router = useRouter();
+     const refresh = () => { queryClient.invalidateQueries(); router.refresh(); };
      const [deleting, setDeleting] = useState<Set<number>>(new Set());
      const [showDialog, setShowDialog] = useState(false);
      const [isProcessing, setIsProcessing] = useState(false);
@@ -46,6 +56,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           if(res) {
                toast.success("Deletion successful");
                onDelete(id);
+               refresh();
           } else {
                toast.error("Deletion failed");
           }
@@ -72,7 +83,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           if (!window.confirm(`Create ${selectedSub.name} subscription for ${client.name}? This will activate immediately.`)) return;
           
           setIsProcessing(true);
-          const amount = selectedSub.price * USDRate;
+          const amount = planPriceRwf(selectedSub);
           try {
                const subscriptionDuration = getDaysCount(selectedSub.duration ?? 0, selectedSub.durationUnit as TDurationUnit ?? "day");
                const expiryAt  = getFutureDate(subscriptionDuration);
@@ -86,9 +97,12 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                               amount,
                               price: amount,
                               status: "Approved",
+                              transactionStatus: "PAID",
+                              provider: "MANUAL",
                               quantity: 1,
                               payNumber: client.phone,
-                              transactionMethod: "Cash"
+                              transactionMethod: "Cash",
+                              subscription: {connect: {id: selectedSub.id}},
                          }
                     }
                });
@@ -96,8 +110,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                toast.success("Subscription created successfully");
                setShowDialog(false);
                setSelectedSub(null);
-               queryClient.invalidateQueries();
-               window.location.reload();
+               refresh();
           } catch {
                toast.error("An error occurred");
           } finally {
@@ -111,7 +124,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           setIsProcessing(true);
           const subscriptionDuration = getDaysCount(client.subscription?.subscription.duration ?? 0, client.subscription?.subscription.durationUnit as TDurationUnit ?? "day");
           const expiryAt  = getFutureDate(subscriptionDuration);
-          const amount = client.subscription?.transactions[0]?.amount || 0;
+          const amount = planPriceRwf(client.subscription?.subscription);
           
           try {
                const res = await updateClientSubscription(client.subscription?.id ?? -1, {
@@ -121,16 +134,18 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                               amount,
                               price: amount,
                               status: "Approved",
+                              transactionStatus: "PAID",
+                              provider: "MANUAL",
                               quantity: 1,
                               payNumber: client.phone,
-                              transactionMethod: "Cash"
+                              transactionMethod: "Cash",
+                              subscription: {connect: {id: client.subscription?.subscription.id}},
                          }
                     }
                })
                if(!res) return toast.error("Subscription renewal failed");
                toast.success("Subscription renewed successfully");
-               queryClient.invalidateQueries();
-               window.location.reload();
+               refresh();
           } finally {
                setIsProcessing(false);
           }
@@ -143,16 +158,11 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
           const subscriptionDuration = getDaysCount(client.subscription?.subscription.duration ?? 0, client.subscription?.subscription.durationUnit as TDurationUnit ?? "day");
           const expiryAt  = getFutureDate(subscriptionDuration);
           try {
-               const res = await updateClientSubscription(client.subscription?.id ?? -1, {
-                    expiryAt, 
-                    transactions: {
-                         update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Approved"}}
-                    }
-               })
+               // Marks the payment PAID (not just "Approved") so it is counted as money received.
+               const res = await approveManualTransaction(client.subscription?.id ?? -1, client.subscription?.transactions[0]?.id ?? -1, expiryAt)
                if(!res) return toast.error("Subscription approval failed");
                toast.success("Subscription approved successfully");
-               queryClient.invalidateQueries();
-               window.location.reload();
+               refresh();
           } finally {
                setIsProcessing(false);
           }
@@ -164,11 +174,10 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                const invoice = await checkInvoiceStatus(invoiceNumber);
                if (invoice?.paymentStatus === "PAID") {
                     toast.success("Payment verified with IremboPay — subscription activated");
-                    queryClient.invalidateQueries();
-                    window.location.reload();
+                    refresh();
                } else if (invoice?.cancelled) {
                     toast.info("Unpaid for over 24 hours — transaction cancelled");
-                    queryClient.invalidateQueries();
+                    refresh();
                } else {
                     toast.error(`IremboPay status: ${invoice?.paymentStatus ?? "not found"}`);
                }
@@ -185,13 +194,12 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                const res = await updateClientSubscription(client.subscription?.id ?? -1, {
                     expiryAt: null,
                     transactions: {
-                         update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Rejected"}}
+                         update: {where: {id: client.subscription?.transactions[0].id}, data: {status: "Rejected", transactionStatus: "CANCELLED", pendingKey: null}}
                     }
                })
                if(!res) return toast.error("Subscription rejection failed");
                toast.success("Subscription request rejected");
-               queryClient.invalidateQueries();
-               window.location.reload();
+               refresh();
           } finally {
                setIsProcessing(false);
           }
@@ -207,8 +215,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                })
                if(!res) return toast.error("Subscription cancellation failed");
                toast.success("Subscription cancelled successfully");
-               queryClient.invalidateQueries();
-               window.location.reload();
+               refresh();
           } finally {
                setIsProcessing(false);
           }
@@ -217,11 +224,73 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
      const isDeleting = deleting.has(client.id);
      const hasSubscription = !!client.subscription;
      const hasPendingTransaction = client.subscription && client.subscription.transactions && client.subscription.transactions.length > 0 && ( client.subscription.expiryAt == null || client.subscription.transactions[0].createdAt > client.subscription.expiryAt) ;
-     const isExpired = client.subscription?.expiryAt ? new Date(client.subscription.expiryAt) < new Date() : false;
-     const isActive = hasSubscription && !isExpired && !hasPendingTransaction;
+     // Same rule as the list tabs, so the buttons always match the list the client is shown in.
+     const status = classifyClient(client.subscription ? { expiryAt: client.subscription.expiryAt, hasPendingPayment: !!hasPendingTransaction } : null);
+     const isExpired = status === "expired";
+     const isActive = status === "active" || status === "expiring";
+     const statusMeta = CLIENT_STATUS_META[status];
+     const tone = TONES[statusMeta.tone];
 
      return (
           <>
+               {variant === "row" ? (
+                    <div className="group flex flex-col gap-4 rounded-2xl border border-gray-800 bg-gray-900/80 p-4 transition-all duration-300 hover:border-gray-700 hover:shadow-lg hover:shadow-black/20 lg:flex-row lg:items-center">
+                         <button type="button" onClick={() => setShowDialog(true)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
+                              <span className="relative shrink-0">
+                                   {client.user.image ? (
+                                        <Image src={client.user.image} alt={client.name} className="size-11 rounded-full object-cover border border-gray-700" />
+                                   ) : (
+                                        <span className="flex size-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/30 to-violet-500/30 text-base font-semibold text-white">{client.name.charAt(0).toUpperCase()}</span>
+                                   )}
+                                   <span className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full border-2 border-gray-900" style={{ background: tone.bar }} />
+                              </span>
+                              <span className="min-w-0">
+                                   <span className="block truncate text-sm font-semibold text-white group-hover:text-blue-200">{client.name}</span>
+                                   <span className="block truncate text-xs text-gray-500">{client.phone}{client.user.email ? ` · ${client.user.email}` : ""}</span>
+                              </span>
+                         </button>
+                         <div className="grid flex-[1.4] grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+                              <div>
+                                   <p className="text-gray-500">Status</p>
+                                   <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 font-semibold ${tone.soft}`}>{statusMeta.short}</span>
+                              </div>
+                              <div>
+                                   <p className="text-gray-500">Plan</p>
+                                   <p className="mt-1 truncate font-medium text-gray-200">{client.subscription?.subscription.name ?? "—"}</p>
+                              </div>
+                              <div>
+                                   <p className="text-gray-500">{isActive ? "Ends" : isExpired ? "Ended" : "Plan end"}</p>
+                                   <p className="mt-1 font-medium text-gray-200">{client.subscription?.expiryAt ? formatDate(client.subscription.expiryAt) : "—"}</p>
+                                   {client.subscription?.expiryAt && <p className={isActive ? (status === "expiring" ? "text-amber-300" : "text-gray-500") : "text-rose-300/80"}>{relativeDays(client.subscription.expiryAt)}</p>}
+                              </div>
+                              <div>
+                                   <p className="text-gray-500">Total paid</p>
+                                   <p className="mt-1 font-semibold text-emerald-300 tabular-nums">{formatRwf(payments?.total ?? 0)}</p>
+                                   <p className="text-gray-500">{payments?.count ?? 0} payment{payments?.count === 1 ? "" : "s"}</p>
+                              </div>
+                         </div>
+                         <div className="flex flex-wrap items-center justify-end gap-2 lg:w-auto">
+                              {hasPendingTransaction && !isActive && (
+                                   <>
+                                        <button onClick={handleApproveSubscription} disabled={isProcessing} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"><CheckCircle className="size-4" /> Approve</button>
+                                        <button onClick={handleRejectSubscription} disabled={isProcessing} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-rose-600/15 px-3 text-xs font-semibold text-rose-300 hover:bg-rose-600/25 disabled:opacity-50"><XCircle className="size-4" /> Reject</button>
+                                   </>
+                              )}
+                              {isExpired && !hasPendingTransaction && (
+                                   <button onClick={handleRenewSubscription} disabled={isProcessing} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white hover:bg-blue-500 disabled:opacity-50"><Calendar className="size-4" /> Renew</button>
+                              )}
+                              {(!hasSubscription || status === "inactive") && (
+                                   <button onClick={() => setShowDialog(true)} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-emerald-600/15 px-3 text-xs font-semibold text-emerald-300 hover:bg-emerald-600/25"><Plus className="size-4" /> Add plan</button>
+                              )}
+                              <button onClick={() => setShowDialog(true)} className="inline-flex h-9 items-center gap-1 rounded-lg border border-gray-700 px-3 text-xs font-medium text-gray-300 hover:border-gray-500 hover:text-white">
+                                   Manage <ChevronRight className="size-3.5" />
+                              </button>
+                              <button onClick={handleDelete} disabled={isDeleting} title="Delete client" aria-label="Delete client" className="inline-flex size-9 items-center justify-center rounded-lg text-gray-500 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50">
+                                   <Trash2 className="size-4" />
+                              </button>
+                         </div>
+                    </div>
+               ) : (
                <div className="w-full flex h-auto flex-col rounded-xl bg-gray-900 border border-gray-800 overflow-hidden hover:border-gray-700 transition-all duration-300">
                     {/* Main Card Content */}
                     <div className="w-full p-5">
@@ -377,6 +446,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                          </div>
                     </div>
                </div>
+               )}
 
                {/* Details Dialog */}
                {showDialog && (
@@ -521,7 +591,7 @@ export const ClientCard = ({client, onDelete}:{client: TAdminClientSelect, onDel
                                                                                      <p className="text-sm text-gray-400 mb-2">{sub.description}</p>
                                                                                      <div className="flex items-baseline gap-1">
                                                                                           <span className="text-2xl font-bold text-white">
-                                                                                               RWF {(sub.price * USDRate).toLocaleString()}
+                                                                                               {formatRwf(planPriceRwf(sub))}
                                                                                           </span>
                                                                                           <span className="text-sm text-gray-500">
                                                                                                / {sub.name === "Member" ? "year" : "3 months"}
